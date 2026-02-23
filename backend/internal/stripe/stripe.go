@@ -3,6 +3,7 @@ package stripe
 import (
 	"context"
 	"fmt"
+	"net/url"
 	"time"
 
 	"lastsaas/internal/apicounter"
@@ -28,20 +29,32 @@ type Service struct {
 	secretKey      string
 	PublishableKey string
 	webhookSecret  string
+	instanceID     string
 	db             *db.MongoDB
 	frontendURL    string
 }
 
 func New(secretKey, publishableKey, webhookSecret string, database *db.MongoDB, frontendURL string) *Service {
 	stripe.Key = secretKey
+
+	// Derive instance ID from the frontend URL hostname for multi-instance Stripe account sharing.
+	instanceID := ""
+	if u, err := url.Parse(frontendURL); err == nil && u.Hostname() != "" {
+		instanceID = u.Hostname()
+	}
+
 	return &Service{
 		secretKey:      secretKey,
 		PublishableKey: publishableKey,
 		webhookSecret:  webhookSecret,
+		instanceID:     instanceID,
 		db:             database,
 		frontendURL:    frontendURL,
 	}
 }
+
+// InstanceID returns the instance identifier (frontend hostname) for multi-instance Stripe account sharing.
+func (s *Service) InstanceID() string { return s.instanceID }
 
 // GetOrCreateCustomer finds or creates a Stripe customer for the given tenant.
 func (s *Service) GetOrCreateCustomer(ctx context.Context, tenant *models.Tenant, userEmail string) (string, error) {
@@ -49,12 +62,16 @@ func (s *Service) GetOrCreateCustomer(ctx context.Context, tenant *models.Tenant
 		return tenant.StripeCustomerID, nil
 	}
 
+	custMeta := map[string]string{
+		"tenantId": tenant.ID.Hex(),
+	}
+	if s.instanceID != "" {
+		custMeta["instance"] = s.instanceID
+	}
 	params := &stripe.CustomerParams{
-		Email: stripe.String(userEmail),
-		Name:  stripe.String(tenant.Name),
-		Metadata: map[string]string{
-			"tenantId": tenant.ID.Hex(),
-		},
+		Email:    stripe.String(userEmail),
+		Name:     stripe.String(tenant.Name),
+		Metadata: custMeta,
 	}
 	c, err := customer.New(params)
 	apicounter.StripeAPICalls.Add(1)
@@ -156,6 +173,9 @@ func (s *Service) CreateCheckoutSession(ctx context.Context, req CheckoutRequest
 		"tenantId": req.TenantID,
 		"userId":   req.UserID,
 	}
+	if s.instanceID != "" {
+		metadata["instance"] = s.instanceID
+	}
 
 	var mode string
 	if req.PlanID != nil {
@@ -216,6 +236,15 @@ func (s *Service) CreateCheckoutSession(ctx context.Context, req CheckoutRequest
 		AllowPromotionCodes: stripe.Bool(true),
 		Metadata:            metadata,
 		LineItems:           lineItems,
+	}
+
+	// Copy instance metadata to the subscription so subscription/invoice events can be filtered
+	if mode == "subscription" && s.instanceID != "" {
+		params.SubscriptionData = &stripe.CheckoutSessionSubscriptionDataParams{
+			Metadata: map[string]string{
+				"instance": s.instanceID,
+			},
+		}
 	}
 
 	session, err := checkoutsession.New(params)

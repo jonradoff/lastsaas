@@ -69,6 +69,18 @@ func (h *WebhookHandler) HandleWebhook(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Multi-instance filtering: if this instance has an instance ID configured,
+	// skip events that were created by a different instance. Checkout sessions and
+	// subscriptions carry an "instance" key in their metadata; invoices are filtered
+	// by subscription lookup (each instance has its own database).
+	if instanceID := h.stripe.InstanceID(); instanceID != "" {
+		if inst, found := extractInstanceFromEvent(event); found && inst != instanceID {
+			log.Printf("Webhook: skipping event %s (instance %q != %q)", event.ID, inst, instanceID)
+			w.WriteHeader(http.StatusOK)
+			return
+		}
+	}
+
 	switch event.Type {
 	case "checkout.session.completed":
 		h.handleCheckoutCompleted(ctx, event)
@@ -548,6 +560,21 @@ func indexOf(s, sub string) int {
 		}
 	}
 	return -1
+}
+
+// extractInstanceFromEvent extracts the "instance" metadata value from the event's
+// top-level object. Works for checkout sessions, subscriptions, and any Stripe object
+// that carries a metadata map. Returns ("", false) for objects without metadata (e.g. invoices).
+func extractInstanceFromEvent(event stripe.Event) (string, bool) {
+	var obj struct {
+		Metadata map[string]string `json:"metadata"`
+	}
+	if err := json.Unmarshal(event.Data.Raw, &obj); err == nil && obj.Metadata != nil {
+		if inst, ok := obj.Metadata["instance"]; ok {
+			return inst, true
+		}
+	}
+	return "", false
 }
 
 // Ensure unused imports are used
