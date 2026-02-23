@@ -55,6 +55,8 @@ func (h *WebhookHandler) HandleWebhook(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	log.Printf("Webhook: received event %s type=%s", event.ID, event.Type)
+
 	ctx := r.Context()
 
 	// Idempotency check
@@ -65,6 +67,7 @@ func (h *WebhookHandler) HandleWebhook(w http.ResponseWriter, r *http.Request) {
 	})
 	if err != nil {
 		// Duplicate — already processed
+		log.Printf("Webhook: duplicate event %s, skipping", event.ID)
 		w.WriteHeader(http.StatusOK)
 		return
 	}
@@ -81,6 +84,8 @@ func (h *WebhookHandler) HandleWebhook(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
+	log.Printf("Webhook: processing event %s type=%s", event.ID, event.Type)
+
 	switch event.Type {
 	case "checkout.session.completed":
 		h.handleCheckoutCompleted(ctx, event)
@@ -93,7 +98,7 @@ func (h *WebhookHandler) HandleWebhook(w http.ResponseWriter, r *http.Request) {
 	case "customer.subscription.deleted":
 		h.handleSubscriptionDeleted(ctx, event)
 	default:
-		log.Printf("Unhandled webhook event type: %s", event.Type)
+		log.Printf("Webhook: unhandled event type %s", event.Type)
 	}
 
 	w.WriteHeader(http.StatusOK)
