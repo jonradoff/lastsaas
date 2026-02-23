@@ -490,6 +490,7 @@ export interface BrandingConfig {
   ogImageUrl: string;
   navItems: NavItem[];
   analyticsSnippet: string;
+  authProviders?: AuthProviders;
 }
 
 export interface MediaItem {

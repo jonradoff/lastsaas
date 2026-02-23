@@ -268,6 +268,11 @@ func main() {
 	apiKeysHandler := handlers.NewAPIKeysHandler(database, emitter, sysLogger)
 	webhooksHandler := handlers.NewWebhooksHandler(database, sysLogger, webhookDispatcher)
 	brandingHandler := handlers.NewBrandingHandler(database, cfgStore, sysLogger)
+	brandingHandler.SetAuthProviders(map[string]bool{
+		"google":    googleOAuth != nil,
+		"github":    githubOAuth != nil,
+		"microsoft": microsoftOAuth != nil,
+	})
 
 	// Initialize daily metrics service
 	metricsService := metrics.New(database)

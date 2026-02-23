@@ -291,7 +291,7 @@ export const bundlesApi = {
 
 // --- Billing ---
 export const billingApi = {
-  checkout: (data: { planId?: string; bundleId?: string; billingInterval?: string; seatQuantity?: number }) =>
+  checkout: (data: { planId?: string; bundleId?: string; billingInterval?: string; seatQuantity?: number; removeBillingWaiver?: boolean }) =>
     api.post<{ checkoutUrl?: string; waived?: boolean }>('/billing/checkout', data).then(r => r.data),
   portal: () =>
     api.post<{ portalUrl: string }>('/billing/portal').then(r => r.data),

@@ -24,14 +24,17 @@ const maxAssetSize = 5 << 20  // 5 MB for logo/favicon
 const maxMediaSize = 10 << 20 // 10 MB for media uploads
 
 type BrandingHandler struct {
-	db     *db.MongoDB
-	store  *configstore.Store
-	syslog *syslog.Logger
+	db            *db.MongoDB
+	store         *configstore.Store
+	syslog        *syslog.Logger
+	authProviders map[string]bool
 }
 
 func NewBrandingHandler(database *db.MongoDB, store *configstore.Store, sysLogger *syslog.Logger) *BrandingHandler {
 	return &BrandingHandler{db: database, store: store, syslog: sysLogger}
 }
+
+func (h *BrandingHandler) SetAuthProviders(providers map[string]bool) { h.authProviders = providers }
 
 // ---------- Public endpoints ----------
 
@@ -61,6 +64,16 @@ func (h *BrandingHandler) GetBranding(w http.ResponseWriter, r *http.Request) {
 		faviconURL = "/api/branding/asset/favicon"
 	}
 
+	// Build auth providers from static config + runtime config store
+	authProviders := map[string]bool{"password": true}
+	if h.authProviders != nil {
+		for k, v := range h.authProviders {
+			authProviders[k] = v
+		}
+	}
+	authProviders["magicLink"] = h.store.Get("auth.magic_link.enabled") == "true"
+	authProviders["passkeys"] = h.store.Get("auth.passkeys.enabled") == "true"
+
 	respondWithJSON(w, http.StatusOK, map[string]interface{}{
 		"appName":          cfg.AppName,
 		"tagline":          cfg.Tagline,
@@ -88,6 +101,7 @@ func (h *BrandingHandler) GetBranding(w http.ResponseWriter, r *http.Request) {
 		"ogImageUrl":       cfg.OgImageURL,
 		"navItems":         cfg.NavItems,
 		"analyticsSnippet": analyticsSnippet,
+		"authProviders":    authProviders,
 	})
 }
 

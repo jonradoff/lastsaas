@@ -55,9 +55,10 @@ func (h *BillingHandler) Checkout(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var req struct {
-		PlanID          string `json:"planId"`
-		BundleID        string `json:"bundleId"`
-		BillingInterval string `json:"billingInterval"`
+		PlanID               string `json:"planId"`
+		BundleID             string `json:"bundleId"`
+		BillingInterval      string `json:"billingInterval"`
+		RemoveBillingWaiver  bool   `json:"removeBillingWaiver"`
 	}
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		respondWithError(w, http.StatusBadRequest, "Invalid request body")
@@ -83,6 +84,14 @@ func (h *BillingHandler) Checkout(w http.ResponseWriter, r *http.Request) {
 		if req.BillingInterval != "month" && req.BillingInterval != "year" {
 			respondWithError(w, http.StatusBadRequest, "billingInterval must be 'month' or 'year'")
 			return
+		}
+
+		// If user is explicitly removing billing waiver, clear it now and proceed to Stripe
+		if req.RemoveBillingWaiver && tenant.BillingWaived {
+			h.db.Tenants().UpdateOne(ctx, bson.M{"_id": tenant.ID}, bson.M{
+				"$set": bson.M{"billingWaived": false, "updatedAt": time.Now()},
+			})
+			tenant.BillingWaived = false
 		}
 
 		// Free plan or billing waived: assign directly

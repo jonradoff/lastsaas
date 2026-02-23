@@ -1,10 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { LogIn, Github, Mail, KeyRound, Fingerprint } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useBranding } from '../../contexts/BrandingContext';
 import { authApi } from '../../api/client';
-import type { AuthProviders } from '../../types';
 
 function GoogleIcon({ className }: { className?: string }) {
   return (
@@ -36,12 +35,8 @@ export default function LoginPage() {
   const [showMagicLink, setShowMagicLink] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [providers, setProviders] = useState<AuthProviders | null>(null);
 
-  useEffect(() => {
-    authApi.getProviders().then(setProviders).catch(() => {});
-    return () => clearMfaPending();
-  }, [clearMfaPending]);
+  const providers = branding.authProviders;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { CreditCard, Check, Minus, Crown, Sparkles, Zap, XCircle, AlertTriangle } from 'lucide-react';
 import { plansApi, billingApi } from '../../api/client';
+import { useTenant } from '../../contexts/TenantContext';
 import type { Plan, EntitlementValue, BillingStatus } from '../../types';
 import LoadingSpinner from '../../components/LoadingSpinner';
 
@@ -21,6 +22,7 @@ function annualTotal(cents: number, discountPct: number): number {
 }
 
 export default function PlanPage() {
+  const { activeTenant } = useTenant();
   const [plans, setPlans] = useState<Plan[]>([]);
   const [currentPlanId, setCurrentPlanId] = useState('');
   const [billingWaived, setBillingWaived] = useState(false);
@@ -30,10 +32,13 @@ export default function PlanPage() {
   const [, setCanceledAt] = useState<string>('');
   const [subscriptionCredits, setSubscriptionCredits] = useState(0);
   const [purchasedCredits, setPurchasedCredits] = useState(0);
+  const [maxPlanUserLimit, setMaxPlanUserLimit] = useState(0);
   const [loading, setLoading] = useState(true);
   const [checkoutLoading, setCheckoutLoading] = useState<string | null>(null);
   const [cancelLoading, setCancelLoading] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
+  const [showWaiverModal, setShowWaiverModal] = useState(false);
+  const [pendingWaiverPlan, setPendingWaiverPlan] = useState<Plan | null>(null);
   const [selectedInterval, setSelectedInterval] = useState<'month' | 'year'>('year');
   const [searchParams] = useSearchParams();
   const upgradePlanId = searchParams.get('upgrade');
@@ -41,6 +46,8 @@ export default function PlanPage() {
   const cardRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
   useEffect(() => {
+    if (!activeTenant) return;
+    setLoading(true);
     plansApi.list()
       .then((data) => {
         setPlans(data.plans);
@@ -52,10 +59,11 @@ export default function PlanPage() {
         setCanceledAt(data.canceledAt || '');
         setSubscriptionCredits(data.tenantSubscriptionCredits);
         setPurchasedCredits(data.tenantPurchasedCredits);
+        setMaxPlanUserLimit(data.maxPlanUserLimit);
       })
       .catch(() => {})
       .finally(() => setLoading(false));
-  }, []);
+  }, [activeTenant]);
 
   useEffect(() => {
     if (!loading && upgradePlanId && cardRefs.current[upgradePlanId]) {
@@ -68,11 +76,24 @@ export default function PlanPage() {
 
   const handleCheckout = async (plan: Plan) => {
     if (plan.id === currentPlanId) return;
+
+    // If billing is waived and this is a paid plan, show confirmation modal
+    if (billingWaived && (plan.monthlyPriceCents > 0 || plan.perSeatPriceCents > 0)) {
+      setPendingWaiverPlan(plan);
+      setShowWaiverModal(true);
+      return;
+    }
+
+    await doCheckout(plan, false);
+  };
+
+  const doCheckout = async (plan: Plan, removeBillingWaiver: boolean) => {
     setCheckoutLoading(plan.id);
     try {
       const result = await billingApi.checkout({
         planId: plan.id,
         billingInterval: selectedInterval,
+        removeBillingWaiver,
       });
       if (result.waived) {
         window.location.reload();
@@ -84,6 +105,13 @@ export default function PlanPage() {
     } finally {
       setCheckoutLoading(null);
     }
+  };
+
+  const handleWaiverConfirm = async () => {
+    if (!pendingWaiverPlan) return;
+    setShowWaiverModal(false);
+    await doCheckout(pendingWaiverPlan, true);
+    setPendingWaiverPlan(null);
   };
 
   const handleCancel = async () => {
@@ -105,6 +133,7 @@ export default function PlanPage() {
   const hasCredits = plans.some(p => p.usageCreditsPerMonth > 0);
   const hasBonusCredits = plans.some(p => p.bonusCredits > 0);
   const hasAnnual = plans.some(p => p.annualDiscountPct > 0);
+  const showUserLimits = maxPlanUserLimit !== 1;
 
   // Collect all unique entitlement keys with descriptions
   const entitlementKeys: { key: string; description: string }[] = [];
@@ -335,12 +364,14 @@ export default function PlanPage() {
 
               {/* Key features list */}
               <div className="space-y-3 mb-6">
-                <div className="flex items-center gap-2 text-sm">
-                  <Check className="w-4 h-4 text-accent-emerald flex-shrink-0" />
-                  <span className="text-dark-300">
-                    {plan.userLimit === 0 ? 'Unlimited users' : `Up to ${plan.userLimit} user${plan.userLimit > 1 ? 's' : ''}`}
-                  </span>
-                </div>
+                {showUserLimits && (
+                  <div className="flex items-center gap-2 text-sm">
+                    <Check className="w-4 h-4 text-accent-emerald flex-shrink-0" />
+                    <span className="text-dark-300">
+                      {plan.userLimit === 0 ? 'Unlimited users' : `Up to ${plan.userLimit} user${plan.userLimit > 1 ? 's' : ''}`}
+                    </span>
+                  </div>
+                )}
                 {hasCredits && plan.usageCreditsPerMonth > 0 && (
                   <div className="flex items-center gap-2 text-sm">
                     <Check className="w-4 h-4 text-accent-emerald flex-shrink-0" />
@@ -446,14 +477,16 @@ export default function PlanPage() {
               )}
 
               {/* User Limit Row */}
-              <tr className="hover:bg-dark-800/20">
-                <td className="px-6 py-3 text-sm text-dark-300">Users</td>
-                {sortedPlans.map(plan => (
-                  <td key={plan.id} className={`px-6 py-3 text-sm text-center ${plan.id === currentPlanId ? 'text-white font-medium' : 'text-dark-300'}`}>
-                    {plan.userLimit === 0 ? 'Unlimited' : plan.userLimit}
-                  </td>
-                ))}
-              </tr>
+              {showUserLimits && (
+                <tr className="hover:bg-dark-800/20">
+                  <td className="px-6 py-3 text-sm text-dark-300">Users</td>
+                  {sortedPlans.map(plan => (
+                    <td key={plan.id} className={`px-6 py-3 text-sm text-center ${plan.id === currentPlanId ? 'text-white font-medium' : 'text-dark-300'}`}>
+                      {plan.userLimit === 0 ? 'Unlimited' : plan.userLimit}
+                    </td>
+                  ))}
+                </tr>
+              )}
 
               {/* Usage Credits Row */}
               {hasCredits && (
@@ -507,6 +540,38 @@ export default function PlanPage() {
           </table>
         </div>
       </div>
+
+      {/* Billing Waiver Confirmation Modal */}
+      {showWaiverModal && pendingWaiverPlan && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+          <div className="bg-dark-900 border border-dark-700 rounded-2xl p-6 max-w-md mx-4 w-full">
+            <div className="flex items-center gap-3 mb-4">
+              <AlertTriangle className="w-6 h-6 text-yellow-400" />
+              <h3 className="text-lg font-semibold text-white">Billing Waiver Active</h3>
+            </div>
+            <p className="text-dark-300 mb-2">
+              Your account currently has billing waived. Switching to <span className="text-white font-medium">{pendingWaiverPlan.name}</span> will start a paid subscription.
+            </p>
+            <p className="text-dark-400 text-sm mb-6">
+              Your billing waiver will be removed and you'll be redirected to complete payment.
+            </p>
+            <div className="flex gap-3 justify-end">
+              <button
+                onClick={() => { setShowWaiverModal(false); setPendingWaiverPlan(null); }}
+                className="px-4 py-2 text-sm text-dark-300 hover:text-white transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleWaiverConfirm}
+                className="px-4 py-2 text-sm bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors"
+              >
+                Switch to Paid Plan
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Cancel Subscription Modal */}
       {showCancelModal && (
