@@ -5,7 +5,8 @@ WORKDIR /build
 COPY backend/go.mod backend/go.sum ./
 RUN go mod download
 COPY backend/ ./
-RUN CGO_ENABLED=0 GOOS=linux go build -o lastsaas ./cmd/server
+COPY VERSION ./VERSION
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags "-X lastsaas/internal/version.buildVersion=$(cat VERSION)" -o lastsaas ./cmd/server
 
 # Stage 2: Build frontend
 FROM node:22-alpine AS frontend-builder
@@ -28,9 +29,6 @@ COPY backend/config/prod.yaml ./config/prod.yaml
 
 # Copy frontend dist
 COPY --from=frontend-builder /build/dist ./static
-
-# Copy VERSION file
-COPY VERSION ./VERSION
 
 ENV LASTSAAS_ENV=prod
 EXPOSE 8080
