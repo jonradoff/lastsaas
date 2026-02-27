@@ -1,0 +1,15 @@
+coverage:
+  status:
+    project:
+      default:
+        target: 80%
+  ignore:
+    - "cmd/"
+    - "internal/db/"
+    - "internal/testutil/"
+    - "internal/configstore/"
+    - "internal/email/"
+    - "internal/health/"
+    - "internal/metrics/"
+    - "internal/planstore/"
+    - "internal/api/handlers/"
