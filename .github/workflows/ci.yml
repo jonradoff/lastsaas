@@ -22,6 +22,9 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
+    env:
+      MONGODB_URI: ${{ secrets.MONGODB_URI }}
+      DATABASE_NAME: lastsaas-test
     steps:
       - uses: actions/checkout@v4
 
@@ -35,7 +38,7 @@ jobs:
           CGO_ENABLED=0 go test ./... \
             -coverprofile=coverage.out \
             -covermode=atomic \
-            -timeout=300s
+            -timeout=600s
 
       - name: Upload coverage to Codecov
         if: always()
