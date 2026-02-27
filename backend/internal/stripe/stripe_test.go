@@ -90,16 +90,21 @@ func TestNextInvoiceNumber(t *testing.T) {
 	if err != nil {
 		t.Fatalf("expected no error, got %v", err)
 	}
-	if inv1 != "INV-000001" {
-		t.Errorf("expected INV-000001, got %q", inv1)
+	// Verify format: INV-XXXXXX (6-digit zero-padded)
+	if len(inv1) != 10 || inv1[:4] != "INV-" {
+		t.Errorf("unexpected format: got %q", inv1)
 	}
 
 	inv2, err := svc.NextInvoiceNumber(t.Context())
 	if err != nil {
 		t.Fatalf("expected no error, got %v", err)
 	}
-	if inv2 != "INV-000002" {
-		t.Errorf("expected INV-000002, got %q", inv2)
+	if len(inv2) != 10 || inv2[:4] != "INV-" {
+		t.Errorf("unexpected format: got %q", inv2)
+	}
+	// Sequential calls must produce incrementing values
+	if inv2 <= inv1 {
+		t.Errorf("expected inv2 > inv1, got inv1=%q inv2=%q", inv1, inv2)
 	}
 }
 

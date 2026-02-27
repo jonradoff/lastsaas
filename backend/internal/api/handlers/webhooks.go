@@ -233,13 +233,15 @@ func (h *WebhooksHandler) CreateWebhook(w http.ResponseWriter, r *http.Request) 
 	// Auto-generate signing secret
 	rawSecret := "whsec_" + generateRandomToken()
 	storedSecret := rawSecret
-	if encKey := h.dispatcher.EncryptionKey(); encKey != nil {
-		encrypted, err := webhooks.EncryptSecret(rawSecret, encKey)
-		if err != nil {
-			respondWithError(w, http.StatusInternalServerError, "Failed to secure webhook secret")
-			return
+	if h.dispatcher != nil {
+		if encKey := h.dispatcher.EncryptionKey(); encKey != nil {
+			encrypted, err := webhooks.EncryptSecret(rawSecret, encKey)
+			if err != nil {
+				respondWithError(w, http.StatusInternalServerError, "Failed to secure webhook secret")
+				return
+			}
+			storedSecret = encrypted
 		}
-		storedSecret = encrypted
 	}
 
 	now := time.Now()
@@ -354,13 +356,15 @@ func (h *WebhooksHandler) RegenerateSecret(w http.ResponseWriter, r *http.Reques
 	rawSecret := "whsec_" + generateRandomToken()
 	preview := rawSecret[len(rawSecret)-8:]
 	storedSecret := rawSecret
-	if encKey := h.dispatcher.EncryptionKey(); encKey != nil {
-		encrypted, err := webhooks.EncryptSecret(rawSecret, encKey)
-		if err != nil {
-			respondWithError(w, http.StatusInternalServerError, "Failed to secure webhook secret")
-			return
+	if h.dispatcher != nil {
+		if encKey := h.dispatcher.EncryptionKey(); encKey != nil {
+			encrypted, err := webhooks.EncryptSecret(rawSecret, encKey)
+			if err != nil {
+				respondWithError(w, http.StatusInternalServerError, "Failed to secure webhook secret")
+				return
+			}
+			storedSecret = encrypted
 		}
-		storedSecret = encrypted
 	}
 
 	result, err := h.db.Webhooks().UpdateByID(r.Context(), whID, bson.M{
