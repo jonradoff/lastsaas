@@ -83,7 +83,13 @@ func MustConnectTestDB(t *testing.T) (*db.MongoDB, func()) {
 	cleanup := func() {
 		ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 		defer cancel()
-		database.Database.Drop(ctx)
+		// Drop individual collections instead of the whole database to avoid
+		// "database is in the process of being dropped" errors when multiple
+		// test packages run in parallel against the same database.
+		colls, _ := database.Database.ListCollectionNames(ctx, bson.M{})
+		for _, name := range colls {
+			database.Database.Collection(name).Drop(ctx)
+		}
 		database.Close(ctx)
 	}
 
