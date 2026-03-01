@@ -19,7 +19,7 @@ const tooltipStyle = { backgroundColor: '#1e293b', border: '1px solid #334155', 
 const tooltipLabelStyle = { color: '#94a3b8' };
 
 function RangeSelector({ value, onChange }: { value: Range; onChange: (r: Range) => void }) {
-  const timerRef = useRef<ReturnType<typeof setTimeout>>();
+  const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
   const debouncedChange = useCallback((r: Range) => {
     clearTimeout(timerRef.current);
     timerRef.current = setTimeout(() => onChange(r), 300);
