@@ -327,6 +327,7 @@ func main() {
 	}).Methods("GET")
 
 	api := router.PathPrefix("/api").Subrouter()
+	api.Use(middleware.BodySizeLimit)
 
 	// --- Bootstrap status (always accessible, init is CLI-only) ---
 	api.HandleFunc("/bootstrap/status", bootstrapHandler.Status).Methods("GET")

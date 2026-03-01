@@ -23,6 +23,11 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
+// Architecture note: JWTs are stored in localStorage rather than httpOnly cookies.
+// This is a deliberate trade-off: localStorage is vulnerable to XSS but enables simple
+// multi-tab support and API key-style auth headers. The app mitigates XSS risk through
+// React's built-in escaping, strict CSP headers, and validated/sanitized user inputs.
+// httpOnly cookies would require CSRF protection and complicate the SPA architecture.
 const ACCESS_TOKEN_KEY = 'lastsaas_access_token';
 const REFRESH_TOKEN_KEY = 'lastsaas_refresh_token';
 

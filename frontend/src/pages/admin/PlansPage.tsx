@@ -67,8 +67,8 @@ export default function PlansPage() {
       setDeleteTarget(null);
       toast.success(`${deleteTarget.name} deleted`);
       fetchPlans();
-    } catch (err: any) {
-      setDeleteError(err.response?.data?.error || 'Failed to delete');
+    } catch (err: unknown) {
+      setDeleteError(getErrorMessage(err));
     } finally {
       setDeleting(false);
     }
@@ -103,8 +103,8 @@ export default function PlansPage() {
       setDeleteBundleTarget(null);
       toast.success(`${deleteBundleTarget.name} deleted`);
       fetchBundles();
-    } catch (err: any) {
-      setDeleteBundleError(err.response?.data?.error || 'Failed to delete');
+    } catch (err: unknown) {
+      setDeleteBundleError(getErrorMessage(err));
     } finally {
       setDeletingBundle(false);
     }
@@ -509,7 +509,7 @@ function PlanFormModal({ plan, subscriberCount, readOnly, onClose, onSaved }: Pl
   // Known entitlement keys from all plans
   const [knownKeys, setKnownKeys] = useState<EntitlementKeyInfo[]>([]);
   useEffect(() => {
-    adminApi.listEntitlementKeys().then(data => setKnownKeys(data.keys)).catch(() => console.debug('Failed to fetch entitlement keys'));
+    adminApi.listEntitlementKeys().then(data => setKnownKeys(data.keys)).catch(() => { /* non-critical, entitlement key hints are optional */ });
   }, []);
 
   // New entitlement row state
@@ -575,8 +575,8 @@ function PlanFormModal({ plan, subscriberCount, readOnly, onClose, onSaved }: Pl
         await adminApi.createPlan(payload);
       }
       onSaved();
-    } catch (err: any) {
-      setError(err.response?.data?.error || 'Failed to save plan');
+    } catch (err: unknown) {
+      setError(getErrorMessage(err));
     } finally {
       setSaving(false);
     }
@@ -1046,8 +1046,8 @@ function BundleFormModal({ bundle, readOnly, onClose, onSaved }: BundleFormModal
         await adminApi.createBundle(payload);
       }
       onSaved();
-    } catch (err: any) {
-      setError(err.response?.data?.error || 'Failed to save bundle');
+    } catch (err: unknown) {
+      setError(getErrorMessage(err));
     } finally {
       setSaving(false);
     }

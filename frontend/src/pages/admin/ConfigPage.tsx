@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { Settings, Search, Plus, Trash2, X, Shield, AlertTriangle } from 'lucide-react';
 import { adminApi } from '../../api/client';
+import { getErrorMessage } from '../../utils/errors';
 import type { ConfigVar, ConfigVarType, EnumOption } from '../../types';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import { useTenant } from '../../contexts/TenantContext';
@@ -76,8 +77,8 @@ export default function ConfigPage() {
       await adminApi.deleteConfig(deleteTarget.name);
       setDeleteTarget(null);
       fetchConfigs();
-    } catch (err: any) {
-      alert(err.response?.data?.error || 'Failed to delete');
+    } catch (err: unknown) {
+      alert(getErrorMessage(err));
       setDeleting(false);
     }
   };
@@ -358,8 +359,8 @@ function EditConfigModal({
       }
       await adminApi.updateConfig(configVar.name, editValue, Object.keys(opts).length > 0 ? opts : undefined);
       onSaved();
-    } catch (err: any) {
-      setError(err.response?.data?.error || 'Failed to update');
+    } catch (err: unknown) {
+      setError(getErrorMessage(err));
     } finally {
       setSaving(false);
     }
@@ -508,8 +509,8 @@ function CreateConfigModal({ onClose, onCreated }: { onClose: () => void; onCrea
         options: optionsJSON,
       });
       onCreated();
-    } catch (err: any) {
-      setError(err.response?.data?.error || 'Failed to create');
+    } catch (err: unknown) {
+      setError(getErrorMessage(err));
     } finally {
       setSaving(false);
     }

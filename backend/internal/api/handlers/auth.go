@@ -621,6 +621,9 @@ func (h *AuthHandler) ForgotPassword(w http.ResponseWriter, r *http.Request) {
 	h.db.VerificationTokens().InsertOne(r.Context(), verification)
 
 	go func() {
+		ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+		defer cancel()
+		_ = ctx // timeout guard for background goroutine
 		if h.emailService != nil {
 			if err := h.emailService.SendPasswordResetEmail(user.Email, user.DisplayName, resetToken); err != nil {
 				log.Printf("Failed to send password reset email: %v", err)
@@ -1082,6 +1085,9 @@ func (h *AuthHandler) MagicLinkRequest(w http.ResponseWriter, r *http.Request) {
 	h.db.VerificationTokens().InsertOne(r.Context(), verification)
 
 	go func() {
+		ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+		defer cancel()
+		_ = ctx // timeout guard for background goroutine
 		if h.emailService != nil {
 			if err := h.emailService.SendMagicLinkEmail(user.Email, user.DisplayName, magicToken); err != nil {
 				log.Printf("Failed to send magic link email: %v", err)
@@ -1864,6 +1870,9 @@ func (h *AuthHandler) sendVerificationEmail(ctx context.Context, userID primitiv
 	})
 
 	go func() {
+		ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+		defer cancel()
+		_ = ctx // timeout guard for background goroutine
 		if h.emailService != nil {
 			if err := h.emailService.SendVerificationEmail(userEmail, displayName, verificationToken); err != nil {
 				log.Printf("Failed to send verification email to %s: %v", userEmail, err)

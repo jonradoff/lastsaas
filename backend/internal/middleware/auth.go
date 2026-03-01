@@ -149,8 +149,10 @@ func (m *AuthMiddleware) authenticateAPIKey(w http.ResponseWriter, r *http.Reque
 
 	// Update lastUsedAt asynchronously
 	go func() {
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer cancel()
 		now := time.Now()
-		_, _ = m.db.APIKeys().UpdateByID(context.Background(), apiKey.ID,
+		_, _ = m.db.APIKeys().UpdateByID(ctx, apiKey.ID,
 			bson.M{"$set": bson.M{"lastUsedAt": now}})
 	}()
 

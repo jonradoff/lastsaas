@@ -1149,28 +1149,76 @@ func (h *AdminHandler) PreflightDeleteUser(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	cursor, _ := h.db.TenantMemberships().Find(ctx, bson.M{"userId": userID, "role": models.RoleOwner})
+	cursor, err := h.db.TenantMemberships().Find(ctx, bson.M{"userId": userID, "role": models.RoleOwner})
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Failed to query memberships")
+		return
+	}
 	var ownerships []models.TenantMembership
-	cursor.All(ctx, &ownerships)
+	if err := cursor.All(ctx, &ownerships); err != nil {
+		cursor.Close(ctx)
+		respondWithError(w, http.StatusInternalServerError, "Failed to read memberships")
+		return
+	}
 	cursor.Close(ctx)
+
+	// Batch-fetch tenants and members to avoid N+1 queries.
+	tenantIDs := make([]primitive.ObjectID, len(ownerships))
+	for i, m := range ownerships {
+		tenantIDs[i] = m.TenantID
+	}
+
+	tenantMap := map[primitive.ObjectID]models.Tenant{}
+	if len(tenantIDs) > 0 {
+		tCursor, err := h.db.Tenants().Find(ctx, bson.M{"_id": bson.M{"$in": tenantIDs}})
+		if err == nil {
+			var tenants []models.Tenant
+			if err := tCursor.All(ctx, &tenants); err == nil {
+				for _, t := range tenants {
+					tenantMap[t.ID] = t
+				}
+			}
+			tCursor.Close(ctx)
+		}
+	}
 
 	var ownershipInfo []tenantDeletionInfo
 	for _, m := range ownerships {
-		var tenant models.Tenant
-		h.db.Tenants().FindOne(ctx, bson.M{"_id": m.TenantID}).Decode(&tenant)
+		tenant := tenantMap[m.TenantID]
 
-		memberCursor, _ := h.db.TenantMemberships().Find(ctx, bson.M{
+		memberCursor, err := h.db.TenantMemberships().Find(ctx, bson.M{
 			"tenantId": m.TenantID,
 			"userId":   bson.M{"$ne": userID},
 		})
+		if err != nil {
+			continue
+		}
 		var otherMemberships []models.TenantMembership
 		memberCursor.All(ctx, &otherMemberships)
 		memberCursor.Close(ctx)
 
+		// Batch-fetch users for this tenant's other members.
+		otherUserIDs := make([]primitive.ObjectID, len(otherMemberships))
+		for i, om := range otherMemberships {
+			otherUserIDs[i] = om.UserID
+		}
+		userMap := map[primitive.ObjectID]models.User{}
+		if len(otherUserIDs) > 0 {
+			uCursor, err := h.db.Users().Find(ctx, bson.M{"_id": bson.M{"$in": otherUserIDs}})
+			if err == nil {
+				var users []models.User
+				if err := uCursor.All(ctx, &users); err == nil {
+					for _, u := range users {
+						userMap[u.ID] = u
+					}
+				}
+				uCursor.Close(ctx)
+			}
+		}
+
 		var otherMembers []MemberResponse
 		for _, om := range otherMemberships {
-			var u models.User
-			if h.db.Users().FindOne(ctx, bson.M{"_id": om.UserID}).Decode(&u) == nil {
+			if u, ok := userMap[om.UserID]; ok {
 				otherMembers = append(otherMembers, MemberResponse{
 					UserID:      u.ID.Hex(),
 					Email:       u.Email,
@@ -1226,9 +1274,17 @@ func (h *AdminHandler) DeleteUser(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	// Find all memberships
-	cursor, _ := h.db.TenantMemberships().Find(ctx, bson.M{"userId": userID})
+	cursor, err := h.db.TenantMemberships().Find(ctx, bson.M{"userId": userID})
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Failed to query memberships")
+		return
+	}
 	var memberships []models.TenantMembership
-	cursor.All(ctx, &memberships)
+	if err := cursor.All(ctx, &memberships); err != nil {
+		cursor.Close(ctx)
+		respondWithError(w, http.StatusInternalServerError, "Failed to read memberships")
+		return
+	}
 	cursor.Close(ctx)
 
 	// Handle owner memberships
@@ -1238,7 +1294,10 @@ func (h *AdminHandler) DeleteUser(w http.ResponseWriter, r *http.Request) {
 		}
 
 		var tenant models.Tenant
-		h.db.Tenants().FindOne(ctx, bson.M{"_id": m.TenantID}).Decode(&tenant)
+		if err := h.db.Tenants().FindOne(ctx, bson.M{"_id": m.TenantID}).Decode(&tenant); err != nil {
+			respondWithError(w, http.StatusInternalServerError, "Failed to look up tenant")
+			return
+		}
 
 		if tenant.IsRoot {
 			respondWithError(w, http.StatusForbidden, "Cannot delete the root tenant owner. Transfer ownership first via CLI.")
@@ -1688,6 +1747,9 @@ func (h *AdminHandler) InviteRootMember(w http.ResponseWriter, r *http.Request) 
 	}
 
 	go func() {
+		ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+		defer cancel()
+		_ = ctx // timeout guard for background goroutine
 		if h.emailService != nil {
 			if err := h.emailService.SendInvitationEmail(req.Email, user.DisplayName, rootTenant.Name, token); err != nil {
 				log.Printf("Failed to send root member invitation email to %s: %v", req.Email, err)

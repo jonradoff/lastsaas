@@ -1,3 +1,9 @@
+// Package handlers implements HTTP request handlers for the API.
+//
+// Logging strategy: This package uses two logging mechanisms:
+//   - syslog.Logger for auditable business events (user creation, ownership transfer, etc.)
+//   - stdlib log.Printf for operational diagnostics (email delivery failures in background
+//     goroutines, etc.) where structured logging adds overhead without audit value.
 package handlers
 
 import (

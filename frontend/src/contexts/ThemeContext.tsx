@@ -66,7 +66,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   const setTheme = useCallback((newTheme: ThemeMode) => {
     setThemeState(newTheme);
     if (isAuthenticated) {
-      authApi.updatePreferences({ themePreference: newTheme }).catch(() => console.debug('Failed to save theme preference'));
+      authApi.updatePreferences({ themePreference: newTheme }).catch(() => { /* best-effort, theme is also in localStorage */ });
     }
   }, [isAuthenticated]);
 

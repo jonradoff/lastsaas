@@ -32,7 +32,7 @@ export default function AdminLayout() {
   useEffect(() => {
     messagesApi.unreadCount()
       .then((data) => setUnreadCount(data.count))
-      .catch(() => console.debug('Failed to fetch unread count'));
+      .catch(() => { /* non-critical: badge just won't show */ });
   }, []);
 
   if (!isRootTenant) {

@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -258,6 +259,9 @@ func (h *TenantHandler) InviteMember(w http.ResponseWriter, r *http.Request) {
 
 	// Send invitation email
 	go func() {
+		ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+		defer cancel()
+		_ = ctx // timeout guard for background goroutine
 		if h.emailService != nil {
 			if err := h.emailService.SendInvitationEmail(req.Email, user.DisplayName, tenant.Name, token); err != nil {
 				log.Printf("Failed to send invitation email to %s: %v", req.Email, err)

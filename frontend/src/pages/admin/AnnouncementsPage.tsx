@@ -182,8 +182,8 @@ function AnnouncementFormModal({ announcement, onClose, onSaved }: { announcemen
       }
       toast.success(isEdit ? 'Announcement updated' : 'Announcement created');
       onSaved();
-    } catch (err: any) {
-      setError(err.response?.data?.error || getErrorMessage(err));
+    } catch (err: unknown) {
+      setError(getErrorMessage(err));
     } finally {
       setSaving(false);
     }

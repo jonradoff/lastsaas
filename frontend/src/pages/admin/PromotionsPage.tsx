@@ -251,8 +251,8 @@ function EditPromotionModal({ promo, productNames, onClose, onUpdated }: {
       });
       toast.success(`${promo.code} updated`);
       onUpdated();
-    } catch (err: any) {
-      setError(err.response?.data?.error || getErrorMessage(err));
+    } catch (err: unknown) {
+      setError(getErrorMessage(err));
     } finally {
       setSaving(false);
     }
@@ -449,8 +449,8 @@ function CreatePromotionModal({ onClose, onCreated }: { onClose: () => void; onC
       });
       toast.success(`Promotion code ${code.trim().toUpperCase()} created`);
       onCreated();
-    } catch (err: any) {
-      setError(err.response?.data?.error || getErrorMessage(err));
+    } catch (err: unknown) {
+      setError(getErrorMessage(err));
     } finally {
       setSaving(false);
     }

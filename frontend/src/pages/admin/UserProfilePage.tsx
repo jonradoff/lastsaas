@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { ArrowLeft, Save, Shield, Trash2, FileText, AlertTriangle, X, Zap } from 'lucide-react';
 import { adminApi } from '../../api/client';
+import { getErrorMessage } from '../../utils/errors';
 import type { UserDetail, UserMembershipDetail, DeletePreflightResponse } from '../../types';
 import { useAuth } from '../../contexts/AuthContext';
 import { useTenant } from '../../contexts/TenantContext';
@@ -46,10 +47,7 @@ export default function UserProfilePage() {
       setEmail(data.user.email);
       setDisplayName(data.user.displayName);
     } catch (err: unknown) {
-      const axErr = err as { response?: { status?: number; data?: { error?: string } }; message?: string };
-      const msg = axErr?.response?.data?.error || axErr?.message || 'Unknown error';
-      console.error('Failed to fetch user profile:', axErr?.response?.status, msg);
-      setFetchError(`${axErr?.response?.status || 'Network'}: ${msg}`);
+      setFetchError(getErrorMessage(err));
     } finally {
       setLoading(false);
     }

@@ -90,8 +90,8 @@ function CreateKeyModal({ onClose, onCreated }: {
     try {
       const data = await adminApi.createAPIKey({ name: name.trim(), authority });
       onCreated(data);
-    } catch (err: any) {
-      setError(err.response?.data?.error || 'Failed to create API key');
+    } catch (err: unknown) {
+      setError(getErrorMessage(err));
     } finally {
       setSaving(false);
     }
@@ -247,8 +247,8 @@ function APIKeysSection({ canWrite }: { canWrite: boolean }) {
       await adminApi.deleteAPIKey(deleteTarget.id);
       setDeleteTarget(null);
       fetchKeys();
-    } catch (err: any) {
-      setDeleteError(err.response?.data?.error || 'Failed to delete');
+    } catch (err: unknown) {
+      setDeleteError(getErrorMessage(err));
     } finally {
       setDeleting(false);
     }
@@ -514,8 +514,8 @@ function WebhookFormModal({ webhook, onClose, onSaved }: {
         const result = await adminApi.createWebhook(data);
         onSaved({ webhook: result.webhook, secret: result.secret });
       }
-    } catch (err: any) {
-      setError(err.response?.data?.error || 'Failed to save webhook');
+    } catch (err: unknown) {
+      setError(getErrorMessage(err));
     } finally {
       setSaving(false);
     }
@@ -926,8 +926,8 @@ function WebhooksSection({ canWrite }: { canWrite: boolean }) {
       await adminApi.deleteWebhook(deleteTarget.id);
       setDeleteTarget(null);
       fetchHooks();
-    } catch (err: any) {
-      setDeleteError(err.response?.data?.error || 'Failed to delete');
+    } catch (err: unknown) {
+      setDeleteError(getErrorMessage(err));
     } finally {
       setDeleting(false);
     }
