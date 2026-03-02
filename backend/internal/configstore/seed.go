@@ -241,6 +241,20 @@ var SystemDefaults = []models.ConfigVar{
 		IsSystem:    true,
 	},
 	{
+		Name:        "auth.session.access_ttl_minutes",
+		Description: "JWT access token lifetime in minutes. Short-lived tokens are silently refreshed in the background.",
+		Type:        models.ConfigTypeNumeric,
+		Value:       "60",
+		IsSystem:    true,
+	},
+	{
+		Name:        "auth.session.refresh_ttl_days",
+		Description: "Refresh token lifetime in days. This controls how long a user stays logged in without re-authenticating.",
+		Type:        models.ConfigTypeNumeric,
+		Value:       "30",
+		IsSystem:    true,
+	},
+	{
 		Name:        "auth.magic_link.enabled",
 		Description: "Enable or disable magic link (passwordless) login. When enabled, users can sign in via an emailed link.",
 		Type:        models.ConfigTypeEnum,

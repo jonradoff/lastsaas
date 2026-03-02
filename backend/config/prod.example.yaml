@@ -13,8 +13,8 @@ frontend:
 jwt:
   access_secret: ${JWT_ACCESS_SECRET}
   refresh_secret: ${JWT_REFRESH_SECRET}
-  access_ttl_minutes: 30
-  refresh_ttl_days: 7
+  access_ttl_minutes: 60
+  refresh_ttl_days: 30
 
 oauth:
   google_client_id: ${GOOGLE_CLIENT_ID}

@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"log/slog"
 	"net/http"
+	"strconv"
 	"strings"
 	"time"
 
@@ -75,6 +76,38 @@ func (h *AuthHandler) SetTOTPEncryptionKey(key []byte) {
 	if len(key) == 32 {
 		h.totpService = auth.NewTOTPServiceWithEncryption(key)
 	}
+}
+
+// sessionTTLs returns the access and refresh token TTLs from the config store,
+// falling back to the JWTService defaults if not configured.
+func (h *AuthHandler) sessionTTLs() (accessTTL, refreshTTL time.Duration) {
+	accessTTL = h.jwtService.GetAccessTTL()
+	refreshTTL = h.jwtService.GetRefreshTTL()
+	if h.getConfig != nil {
+		if v := h.getConfig("auth.session.access_ttl_minutes"); v != "" {
+			if mins, err := strconv.Atoi(v); err == nil && mins > 0 {
+				accessTTL = time.Duration(mins) * time.Minute
+			}
+		}
+		if v := h.getConfig("auth.session.refresh_ttl_days"); v != "" {
+			if days, err := strconv.Atoi(v); err == nil && days > 0 {
+				refreshTTL = time.Duration(days) * 24 * time.Hour
+			}
+		}
+	}
+	return
+}
+
+// generateTokenPair creates an access token and refresh token using the dynamic config TTLs.
+func (h *AuthHandler) generateTokenPair(userID, email, displayName string) (accessToken, refreshToken string, refreshTTL time.Duration, err error) {
+	aTTL, rTTL := h.sessionTTLs()
+	accessToken, err = h.jwtService.GenerateAccessTokenWithTTL(userID, email, displayName, aTTL)
+	if err != nil {
+		return
+	}
+	refreshToken, err = h.jwtService.GenerateRefreshTokenWithTTL(userID, rTTL)
+	refreshTTL = rTTL
+	return
 }
 
 // --- Request/Response types ---
@@ -238,17 +271,12 @@ func (h *AuthHandler) Register(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Generate tokens
-	accessToken, err := h.jwtService.GenerateAccessToken(user.ID.Hex(), user.Email, user.DisplayName)
+	accessToken, refreshToken, refreshTTL, err := h.generateTokenPair(user.ID.Hex(), user.Email, user.DisplayName)
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Failed to generate token")
 		return
 	}
-	refreshToken, err := h.jwtService.GenerateRefreshToken(user.ID.Hex())
-	if err != nil {
-		respondWithError(w, http.StatusInternalServerError, "Failed to generate token")
-		return
-	}
-	storeRefreshToken(r, h.db, user.ID, refreshToken, h.jwtService.GetRefreshTTL())
+	storeRefreshToken(r, h.db, user.ID, refreshToken, refreshTTL)
 
 	memberships := h.getUserMemberships(r.Context(), user.ID)
 
@@ -369,17 +397,12 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	accessToken, err := h.jwtService.GenerateAccessToken(user.ID.Hex(), user.Email, user.DisplayName)
+	accessToken, refreshToken, refreshTTL, err := h.generateTokenPair(user.ID.Hex(), user.Email, user.DisplayName)
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Failed to generate token")
 		return
 	}
-	refreshToken, err := h.jwtService.GenerateRefreshToken(user.ID.Hex())
-	if err != nil {
-		respondWithError(w, http.StatusInternalServerError, "Failed to generate token")
-		return
-	}
-	storeRefreshToken(r, h.db, user.ID, refreshToken, h.jwtService.GetRefreshTTL())
+	storeRefreshToken(r, h.db, user.ID, refreshToken, refreshTTL)
 
 	memberships := h.getUserMemberships(r.Context(), user.ID)
 
@@ -495,17 +518,12 @@ func (h *AuthHandler) Refresh(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	accessToken, err := h.jwtService.GenerateAccessToken(user.ID.Hex(), user.Email, user.DisplayName)
+	accessToken, refreshToken, refreshTTL, err := h.generateTokenPair(user.ID.Hex(), user.Email, user.DisplayName)
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Failed to generate token")
 		return
 	}
-	refreshToken, err := h.jwtService.GenerateRefreshToken(user.ID.Hex())
-	if err != nil {
-		respondWithError(w, http.StatusInternalServerError, "Failed to generate token")
-		return
-	}
-	storeRefreshToken(r, h.db, user.ID, refreshToken, h.jwtService.GetRefreshTTL(), storedToken.FamilyID)
+	storeRefreshToken(r, h.db, user.ID, refreshToken, refreshTTL, storedToken.FamilyID)
 
 	// Update lastActiveAt on the new stored token
 	newHash := hashToken(refreshToken)
@@ -1003,17 +1021,12 @@ func (h *AuthHandler) MFAChallenge(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Generate full auth tokens
-	accessToken, err := h.jwtService.GenerateAccessToken(user.ID.Hex(), user.Email, user.DisplayName)
+	accessToken, refreshToken, refreshTTL, err := h.generateTokenPair(user.ID.Hex(), user.Email, user.DisplayName)
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Failed to generate token")
 		return
 	}
-	refreshToken, err := h.jwtService.GenerateRefreshToken(user.ID.Hex())
-	if err != nil {
-		respondWithError(w, http.StatusInternalServerError, "Failed to generate token")
-		return
-	}
-	storeRefreshToken(r, h.db, user.ID, refreshToken, h.jwtService.GetRefreshTTL())
+	storeRefreshToken(r, h.db, user.ID, refreshToken, refreshTTL)
 
 	memberships := h.getUserMemberships(r.Context(), user.ID)
 
@@ -1197,17 +1210,12 @@ func (h *AuthHandler) MagicLinkVerify(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	accessToken, err := h.jwtService.GenerateAccessToken(user.ID.Hex(), user.Email, user.DisplayName)
+	accessToken, refreshToken, refreshTTL, err := h.generateTokenPair(user.ID.Hex(), user.Email, user.DisplayName)
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Failed to generate token")
 		return
 	}
-	refreshToken, err := h.jwtService.GenerateRefreshToken(user.ID.Hex())
-	if err != nil {
-		respondWithError(w, http.StatusInternalServerError, "Failed to generate token")
-		return
-	}
-	storeRefreshToken(r, h.db, user.ID, refreshToken, h.jwtService.GetRefreshTTL())
+	storeRefreshToken(r, h.db, user.ID, refreshToken, refreshTTL)
 
 	memberships := h.getUserMemberships(r.Context(), user.ID)
 
@@ -1380,17 +1388,12 @@ func (h *AuthHandler) GoogleOAuthCallback(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	accessToken, err := h.jwtService.GenerateAccessToken(user.ID.Hex(), user.Email, user.DisplayName)
+	accessToken, refreshToken, refreshTTL, err := h.generateTokenPair(user.ID.Hex(), user.Email, user.DisplayName)
 	if err != nil {
 		http.Redirect(w, r, h.frontendURL+"/login?error=token_generation_failed", http.StatusTemporaryRedirect)
 		return
 	}
-	refreshToken, err := h.jwtService.GenerateRefreshToken(user.ID.Hex())
-	if err != nil {
-		http.Redirect(w, r, h.frontendURL+"/login?error=token_generation_failed", http.StatusTemporaryRedirect)
-		return
-	}
-	storeRefreshToken(r, h.db, user.ID, refreshToken, h.jwtService.GetRefreshTTL())
+	storeRefreshToken(r, h.db, user.ID, refreshToken, refreshTTL)
 
 	if isNewUser {
 		h.events.Emit(events.Event{
@@ -1515,17 +1518,12 @@ func (h *AuthHandler) GitHubOAuthCallback(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	accessToken, err := h.jwtService.GenerateAccessToken(user.ID.Hex(), user.Email, user.DisplayName)
+	accessToken, refreshToken, refreshTTL, err := h.generateTokenPair(user.ID.Hex(), user.Email, user.DisplayName)
 	if err != nil {
 		http.Redirect(w, r, h.frontendURL+"/login?error=token_generation_failed", http.StatusTemporaryRedirect)
 		return
 	}
-	refreshToken, err := h.jwtService.GenerateRefreshToken(user.ID.Hex())
-	if err != nil {
-		http.Redirect(w, r, h.frontendURL+"/login?error=token_generation_failed", http.StatusTemporaryRedirect)
-		return
-	}
-	storeRefreshToken(r, h.db, user.ID, refreshToken, h.jwtService.GetRefreshTTL())
+	storeRefreshToken(r, h.db, user.ID, refreshToken, refreshTTL)
 
 	if isNewUser {
 		h.events.Emit(events.Event{
@@ -1655,17 +1653,12 @@ func (h *AuthHandler) MicrosoftOAuthCallback(w http.ResponseWriter, r *http.Requ
 		return
 	}
 
-	accessToken, err := h.jwtService.GenerateAccessToken(user.ID.Hex(), user.Email, user.DisplayName)
+	accessToken, refreshToken, refreshTTL, err := h.generateTokenPair(user.ID.Hex(), user.Email, user.DisplayName)
 	if err != nil {
 		http.Redirect(w, r, h.frontendURL+"/login?error=token_generation_failed", http.StatusTemporaryRedirect)
 		return
 	}
-	refreshToken, err := h.jwtService.GenerateRefreshToken(user.ID.Hex())
-	if err != nil {
-		http.Redirect(w, r, h.frontendURL+"/login?error=token_generation_failed", http.StatusTemporaryRedirect)
-		return
-	}
-	storeRefreshToken(r, h.db, user.ID, refreshToken, h.jwtService.GetRefreshTTL())
+	storeRefreshToken(r, h.db, user.ID, refreshToken, refreshTTL)
 
 	if isNewUser {
 		h.events.Emit(events.Event{

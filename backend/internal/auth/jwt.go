@@ -35,8 +35,8 @@ type RefreshTokenClaims struct {
 }
 
 func NewJWTService(accessSecret, refreshSecret string, accessTTLMin, refreshTTLDay int) *JWTService {
-	accessTTL := 30 * time.Minute
-	refreshTTL := 7 * 24 * time.Hour
+	accessTTL := 60 * time.Minute
+	refreshTTL := 30 * 24 * time.Hour
 	if accessTTLMin > 0 {
 		accessTTL = time.Duration(accessTTLMin) * time.Minute
 	}
@@ -52,13 +52,20 @@ func NewJWTService(accessSecret, refreshSecret string, accessTTLMin, refreshTTLD
 }
 
 func (s *JWTService) GenerateAccessToken(userID, email, displayName string) (string, error) {
+	return s.GenerateAccessTokenWithTTL(userID, email, displayName, s.accessTTL)
+}
+
+func (s *JWTService) GenerateAccessTokenWithTTL(userID, email, displayName string, ttl time.Duration) (string, error) {
+	if ttl <= 0 {
+		ttl = s.accessTTL
+	}
 	claims := AccessTokenClaims{
 		UserID:      userID,
 		Email:       email,
 		DisplayName: displayName,
 		TokenType:   "access",
 		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(s.accessTTL)),
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(ttl)),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
 			NotBefore: jwt.NewNumericDate(time.Now()),
 		},
@@ -101,10 +108,17 @@ func (s *JWTService) GenerateImpersonationToken(userID, email, displayName, impe
 }
 
 func (s *JWTService) GenerateRefreshToken(userID string) (string, error) {
+	return s.GenerateRefreshTokenWithTTL(userID, s.refreshTTL)
+}
+
+func (s *JWTService) GenerateRefreshTokenWithTTL(userID string, ttl time.Duration) (string, error) {
+	if ttl <= 0 {
+		ttl = s.refreshTTL
+	}
 	claims := RefreshTokenClaims{
 		UserID: userID,
 		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(s.refreshTTL)),
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(ttl)),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
 			NotBefore: jwt.NewNumericDate(time.Now()),
 		},

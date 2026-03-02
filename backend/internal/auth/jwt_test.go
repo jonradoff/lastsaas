@@ -203,11 +203,11 @@ func TestGetRefreshTTL(t *testing.T) {
 
 func TestDefaultTTLValues(t *testing.T) {
 	svc := NewJWTService(testAccessSecret, testRefreshSecret, 0, 0)
-	if svc.GetAccessTTL() != 30*time.Minute {
-		t.Errorf("expected default 30m, got %v", svc.GetAccessTTL())
+	if svc.GetAccessTTL() != 60*time.Minute {
+		t.Errorf("expected default 60m, got %v", svc.GetAccessTTL())
 	}
-	if svc.GetRefreshTTL() != 7*24*time.Hour {
-		t.Errorf("expected default 168h, got %v", svc.GetRefreshTTL())
+	if svc.GetRefreshTTL() != 30*24*time.Hour {
+		t.Errorf("expected default 720h, got %v", svc.GetRefreshTTL())
 	}
 }
 
