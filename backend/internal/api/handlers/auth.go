@@ -276,7 +276,11 @@ func (h *AuthHandler) Register(w http.ResponseWriter, r *http.Request) {
 		respondWithError(w, http.StatusInternalServerError, "Failed to generate token")
 		return
 	}
-	storeRefreshToken(r, h.db, user.ID, refreshToken, refreshTTL)
+	if err := storeRefreshToken(r, h.db, user.ID, refreshToken, refreshTTL); err != nil {
+		slog.Error("Failed to store refresh token", "error", err)
+		respondWithError(w, http.StatusInternalServerError, "Failed to create session")
+		return
+	}
 
 	memberships := h.getUserMemberships(r.Context(), user.ID)
 
@@ -402,7 +406,11 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 		respondWithError(w, http.StatusInternalServerError, "Failed to generate token")
 		return
 	}
-	storeRefreshToken(r, h.db, user.ID, refreshToken, refreshTTL)
+	if err := storeRefreshToken(r, h.db, user.ID, refreshToken, refreshTTL); err != nil {
+		slog.Error("Failed to store refresh token", "error", err)
+		respondWithError(w, http.StatusInternalServerError, "Failed to create session")
+		return
+	}
 
 	memberships := h.getUserMemberships(r.Context(), user.ID)
 
@@ -433,12 +441,14 @@ func (h *AuthHandler) Logout(w http.ResponseWriter, r *http.Request) {
 	parts := strings.SplitN(authHeader, " ", 2)
 	if len(parts) == 2 {
 		tokenHash := hashToken(parts[1])
-		h.db.RevokedTokens().InsertOne(r.Context(), models.RevokedToken{
+		if _, err := h.db.RevokedTokens().InsertOne(r.Context(), models.RevokedToken{
 			ID:        primitive.NewObjectID(),
 			TokenHash: tokenHash,
 			ExpiresAt: time.Now().Add(h.jwtService.GetAccessTTL()),
 			CreatedAt: time.Now(),
-		})
+		}); err != nil {
+			slog.Warn("Failed to revoke access token during logout", "error", err)
+		}
 	}
 
 	// Revoke refresh token if provided (scoped to the authenticated user)
@@ -448,10 +458,12 @@ func (h *AuthHandler) Logout(w http.ResponseWriter, r *http.Request) {
 	if json.NewDecoder(r.Body).Decode(&req) == nil && req.RefreshToken != "" {
 		if user, ok := middleware.GetUserFromContext(r.Context()); ok {
 			tokenHash := hashToken(req.RefreshToken)
-			h.db.RefreshTokens().UpdateMany(r.Context(),
+			if _, err := h.db.RefreshTokens().UpdateMany(r.Context(),
 				bson.M{"tokenHash": tokenHash, "userId": user.ID},
 				bson.M{"$set": bson.M{"isRevoked": true}},
-			)
+			); err != nil {
+				slog.Warn("Failed to revoke refresh token during logout", "error", err)
+			}
 		}
 	}
 
@@ -523,7 +535,11 @@ func (h *AuthHandler) Refresh(w http.ResponseWriter, r *http.Request) {
 		respondWithError(w, http.StatusInternalServerError, "Failed to generate token")
 		return
 	}
-	storeRefreshToken(r, h.db, user.ID, refreshToken, refreshTTL, storedToken.FamilyID)
+	if err := storeRefreshToken(r, h.db, user.ID, refreshToken, refreshTTL, storedToken.FamilyID); err != nil {
+		slog.Error("Failed to store refresh token", "error", err)
+		respondWithError(w, http.StatusInternalServerError, "Failed to create session")
+		return
+	}
 
 	// Update lastActiveAt on the new stored token
 	newHash := hashToken(refreshToken)
@@ -582,9 +598,13 @@ func (h *AuthHandler) VerifyEmail(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	h.db.Users().UpdateOne(r.Context(), bson.M{"_id": token.UserID}, bson.M{
+	if _, err := h.db.Users().UpdateOne(r.Context(), bson.M{"_id": token.UserID}, bson.M{
 		"$set": bson.M{"emailVerified": true, "updatedAt": now},
-	})
+	}); err != nil {
+		slog.Error("Failed to mark email as verified", "userId", token.UserID.Hex(), "error", err)
+		respondWithError(w, http.StatusInternalServerError, "Failed to verify email")
+		return
+	}
 
 	h.events.Emit(events.Event{
 		Type:      events.EventUserVerified,
@@ -799,13 +819,19 @@ func (h *AuthHandler) ChangePassword(w http.ResponseWriter, r *http.Request) {
 		update["$addToSet"] = bson.M{"authMethods": models.AuthMethodPassword}
 	}
 
-	h.db.Users().UpdateOne(r.Context(), bson.M{"_id": user.ID}, update)
+	if _, err := h.db.Users().UpdateOne(r.Context(), bson.M{"_id": user.ID}, update); err != nil {
+		slog.Error("Failed to update password hash", "userId", user.ID.Hex(), "error", err)
+		respondWithError(w, http.StatusInternalServerError, "Failed to change password")
+		return
+	}
 
 	// Revoke all active sessions so stolen tokens can't persist after password change
-	h.db.RefreshTokens().UpdateMany(r.Context(),
+	if _, err := h.db.RefreshTokens().UpdateMany(r.Context(),
 		bson.M{"userId": user.ID, "isRevoked": false},
 		bson.M{"$set": bson.M{"isRevoked": true}},
-	)
+	); err != nil {
+		slog.Warn("Failed to revoke sessions after password change", "userId", user.ID.Hex(), "error", err)
+	}
 
 	h.syslog.High(r.Context(), fmt.Sprintf("Password changed by user %s (%s)", user.Email, user.ID.Hex()))
 
@@ -845,9 +871,13 @@ func (h *AuthHandler) MFASetup(w http.ResponseWriter, r *http.Request) {
 		respondWithError(w, http.StatusInternalServerError, "Failed to secure MFA secret")
 		return
 	}
-	h.db.Users().UpdateOne(r.Context(), bson.M{"_id": user.ID}, bson.M{
+	if _, err := h.db.Users().UpdateOne(r.Context(), bson.M{"_id": user.ID}, bson.M{
 		"$set": bson.M{"totpSecret": encryptedSecret, "updatedAt": time.Now()},
-	})
+	}); err != nil {
+		slog.Error("Failed to store TOTP secret", "userId", user.ID.Hex(), "error", err)
+		respondWithError(w, http.StatusInternalServerError, "Failed to set up MFA")
+		return
+	}
 
 	respondWithJSON(w, http.StatusOK, map[string]interface{}{
 		"secret": key.Secret(),
@@ -896,14 +926,18 @@ func (h *AuthHandler) MFAVerifySetup(w http.ResponseWriter, r *http.Request) {
 	}
 
 	now := time.Now()
-	h.db.Users().UpdateOne(r.Context(), bson.M{"_id": user.ID}, bson.M{
+	if _, err := h.db.Users().UpdateOne(r.Context(), bson.M{"_id": user.ID}, bson.M{
 		"$set": bson.M{
 			"totpEnabled":    true,
 			"totpVerifiedAt": now,
 			"recoveryCodes":  hashedCodes,
 			"updatedAt":      now,
 		},
-	})
+	}); err != nil {
+		slog.Error("Failed to enable MFA", "userId", user.ID.Hex(), "error", err)
+		respondWithError(w, http.StatusInternalServerError, "Failed to enable MFA")
+		return
+	}
 
 	h.syslog.HighWithUser(r.Context(), fmt.Sprintf("MFA enabled for user %s (%s)", user.Email, user.ID.Hex()), user.ID)
 
@@ -949,7 +983,7 @@ func (h *AuthHandler) MFADisable(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	h.db.Users().UpdateOne(r.Context(), bson.M{"_id": user.ID}, bson.M{
+	if _, err := h.db.Users().UpdateOne(r.Context(), bson.M{"_id": user.ID}, bson.M{
 		"$set": bson.M{
 			"totpEnabled":    false,
 			"totpSecret":     "",
@@ -957,7 +991,11 @@ func (h *AuthHandler) MFADisable(w http.ResponseWriter, r *http.Request) {
 			"recoveryCodes":  nil,
 			"updatedAt":      time.Now(),
 		},
-	})
+	}); err != nil {
+		slog.Error("Failed to disable MFA", "userId", user.ID.Hex(), "error", err)
+		respondWithError(w, http.StatusInternalServerError, "Failed to disable MFA")
+		return
+	}
 
 	h.syslog.HighWithUser(r.Context(), fmt.Sprintf("MFA disabled for user %s (%s)", user.Email, user.ID.Hex()), user.ID)
 
@@ -1026,7 +1064,11 @@ func (h *AuthHandler) MFAChallenge(w http.ResponseWriter, r *http.Request) {
 		respondWithError(w, http.StatusInternalServerError, "Failed to generate token")
 		return
 	}
-	storeRefreshToken(r, h.db, user.ID, refreshToken, refreshTTL)
+	if err := storeRefreshToken(r, h.db, user.ID, refreshToken, refreshTTL); err != nil {
+		slog.Error("Failed to store refresh token", "error", err)
+		respondWithError(w, http.StatusInternalServerError, "Failed to create session")
+		return
+	}
 
 	memberships := h.getUserMemberships(r.Context(), user.ID)
 
@@ -1085,9 +1127,13 @@ func (h *AuthHandler) MFARegenerateRecoveryCodes(w http.ResponseWriter, r *http.
 		return
 	}
 
-	h.db.Users().UpdateOne(r.Context(), bson.M{"_id": user.ID}, bson.M{
+	if _, err := h.db.Users().UpdateOne(r.Context(), bson.M{"_id": user.ID}, bson.M{
 		"$set": bson.M{"recoveryCodes": hashedCodes, "updatedAt": time.Now()},
-	})
+	}); err != nil {
+		slog.Error("Failed to update recovery codes", "userId", user.ID.Hex(), "error", err)
+		respondWithError(w, http.StatusInternalServerError, "Failed to update recovery codes")
+		return
+	}
 
 	respondWithJSON(w, http.StatusOK, map[string]interface{}{
 		"recoveryCodes": plainCodes,
@@ -1215,7 +1261,11 @@ func (h *AuthHandler) MagicLinkVerify(w http.ResponseWriter, r *http.Request) {
 		respondWithError(w, http.StatusInternalServerError, "Failed to generate token")
 		return
 	}
-	storeRefreshToken(r, h.db, user.ID, refreshToken, refreshTTL)
+	if err := storeRefreshToken(r, h.db, user.ID, refreshToken, refreshTTL); err != nil {
+		slog.Error("Failed to store refresh token", "error", err)
+		respondWithError(w, http.StatusInternalServerError, "Failed to create session")
+		return
+	}
 
 	memberships := h.getUserMemberships(r.Context(), user.ID)
 
@@ -1300,7 +1350,11 @@ func (h *AuthHandler) GoogleOAuth(w http.ResponseWriter, r *http.Request) {
 		ExpiresAt: time.Now().Add(10 * time.Minute),
 		CreatedAt: time.Now(),
 	}
-	h.db.OAuthStates().InsertOne(r.Context(), oauthState)
+	if _, err := h.db.OAuthStates().InsertOne(r.Context(), oauthState); err != nil {
+		slog.Error("Failed to store OAuth state", "error", err)
+		respondWithError(w, http.StatusInternalServerError, "Failed to initiate OAuth")
+		return
+	}
 
 	authURL := h.googleOAuth.GetAuthURL(state)
 	http.Redirect(w, r, authURL, http.StatusTemporaryRedirect)
@@ -1362,7 +1416,11 @@ func (h *AuthHandler) GoogleOAuthCallback(w http.ResponseWriter, r *http.Request
 				UpdatedAt:     now,
 				LastLoginAt:   &now,
 			}
-			h.db.Users().InsertOne(r.Context(), user)
+			if _, err := h.db.Users().InsertOne(r.Context(), user); err != nil {
+				slog.Error("OAuth: failed to create user", "error", err)
+				http.Redirect(w, r, h.frontendURL+"/login?error=account_creation_failed", http.StatusTemporaryRedirect)
+				return
+			}
 			h.createPersonalTenant(r.Context(), user.ID, user.DisplayName, now)
 			h.syslog.High(r.Context(), fmt.Sprintf("User created: %s (%s) via Google OAuth", user.Email, user.ID.Hex()))
 		} else {
@@ -1393,7 +1451,11 @@ func (h *AuthHandler) GoogleOAuthCallback(w http.ResponseWriter, r *http.Request
 		http.Redirect(w, r, h.frontendURL+"/login?error=token_generation_failed", http.StatusTemporaryRedirect)
 		return
 	}
-	storeRefreshToken(r, h.db, user.ID, refreshToken, refreshTTL)
+	if err := storeRefreshToken(r, h.db, user.ID, refreshToken, refreshTTL); err != nil {
+		slog.Error("Failed to store refresh token", "error", err)
+		http.Redirect(w, r, h.frontendURL+"/login?error=session_creation_failed", http.StatusTemporaryRedirect)
+		return
+	}
 
 	if isNewUser {
 		h.events.Emit(events.Event{
@@ -1421,7 +1483,11 @@ func (h *AuthHandler) GitHubOAuth(w http.ResponseWriter, r *http.Request) {
 		ExpiresAt: time.Now().Add(10 * time.Minute),
 		CreatedAt: time.Now(),
 	}
-	h.db.OAuthStates().InsertOne(r.Context(), oauthState)
+	if _, err := h.db.OAuthStates().InsertOne(r.Context(), oauthState); err != nil {
+		slog.Error("Failed to store OAuth state", "error", err)
+		respondWithError(w, http.StatusInternalServerError, "Failed to initiate OAuth")
+		return
+	}
 
 	authURL := h.githubOAuth.GetAuthURL(state)
 	http.Redirect(w, r, authURL, http.StatusTemporaryRedirect)
@@ -1488,7 +1554,11 @@ func (h *AuthHandler) GitHubOAuthCallback(w http.ResponseWriter, r *http.Request
 				UpdatedAt:     now,
 				LastLoginAt:   &now,
 			}
-			h.db.Users().InsertOne(r.Context(), user)
+			if _, err := h.db.Users().InsertOne(r.Context(), user); err != nil {
+				slog.Error("OAuth: failed to create user", "error", err)
+				http.Redirect(w, r, h.frontendURL+"/login?error=account_creation_failed", http.StatusTemporaryRedirect)
+				return
+			}
 			h.createPersonalTenant(r.Context(), user.ID, user.DisplayName, now)
 			h.syslog.High(r.Context(), fmt.Sprintf("User created: %s (%s) via GitHub OAuth", user.Email, user.ID.Hex()))
 		} else {
@@ -1523,7 +1593,11 @@ func (h *AuthHandler) GitHubOAuthCallback(w http.ResponseWriter, r *http.Request
 		http.Redirect(w, r, h.frontendURL+"/login?error=token_generation_failed", http.StatusTemporaryRedirect)
 		return
 	}
-	storeRefreshToken(r, h.db, user.ID, refreshToken, refreshTTL)
+	if err := storeRefreshToken(r, h.db, user.ID, refreshToken, refreshTTL); err != nil {
+		slog.Error("Failed to store refresh token", "error", err)
+		http.Redirect(w, r, h.frontendURL+"/login?error=session_creation_failed", http.StatusTemporaryRedirect)
+		return
+	}
 
 	if isNewUser {
 		h.events.Emit(events.Event{
@@ -1551,7 +1625,11 @@ func (h *AuthHandler) MicrosoftOAuth(w http.ResponseWriter, r *http.Request) {
 		ExpiresAt: time.Now().Add(10 * time.Minute),
 		CreatedAt: time.Now(),
 	}
-	h.db.OAuthStates().InsertOne(r.Context(), oauthState)
+	if _, err := h.db.OAuthStates().InsertOne(r.Context(), oauthState); err != nil {
+		slog.Error("Failed to store OAuth state", "error", err)
+		respondWithError(w, http.StatusInternalServerError, "Failed to initiate OAuth")
+		return
+	}
 
 	authURL := h.microsoftOAuth.GetAuthURL(state)
 	http.Redirect(w, r, authURL, http.StatusTemporaryRedirect)
@@ -1623,7 +1701,11 @@ func (h *AuthHandler) MicrosoftOAuthCallback(w http.ResponseWriter, r *http.Requ
 				UpdatedAt:     now,
 				LastLoginAt:   &now,
 			}
-			h.db.Users().InsertOne(r.Context(), user)
+			if _, err := h.db.Users().InsertOne(r.Context(), user); err != nil {
+				slog.Error("OAuth: failed to create user", "error", err)
+				http.Redirect(w, r, h.frontendURL+"/login?error=account_creation_failed", http.StatusTemporaryRedirect)
+				return
+			}
 			h.createPersonalTenant(r.Context(), user.ID, user.DisplayName, now)
 			h.syslog.High(r.Context(), fmt.Sprintf("User created: %s (%s) via Microsoft OAuth", user.Email, user.ID.Hex()))
 		} else {
@@ -1658,7 +1740,11 @@ func (h *AuthHandler) MicrosoftOAuthCallback(w http.ResponseWriter, r *http.Requ
 		http.Redirect(w, r, h.frontendURL+"/login?error=token_generation_failed", http.StatusTemporaryRedirect)
 		return
 	}
-	storeRefreshToken(r, h.db, user.ID, refreshToken, refreshTTL)
+	if err := storeRefreshToken(r, h.db, user.ID, refreshToken, refreshTTL); err != nil {
+		slog.Error("Failed to store refresh token", "error", err)
+		http.Redirect(w, r, h.frontendURL+"/login?error=session_creation_failed", http.StatusTemporaryRedirect)
+		return
+	}
 
 	if isNewUser {
 		h.events.Emit(events.Event{
@@ -1771,13 +1857,17 @@ func (h *AuthHandler) RevokeAllSessions(w http.ResponseWriter, r *http.Request) 
 	}
 
 	// Revoke all except the most recent active session
-	h.db.RefreshTokens().UpdateMany(r.Context(),
+	if _, err := h.db.RefreshTokens().UpdateMany(r.Context(),
 		bson.M{
 			"userId":    user.ID,
 			"isRevoked": false,
 		},
 		bson.M{"$set": bson.M{"isRevoked": true}},
-	)
+	); err != nil {
+		slog.Error("Failed to revoke all sessions", "userId", user.ID.Hex(), "error", err)
+		respondWithError(w, http.StatusInternalServerError, "Failed to revoke sessions")
+		return
+	}
 
 	respondWithJSON(w, http.StatusOK, map[string]string{"message": "All other sessions revoked"})
 }
@@ -2038,7 +2128,7 @@ func (h *AuthHandler) acceptInvitationForUser(ctx context.Context, userID primit
 
 // --- Token utilities ---
 
-func storeRefreshToken(r *http.Request, database *db.MongoDB, userID primitive.ObjectID, rawToken string, ttl time.Duration, familyID ...string) {
+func storeRefreshToken(r *http.Request, database *db.MongoDB, userID primitive.ObjectID, rawToken string, ttl time.Duration, familyID ...string) error {
 	tokenHash := hashToken(rawToken)
 	now := time.Now()
 
@@ -2087,7 +2177,10 @@ func storeRefreshToken(r *http.Request, database *db.MongoDB, userID primitive.O
 		LastActiveAt: now,
 		IsRevoked:    false,
 	}
-	database.RefreshTokens().InsertOne(r.Context(), rt)
+	if _, err := database.RefreshTokens().InsertOne(r.Context(), rt); err != nil {
+		return fmt.Errorf("failed to store refresh token: %w", err)
+	}
+	return nil
 }
 
 // DeleteAccount allows users to delete their own account after password confirmation.
@@ -2127,7 +2220,12 @@ func (h *AuthHandler) DeleteAccount(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	var memberships []models.TenantMembership
-	cursor.All(ctx, &memberships)
+	if err := cursor.All(ctx, &memberships); err != nil {
+		cursor.Close(ctx)
+		slog.Error("Failed to decode memberships during account deletion", "userId", user.ID.Hex(), "error", err)
+		respondWithError(w, http.StatusInternalServerError, "Failed to check memberships")
+		return
+	}
 	cursor.Close(ctx)
 
 	for _, m := range memberships {
@@ -2155,9 +2253,15 @@ func (h *AuthHandler) DeleteAccount(w http.ResponseWriter, r *http.Request) {
 		}
 
 		// Sole member — delete the tenant
-		h.db.TenantMemberships().DeleteMany(ctx, bson.M{"tenantId": m.TenantID})
-		h.db.Tenants().DeleteOne(ctx, bson.M{"_id": m.TenantID})
-		h.db.Invitations().DeleteMany(ctx, bson.M{"tenantId": m.TenantID})
+		if _, err := h.db.TenantMemberships().DeleteMany(ctx, bson.M{"tenantId": m.TenantID}); err != nil {
+			slog.Warn("Failed to delete tenant memberships during account deletion", "tenantId", m.TenantID.Hex(), "error", err)
+		}
+		if _, err := h.db.Tenants().DeleteOne(ctx, bson.M{"_id": m.TenantID}); err != nil {
+			slog.Warn("Failed to delete tenant during account deletion", "tenantId", m.TenantID.Hex(), "error", err)
+		}
+		if _, err := h.db.Invitations().DeleteMany(ctx, bson.M{"tenantId": m.TenantID}); err != nil {
+			slog.Warn("Failed to delete tenant invitations during account deletion", "tenantId", m.TenantID.Hex(), "error", err)
+		}
 
 		h.events.Emit(events.Event{
 			Type:      events.EventTenantDeleted,
@@ -2171,10 +2275,18 @@ func (h *AuthHandler) DeleteAccount(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Delete user data
-	h.db.TenantMemberships().DeleteMany(ctx, bson.M{"userId": user.ID})
-	h.db.RefreshTokens().DeleteMany(ctx, bson.M{"userId": user.ID})
-	h.db.Messages().DeleteMany(ctx, bson.M{"userId": user.ID})
-	h.db.Users().DeleteOne(ctx, bson.M{"_id": user.ID})
+	if _, err := h.db.TenantMemberships().DeleteMany(ctx, bson.M{"userId": user.ID}); err != nil {
+		slog.Warn("Failed to delete user memberships during account deletion", "userId", user.ID.Hex(), "error", err)
+	}
+	if _, err := h.db.RefreshTokens().DeleteMany(ctx, bson.M{"userId": user.ID}); err != nil {
+		slog.Warn("Failed to delete user refresh tokens during account deletion", "userId", user.ID.Hex(), "error", err)
+	}
+	if _, err := h.db.Messages().DeleteMany(ctx, bson.M{"userId": user.ID}); err != nil {
+		slog.Warn("Failed to delete user messages during account deletion", "userId", user.ID.Hex(), "error", err)
+	}
+	if _, err := h.db.Users().DeleteOne(ctx, bson.M{"_id": user.ID}); err != nil {
+		slog.Warn("Failed to delete user record during account deletion", "userId", user.ID.Hex(), "error", err)
+	}
 
 	h.syslog.High(ctx, fmt.Sprintf("User self-deleted account: %s (%s)", user.Email, user.ID.Hex()))
 

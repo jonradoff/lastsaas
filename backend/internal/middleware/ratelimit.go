@@ -22,6 +22,7 @@ type RateLimiter struct {
 	requests map[string]*rateLimitEntry
 	cleanup  *time.Ticker
 	done     chan bool
+	stopOnce sync.Once
 
 	// MongoDB-backed (distributed)
 	collection *mongo.Collection
@@ -105,7 +106,7 @@ func NewDistributedRateLimiter(db *mongo.Database) *RateLimiter {
 
 func (rl *RateLimiter) Stop() {
 	rl.cleanup.Stop()
-	close(rl.done)
+	rl.stopOnce.Do(func() { close(rl.done) })
 }
 
 func (rl *RateLimiter) cleanupExpired() {

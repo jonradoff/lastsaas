@@ -49,7 +49,7 @@ func NewWebhookHandler(stripeSvc *stripeservice.Service, database *db.MongoDB, e
 }
 
 func (h *WebhookHandler) HandleWebhook(w http.ResponseWriter, r *http.Request) {
-	body, err := io.ReadAll(io.LimitReader(r.Body, 65536))
+	body, err := io.ReadAll(io.LimitReader(r.Body, 524288)) // 512KB — Stripe events with expanded objects can exceed 64KB
 	if err != nil {
 		http.Error(w, "read error", http.StatusBadRequest)
 		return
@@ -664,9 +664,14 @@ func (h *WebhookHandler) handleChargeRefunded(ctx context.Context, event stripe.
 
 	// Record refund transaction
 	var ownerMembership models.TenantMembership
-	h.db.TenantMemberships().FindOne(ctx, bson.M{"tenantId": tenant.ID, "role": models.RoleOwner}).Decode(&ownerMembership)
+	ownerUserID := tenant.ID // fallback to tenant ID if owner lookup fails
+	if err := h.db.TenantMemberships().FindOne(ctx, bson.M{"tenantId": tenant.ID, "role": models.RoleOwner}).Decode(&ownerMembership); err != nil {
+		slog.Warn("Webhook: owner membership not found for tenant on refund", "tenantId", tenant.ID.Hex(), "error", err)
+	} else {
+		ownerUserID = ownerMembership.UserID
+	}
 
-	h.recordTransaction(ctx, tenant.ID, ownerMembership.UserID, models.TransactionRefund, -refundedAmount, -refundedAmount, 0, "Refund", "", nil, nil, "", charge.ID)
+	h.recordTransaction(ctx, tenant.ID, ownerUserID, models.TransactionRefund, -refundedAmount, -refundedAmount, 0, "Refund", "", nil, nil, "", charge.ID)
 
 	h.events.Emit(events.Event{
 		Type:      "billing.refund_received",

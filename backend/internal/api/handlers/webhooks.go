@@ -270,7 +270,12 @@ func (h *WebhooksHandler) CreateWebhook(w http.ResponseWriter, r *http.Request) 
 		respondWithError(w, http.StatusInternalServerError, "Failed to create webhook")
 		return
 	}
-	hook.ID = result.InsertedID.(primitive.ObjectID)
+	id, ok := result.InsertedID.(primitive.ObjectID)
+	if !ok {
+		respondWithError(w, http.StatusInternalServerError, "Internal error")
+		return
+	}
+	hook.ID = id
 
 	h.syslog.HighWithUser(r.Context(), fmt.Sprintf("Webhook created: %s → %s", req.Name, req.URL), user.ID)
 

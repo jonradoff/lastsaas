@@ -19,9 +19,10 @@ import (
 )
 
 const (
-	trackBufferSize = 200          // max events buffered before forced flush
+	trackBufferSize    = 200
 	trackFlushInterval = 100 * time.Millisecond
-	kpiCacheTTL = 5 * time.Minute
+	trackMaxBackoff    = 30 * time.Second
+	kpiCacheTTL        = 5 * time.Minute
 )
 
 // Service provides telemetry tracking and querying for product analytics.
@@ -64,22 +65,24 @@ func (s *Service) Stop() {
 // Uses a timer instead of ticker so it only fires when data is buffered.
 func (s *Service) flushLoop() {
 	defer close(s.stopped)
-	timer := time.NewTimer(trackFlushInterval)
+	backoff := trackFlushInterval
+	timer := time.NewTimer(backoff)
 	timer.Stop() // start disarmed — only arm when buffer has data
 
 	buf := make([]interface{}, 0, trackBufferSize)
-	flush := func() {
+	flush := func() bool {
 		if len(buf) == 0 {
-			return
+			return true
 		}
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		_, err := s.db.TelemetryEvents().InsertMany(ctx, buf)
 		cancel()
 		if err != nil {
 			slog.Warn("telemetry: flush failed, will retry", "count", len(buf), "error", err)
-			return // retain buffer for next attempt
+			return false // retain buffer for next attempt
 		}
 		buf = buf[:0]
+		return true
 	}
 
 	for {
@@ -88,17 +91,31 @@ func (s *Service) flushLoop() {
 			wasEmpty := len(buf) == 0
 			buf = append(buf, ev)
 			if len(buf) >= trackBufferSize {
-				flush()
+				if flush() {
+					backoff = trackFlushInterval
+				} else {
+					backoff *= 2
+					if backoff > trackMaxBackoff {
+						backoff = trackMaxBackoff
+					}
+				}
 			}
 			// Arm timer when first event enters an empty buffer
 			if wasEmpty && len(buf) > 0 {
-				timer.Reset(trackFlushInterval)
+				timer.Reset(backoff)
 			}
 		case <-timer.C:
-			flush()
+			if flush() {
+				backoff = trackFlushInterval
+			} else {
+				backoff *= 2
+				if backoff > trackMaxBackoff {
+					backoff = trackMaxBackoff
+				}
+			}
 			// Re-arm if buffer still has data (retry after failed flush)
 			if len(buf) > 0 {
-				timer.Reset(trackFlushInterval)
+				timer.Reset(backoff)
 			}
 		case <-s.stopCh:
 			timer.Stop()

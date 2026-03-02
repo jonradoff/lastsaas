@@ -483,16 +483,24 @@ func (h *TenantHandler) TransferOwnership(w http.ResponseWriter, r *http.Request
 	now := time.Now()
 
 	// Set target as owner
-	h.db.TenantMemberships().UpdateOne(r.Context(),
+	if _, err := h.db.TenantMemberships().UpdateOne(r.Context(),
 		bson.M{"userId": targetUserID, "tenantId": tenant.ID},
 		bson.M{"$set": bson.M{"role": models.RoleOwner, "updatedAt": now}},
-	)
+	); err != nil {
+		slog.Error("TransferOwnership: failed to promote new owner", "error", err)
+		respondWithError(w, http.StatusInternalServerError, "Failed to transfer ownership")
+		return
+	}
 
 	// Demote current owner to admin
-	h.db.TenantMemberships().UpdateOne(r.Context(),
+	if _, err := h.db.TenantMemberships().UpdateOne(r.Context(),
 		bson.M{"userId": currentMembership.UserID, "tenantId": tenant.ID},
 		bson.M{"$set": bson.M{"role": models.RoleAdmin, "updatedAt": now}},
-	)
+	); err != nil {
+		slog.Error("TransferOwnership: failed to demote old owner", "error", err)
+		respondWithError(w, http.StatusInternalServerError, "Failed to transfer ownership")
+		return
+	}
 
 	h.events.Emit(events.Event{
 		Type:      events.EventOwnershipTransferred,

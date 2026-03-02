@@ -125,7 +125,12 @@ func (h *APIKeysHandler) CreateAPIKey(w http.ResponseWriter, r *http.Request) {
 		respondWithError(w, http.StatusInternalServerError, "Failed to create API key")
 		return
 	}
-	apiKey.ID = result.InsertedID.(primitive.ObjectID)
+	id, ok := result.InsertedID.(primitive.ObjectID)
+	if !ok {
+		respondWithError(w, http.StatusInternalServerError, "Internal error")
+		return
+	}
+	apiKey.ID = id
 
 	h.syslog.HighWithUser(r.Context(), fmt.Sprintf("API key created: %s (authority: %s)", req.Name, req.Authority), user.ID)
 

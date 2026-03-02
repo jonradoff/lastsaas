@@ -5,6 +5,7 @@ import (
 	"crypto/rand"
 	"fmt"
 	"net/http"
+	"time"
 )
 
 const RequestIDContextKey contextKey = "requestId"
@@ -28,6 +29,9 @@ func GetRequestID(ctx context.Context) string {
 
 func generateRequestID() string {
 	b := make([]byte, 12)
-	rand.Read(b)
+	if _, err := rand.Read(b); err != nil {
+		// Fallback to timestamp-based ID on catastrophic rand failure
+		return fmt.Sprintf("%x", time.Now().UnixNano())
+	}
 	return fmt.Sprintf("%x", b)
 }

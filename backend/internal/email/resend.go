@@ -89,9 +89,9 @@ func (s *ResendService) SendEmail(to, subject, html string) error {
 			}
 			return fmt.Errorf("failed to send email after %d attempts: %w", maxRetries, err)
 		}
-		defer resp.Body.Close()
 
 		if resp.StatusCode == http.StatusOK || resp.StatusCode == http.StatusCreated {
+			resp.Body.Close()
 			apicounter.ResendEmails.Add(1)
 			slog.Info("email sent successfully", "to", to)
 			return nil

@@ -3,6 +3,7 @@ package health
 import (
 	"context"
 	"fmt"
+	"io"
 	"log/slog"
 	"net/http"
 	"sync"
@@ -14,6 +15,9 @@ import (
 	"github.com/stripe/stripe-go/v82/balance"
 	"go.mongodb.org/mongo-driver/mongo"
 )
+
+// healthCheckClient is a shared HTTP client with a timeout for integration health checks.
+var healthCheckClient = &http.Client{Timeout: 10 * time.Second}
 
 // IntegrationChecker performs a health check for a third-party service.
 // Returns nil if healthy, or an error describing the problem.
@@ -68,13 +72,7 @@ func (s *Service) IntegrationsHealthy() (bool, []string) {
 }
 
 func (s *Service) integrationCheckLoop() {
-	defer func() {
-		if r := recover(); r != nil {
-			slog.Warn("health: integration check recovered from panic", "panic", r)
-		}
-	}()
-
-	s.runIntegrationChecks()
+	s.safeRunIntegrationChecks()
 
 	ticker := time.NewTicker(5 * time.Minute)
 	defer ticker.Stop()
@@ -82,11 +80,20 @@ func (s *Service) integrationCheckLoop() {
 	for {
 		select {
 		case <-ticker.C:
-			s.runIntegrationChecks()
+			s.safeRunIntegrationChecks()
 		case <-s.stopCh:
 			return
 		}
 	}
+}
+
+func (s *Service) safeRunIntegrationChecks() {
+	defer func() {
+		if r := recover(); r != nil {
+			slog.Warn("health: integration check recovered from panic", "panic", r)
+		}
+	}()
+	s.runIntegrationChecks()
 }
 
 func (s *Service) runIntegrationChecks() {
@@ -157,11 +164,12 @@ func NewResendChecker(apiKey string) IntegrationChecker {
 			return err
 		}
 		req.Header.Set("Authorization", "Bearer "+apiKey)
-		resp, err := http.DefaultClient.Do(req)
+		resp, err := healthCheckClient.Do(req)
 		if err != nil {
 			return err
 		}
-		defer resp.Body.Close()
+		io.Copy(io.Discard, resp.Body)
+		resp.Body.Close()
 		if resp.StatusCode >= 400 {
 			return fmt.Errorf("resend API returned status %d", resp.StatusCode)
 		}
@@ -177,11 +185,12 @@ func NewGoogleOAuthChecker() IntegrationChecker {
 		if err != nil {
 			return err
 		}
-		resp, err := http.DefaultClient.Do(req)
+		resp, err := healthCheckClient.Do(req)
 		if err != nil {
 			return err
 		}
-		defer resp.Body.Close()
+		io.Copy(io.Discard, resp.Body)
+		resp.Body.Close()
 		if resp.StatusCode >= 400 {
 			return fmt.Errorf("google openid discovery returned status %d", resp.StatusCode)
 		}
@@ -196,11 +205,12 @@ func NewGitHubOAuthChecker() IntegrationChecker {
 		if err != nil {
 			return err
 		}
-		resp, err := http.DefaultClient.Do(req)
+		resp, err := healthCheckClient.Do(req)
 		if err != nil {
 			return err
 		}
-		defer resp.Body.Close()
+		io.Copy(io.Discard, resp.Body)
+		resp.Body.Close()
 		if resp.StatusCode >= 500 {
 			return fmt.Errorf("github API returned status %d", resp.StatusCode)
 		}
@@ -215,11 +225,12 @@ func NewMicrosoftOAuthChecker() IntegrationChecker {
 		if err != nil {
 			return err
 		}
-		resp, err := http.DefaultClient.Do(req)
+		resp, err := healthCheckClient.Do(req)
 		if err != nil {
 			return err
 		}
-		defer resp.Body.Close()
+		io.Copy(io.Discard, resp.Body)
+		resp.Body.Close()
 		if resp.StatusCode >= 400 {
 			return fmt.Errorf("microsoft openid discovery returned status %d", resp.StatusCode)
 		}

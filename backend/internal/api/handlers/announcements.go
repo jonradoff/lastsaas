@@ -107,7 +107,12 @@ func (h *AnnouncementsHandler) Create(w http.ResponseWriter, r *http.Request) {
 		respondWithError(w, http.StatusInternalServerError, "Failed to create announcement")
 		return
 	}
-	ann.ID = result.InsertedID.(primitive.ObjectID)
+	id, ok := result.InsertedID.(primitive.ObjectID)
+	if !ok {
+		respondWithError(w, http.StatusInternalServerError, "Internal error")
+		return
+	}
+	ann.ID = id
 	respondWithJSON(w, http.StatusCreated, ann)
 }
 

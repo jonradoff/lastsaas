@@ -936,7 +936,10 @@ func (h *BillingHandler) AdminCancelSubscription(w http.ResponseWriter, r *http.
 	var req struct {
 		Immediate bool `json:"immediate"`
 	}
-	json.NewDecoder(r.Body).Decode(&req)
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		respondWithError(w, http.StatusBadRequest, "Invalid request body")
+		return
+	}
 
 	if h.stripe == nil {
 		respondWithError(w, http.StatusServiceUnavailable, "Billing not configured")

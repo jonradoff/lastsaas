@@ -157,9 +157,6 @@ func (s *Service) releaseLock(ctx context.Context) {
 }
 
 func (s *Service) collectDaily() {
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-	defer cancel()
-
 	now := time.Now().UTC()
 	dateStr := now.Format("2006-01-02")
 
@@ -182,22 +179,26 @@ func (s *Service) collectDaily() {
 		}},
 	}
 	var dauCount, wauCount, mauCount int64
-	dauWauMauCursor, err := s.db.Users().Aggregate(ctx, dauWauMauPipeline)
-	if err != nil {
-		slog.Error("Metrics DAU/WAU/MAU aggregation error", "error", err)
-	} else {
-		defer dauWauMauCursor.Close(ctx)
+	func() {
+		ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+		defer cancel()
+		cursor, err := s.db.Users().Aggregate(ctx, dauWauMauPipeline)
+		if err != nil {
+			slog.Error("Metrics DAU/WAU/MAU aggregation error", "error", err)
+			return
+		}
+		defer cursor.Close(ctx)
 		var results []struct {
 			DAU int64 `bson:"dau"`
 			WAU int64 `bson:"wau"`
 			MAU int64 `bson:"mau"`
 		}
-		if dauWauMauCursor.All(ctx, &results) == nil && len(results) > 0 {
+		if cursor.All(ctx, &results) == nil && len(results) > 0 {
 			dauCount = results[0].DAU
 			wauCount = results[0].WAU
 			mauCount = results[0].MAU
 		}
-	}
+	}()
 
 	// Revenue today: sum amountCents from financial_transactions created today
 	dayStart := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, time.UTC)
@@ -212,17 +213,23 @@ func (s *Service) collectDaily() {
 			"total": bson.M{"$sum": "$amountCents"},
 		}},
 	}
-	revCursor, err := s.db.FinancialTransactions().Aggregate(ctx, revPipeline)
 	var revenue int64
-	if err == nil {
-		defer revCursor.Close(ctx)
+	func() {
+		ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+		defer cancel()
+		cursor, err := s.db.FinancialTransactions().Aggregate(ctx, revPipeline)
+		if err != nil {
+			slog.Error("Metrics revenue aggregation error", "error", err)
+			return
+		}
+		defer cursor.Close(ctx)
 		var result []struct {
 			Total int64 `bson:"total"`
 		}
-		if revCursor.All(ctx, &result) == nil && len(result) > 0 {
+		if cursor.All(ctx, &result) == nil && len(result) > 0 {
 			revenue = result[0].Total
 		}
-	}
+	}()
 
 	// ARR: sum monthly price * 12 for all active subscriptions
 	arrPipeline := bson.A{
@@ -242,20 +249,28 @@ func (s *Service) collectDaily() {
 			"totalMonthlyCents": bson.M{"$sum": "$plan.monthlyPriceCents"},
 		}},
 	}
-	arrCursor, err := s.db.Tenants().Aggregate(ctx, arrPipeline)
 	var arr int64
-	if err == nil {
-		defer arrCursor.Close(ctx)
+	func() {
+		ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+		defer cancel()
+		cursor, err := s.db.Tenants().Aggregate(ctx, arrPipeline)
+		if err != nil {
+			slog.Error("Metrics ARR aggregation error", "error", err)
+			return
+		}
+		defer cursor.Close(ctx)
 		var result []struct {
 			TotalMonthlyCents int64 `bson:"totalMonthlyCents"`
 		}
-		if arrCursor.All(ctx, &result) == nil && len(result) > 0 {
+		if cursor.All(ctx, &result) == nil && len(result) > 0 {
 			arr = result[0].TotalMonthlyCents * 12
 		}
-	}
+	}()
 
 	// Upsert daily metric
-	_, err = s.db.DailyMetrics().UpdateOne(ctx,
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	_, err := s.db.DailyMetrics().UpdateOne(ctx,
 		bson.M{"date": dateStr},
 		bson.M{"$set": bson.M{
 			"dau":       dauCount,

@@ -8,6 +8,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"io"
 	"log/slog"
 	"net/http"
 	"time"
@@ -82,9 +83,11 @@ func (d *Dispatcher) retryWorker() {
 			// Wait until the scheduled fire time or shutdown
 			delay := time.Until(job.fireAt)
 			if delay > 0 {
+				timer := time.NewTimer(delay)
 				select {
-				case <-time.After(delay):
+				case <-timer.C:
 				case <-d.stopCh:
+					timer.Stop()
 					return
 				}
 			}
@@ -96,6 +99,11 @@ func (d *Dispatcher) retryWorker() {
 			}
 			go func(j retryJob) {
 				defer func() { <-sem }()
+				defer func() {
+					if r := recover(); r != nil {
+						slog.Error("webhooks: dispatch panic", "panic", r, "webhook", j.hook.Name)
+					}
+				}()
 				d.deliverWithRetry(context.Background(), j.hook, j.eventType, j.event, j.retry)
 			}(job)
 		}
@@ -114,6 +122,11 @@ func (d *Dispatcher) Emit(event events.Event) {
 	case d.emitSem <- struct{}{}:
 		go func() {
 			defer func() { <-d.emitSem }()
+			defer func() {
+				if r := recover(); r != nil {
+					slog.Error("webhooks: emit panic", "panic", r, "event_type", eventType)
+				}
+			}()
 			d.dispatch(eventType, event)
 		}()
 	default:
@@ -215,7 +228,11 @@ func (d *Dispatcher) deliverWithRetry(ctx context.Context, hook models.Webhook, 
 		"timestamp": event.Timestamp.UTC().Format(time.RFC3339),
 		"data":      event.Data,
 	}
-	body, _ := json.Marshal(payload)
+	body, err := json.Marshal(payload)
+	if err != nil {
+		slog.Error("webhooks: failed to marshal payload", "error", err)
+		return
+	}
 
 	deliverCtx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
@@ -261,7 +278,7 @@ func (d *Dispatcher) deliverWithRetry(ctx context.Context, hook models.Webhook, 
 		defer resp.Body.Close()
 		// Read limited response body for logging
 		var respBuf bytes.Buffer
-		respBuf.ReadFrom(http.MaxBytesReader(nil, resp.Body, 4096))
+		respBuf.ReadFrom(io.LimitReader(resp.Body, 4096))
 		delivery.ResponseCode = resp.StatusCode
 		delivery.ResponseBody = respBuf.String()
 		delivery.Success = resp.StatusCode >= 200 && resp.StatusCode < 300
@@ -333,7 +350,19 @@ func (d *Dispatcher) DeliverTest(ctx context.Context, hook models.Webhook) model
 		"timestamp": testEvent.Timestamp.UTC().Format(time.RFC3339),
 		"data":      testEvent.Data,
 	}
-	body, _ := json.Marshal(payload)
+	body, err := json.Marshal(payload)
+	if err != nil {
+		slog.Error("webhooks: failed to marshal test payload", "error", err)
+		return models.WebhookDelivery{
+			ID:           primitive.NewObjectID(),
+			WebhookID:    hook.ID,
+			EventType:    models.WebhookEventTenantCreated,
+			ResponseCode: 0,
+			ResponseBody: fmt.Sprintf("marshal error: %v", err),
+			Success:      false,
+			CreatedAt:    time.Now(),
+		}
+	}
 
 	req, err := http.NewRequestWithContext(ctx, "POST", hook.URL, bytes.NewReader(body))
 	if err != nil {
@@ -381,7 +410,7 @@ func (d *Dispatcher) DeliverTest(ctx context.Context, hook models.Webhook) model
 	} else {
 		defer resp.Body.Close()
 		var respBuf bytes.Buffer
-		respBuf.ReadFrom(http.MaxBytesReader(nil, resp.Body, 4096))
+		respBuf.ReadFrom(io.LimitReader(resp.Body, 4096))
 		delivery.ResponseCode = resp.StatusCode
 		delivery.ResponseBody = respBuf.String()
 		delivery.Success = resp.StatusCode >= 200 && resp.StatusCode < 300

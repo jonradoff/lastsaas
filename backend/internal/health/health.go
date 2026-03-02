@@ -31,6 +31,7 @@ type Service struct {
 	getConfig func(string) string
 	nodeID    string
 	stopCh    chan struct{}
+	wg        sync.WaitGroup
 
 	// Integration health checks
 	integrations []integrationEntry
@@ -56,25 +57,30 @@ func New(database *db.MongoDB, metricsCollector *middleware.MetricsCollector, ge
 
 // Start launches the heartbeat, collector, and integration check background goroutines.
 func (s *Service) Start() {
-	go s.heartbeatLoop()
-	go s.collectorLoop()
-	go s.integrationCheckLoop()
+	s.wg.Add(3)
+	go func() {
+		defer s.wg.Done()
+		s.heartbeatLoop()
+	}()
+	go func() {
+		defer s.wg.Done()
+		s.collectorLoop()
+	}()
+	go func() {
+		defer s.wg.Done()
+		s.integrationCheckLoop()
+	}()
 	slog.Info("Health monitoring started", "node", s.nodeID)
 }
 
-// Stop signals background goroutines to halt.
+// Stop signals background goroutines to halt and waits for them to finish.
 func (s *Service) Stop() {
 	close(s.stopCh)
+	s.wg.Wait()
 }
 
 func (s *Service) heartbeatLoop() {
-	defer func() {
-		if r := recover(); r != nil {
-			slog.Error("health: heartbeat recovered from panic", "error", r)
-		}
-	}()
-
-	s.registerNode()
+	s.safeRegisterNode()
 
 	ticker := time.NewTicker(30 * time.Second)
 	defer ticker.Stop()
@@ -82,11 +88,29 @@ func (s *Service) heartbeatLoop() {
 	for {
 		select {
 		case <-ticker.C:
-			s.heartbeat()
+			s.safeHeartbeat()
 		case <-s.stopCh:
 			return
 		}
 	}
+}
+
+func (s *Service) safeRegisterNode() {
+	defer func() {
+		if r := recover(); r != nil {
+			slog.Warn("health: registerNode recovered from panic", "panic", r)
+		}
+	}()
+	s.registerNode()
+}
+
+func (s *Service) safeHeartbeat() {
+	defer func() {
+		if r := recover(); r != nil {
+			slog.Warn("health: heartbeat recovered from panic", "panic", r)
+		}
+	}()
+	s.heartbeat()
 }
 
 func (s *Service) registerNode() {
@@ -131,23 +155,26 @@ func (s *Service) heartbeat() {
 }
 
 func (s *Service) collectorLoop() {
-	defer func() {
-		if r := recover(); r != nil {
-			slog.Error("health: collector recovered from panic", "error", r)
-		}
-	}()
-
 	ticker := time.NewTicker(60 * time.Second)
 	defer ticker.Stop()
 
 	for {
 		select {
 		case <-ticker.C:
-			s.collectAndStore()
+			s.safeCollectAndStore()
 		case <-s.stopCh:
 			return
 		}
 	}
+}
+
+func (s *Service) safeCollectAndStore() {
+	defer func() {
+		if r := recover(); r != nil {
+			slog.Warn("health: collector recovered from panic", "panic", r)
+		}
+	}()
+	s.collectAndStore()
 }
 
 func (s *Service) collectAndStore() {

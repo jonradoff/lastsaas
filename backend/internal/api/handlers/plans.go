@@ -288,7 +288,12 @@ func (h *PlansHandler) CreatePlan(w http.ResponseWriter, r *http.Request) {
 		respondWithError(w, http.StatusInternalServerError, "Failed to create plan")
 		return
 	}
-	plan.ID = result.InsertedID.(primitive.ObjectID)
+	id, ok := result.InsertedID.(primitive.ObjectID)
+	if !ok {
+		respondWithError(w, http.StatusInternalServerError, "Internal error")
+		return
+	}
+	plan.ID = id
 
 	if user, ok := middleware.GetUserFromContext(r.Context()); ok {
 		h.syslog.LogWithUser(r.Context(), models.LogMedium, fmt.Sprintf("Plan created: %s", plan.Name), user.ID)

@@ -107,7 +107,9 @@ func main() {
 	defer func() {
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		defer cancel()
-		database.Close(ctx)
+		if err := database.Close(ctx); err != nil {
+			slog.Error("Failed to close database connection", "error", err)
+		}
 	}()
 	slog.Info("Connected to MongoDB")
 
@@ -338,9 +340,16 @@ func main() {
 	// Setup router
 	router := mux.NewRouter()
 
-	// Health check
+	// Health check — pings DB to verify actual readiness
 	router.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
+		ctx, cancel := context.WithTimeout(r.Context(), 2*time.Second)
+		defer cancel()
 		w.Header().Set("Content-Type", "application/json")
+		if err := database.Client.Ping(ctx, nil); err != nil {
+			w.WriteHeader(http.StatusServiceUnavailable)
+			w.Write([]byte(`{"status":"unhealthy","error":"database unreachable"}`))
+			return
+		}
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte(`{"status":"ok"}`))
 	}).Methods("GET")
@@ -348,7 +357,7 @@ func main() {
 	api := router.PathPrefix("/api").Subrouter()
 	api.Use(middleware.RequestID)
 	api.Use(middleware.APIVersion)
-	api.Use(middleware.BodySizeLimit)
+	// Note: BodySizeLimit is applied at the outermost handler layer — not here to avoid double-wrapping
 
 	// Version endpoint (public, no auth)
 	api.HandleFunc("/version", func(w http.ResponseWriter, r *http.Request) {
@@ -753,17 +762,18 @@ func main() {
 		MaxAge:           86400,
 	})
 
-	// Wrap with security headers + CORS + metrics
-	handler := middleware.BodySizeLimit(middleware.SecurityHeaders(c.Handler(metricsCollector.Middleware(router))))
+	// Wrap with recovery + body size limit + security headers + CORS + metrics
+	handler := middleware.Recovery(middleware.BodySizeLimit(middleware.SecurityHeaders(c.Handler(metricsCollector.Middleware(router)))))
 
 	// Start server
 	addr := fmt.Sprintf("%s:%d", cfg.Server.Host, cfg.Server.Port)
 	srv := &http.Server{
-		Addr:         addr,
-		Handler:      handler,
-		ReadTimeout:  15 * time.Second,
-		WriteTimeout: 15 * time.Second,
-		IdleTimeout:  60 * time.Second,
+		Addr:              addr,
+		Handler:           handler,
+		ReadHeaderTimeout: 5 * time.Second,
+		ReadTimeout:       15 * time.Second,
+		WriteTimeout:      15 * time.Second,
+		IdleTimeout:       60 * time.Second,
 	}
 
 	// Graceful shutdown

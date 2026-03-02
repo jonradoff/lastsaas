@@ -140,13 +140,18 @@ func (s *Service) GetOrCreatePrice(ctx context.Context, entityType string, entit
 	}
 
 	// Save mapping
-	s.db.StripeMappings().InsertOne(ctx, models.StripeMapping{
+	if _, err := s.db.StripeMappings().InsertOne(ctx, models.StripeMapping{
 		EntityType:      entityType,
 		EntityID:        entityID,
 		StripePriceID:   p.ID,
 		StripeProductID: prod.ID,
 		CreatedAt:       time.Now(),
-	})
+	}); err != nil {
+		// Duplicate key means another goroutine raced us — benign
+		if !mongo.IsDuplicateKeyError(err) {
+			return "", fmt.Errorf("stripe mapping insert: %w", err)
+		}
+	}
 
 	return p.ID, nil
 }

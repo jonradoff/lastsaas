@@ -111,7 +111,12 @@ func (h *BundlesHandler) CreateBundle(w http.ResponseWriter, r *http.Request) {
 		respondWithError(w, http.StatusInternalServerError, "Failed to create credit bundle")
 		return
 	}
-	bundle.ID = result.InsertedID.(primitive.ObjectID)
+	id, ok := result.InsertedID.(primitive.ObjectID)
+	if !ok {
+		respondWithError(w, http.StatusInternalServerError, "Internal error")
+		return
+	}
+	bundle.ID = id
 
 	if user, ok := middleware.GetUserFromContext(r.Context()); ok {
 		h.syslog.LogWithUser(r.Context(), models.LogMedium, fmt.Sprintf("Credit bundle created: %s", bundle.Name), user.ID)

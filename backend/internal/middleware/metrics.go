@@ -112,7 +112,9 @@ func (mc *MetricsCollector) Middleware(next http.Handler) http.Handler {
 		}
 
 		mc.mu.Lock()
-		mc.latencies = append(mc.latencies, elapsed)
+		if len(mc.latencies) < 10000 { // cap to prevent OOM between snapshots
+			mc.latencies = append(mc.latencies, elapsed)
+		}
 		mc.mu.Unlock()
 	})
 }

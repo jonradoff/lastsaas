@@ -2,6 +2,7 @@ package configstore
 
 import (
 	"context"
+	"fmt"
 	"log/slog"
 	"sort"
 	"sync"
@@ -86,12 +87,15 @@ func (s *Store) GetAll() []models.ConfigVar {
 // Set updates a variable's value in DB and reloads it into the cache.
 func (s *Store) Set(ctx context.Context, name, value string) error {
 	now := time.Now()
-	_, err := s.db.ConfigVars().UpdateOne(ctx,
+	result, err := s.db.ConfigVars().UpdateOne(ctx,
 		bson.M{"name": name},
 		bson.M{"$set": bson.M{"value": value, "updatedAt": now}},
 	)
 	if err != nil {
 		return err
+	}
+	if result.MatchedCount == 0 {
+		return fmt.Errorf("config variable %q not found", name)
 	}
 	return s.Reload(ctx, name)
 }

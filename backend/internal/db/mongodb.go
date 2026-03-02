@@ -298,15 +298,25 @@ func (m *MongoDB) ensureIndexes() {
 		},
 	}
 
+	// Collections where unique index failure is a data integrity risk
+	criticalCollections := map[string]bool{
+		"users": true, "tenants": true, "financial_transactions": true,
+		"api_keys": true, "config_vars": true, "stripe_mappings": true,
+		"custom_pages": true, "branding_assets": true, "webauthn_credentials": true,
+		"sso_connections": true, "auth_codes": true,
+	}
+
 	for _, idx := range indexes {
 		coll := m.Database.Collection(idx.collection)
 		_, err := coll.Indexes().CreateMany(ctx, idx.models)
 		if err != nil {
+			if criticalCollections[idx.collection] {
+				slog.Error("FATAL: failed to create indexes on critical collection", "collection", idx.collection, "error", err)
+				os.Exit(1)
+			}
 			slog.Warn("failed to create indexes", "collection", idx.collection, "error", err)
 		}
 	}
-
-	// indexes ensured silently
 }
 
 func (m *MongoDB) Close(ctx context.Context) error {

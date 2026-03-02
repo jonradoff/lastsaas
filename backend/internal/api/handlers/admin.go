@@ -1266,7 +1266,10 @@ func (h *AdminHandler) DeleteUser(w http.ResponseWriter, r *http.Request) {
 		ReplacementOwners      map[string]string `json:"replacementOwners"`
 		ConfirmTenantDeletions []string          `json:"confirmTenantDeletions"`
 	}
-	json.NewDecoder(r.Body).Decode(&req)
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		respondWithError(w, http.StatusBadRequest, "Invalid request body")
+		return
+	}
 	if req.ReplacementOwners == nil {
 		req.ReplacementOwners = map[string]string{}
 	}

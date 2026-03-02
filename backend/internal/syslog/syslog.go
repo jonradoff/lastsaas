@@ -97,7 +97,9 @@ func (l *Logger) log(ctx context.Context, severity models.LogSeverity, message s
 			UserID:    userID,
 			CreatedAt: time.Now(),
 		}
-		l.db.SystemLogs().InsertOne(ctx, alert)
+		if _, err := l.db.SystemLogs().InsertOne(ctx, alert); err != nil {
+			slog.Error("syslog: failed to write injection alert", "error", err)
+		}
 	}
 }
 
@@ -131,7 +133,9 @@ func (l *Logger) logCategorized(ctx context.Context, severity models.LogSeverity
 			UserID:    userID,
 			CreatedAt: time.Now(),
 		}
-		l.db.SystemLogs().InsertOne(ctx, alert)
+		if _, err := l.db.SystemLogs().InsertOne(ctx, alert); err != nil {
+			slog.Error("syslog: failed to write injection alert", "error", err)
+		}
 	}
 }
 
