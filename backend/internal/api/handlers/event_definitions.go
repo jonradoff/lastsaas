@@ -341,16 +341,19 @@ func (h *EventDefinitionsHandler) GetSankeyData(w http.ResponseWriter, r *http.R
 		}
 	}
 
-	// Build ordered node list.
+	// Build ordered node list (name + ID tracking for count lookup).
 	type sankeyNode struct {
-		Name string `json:"name"`
+		Name  string `json:"name"`
+		Count int64  `json:"count"`
 	}
 	var nodes []sankeyNode
 	nodeIndex := map[primitive.ObjectID]int{}
+	nodeDefIDs := []primitive.ObjectID{} // parallel to nodes for ID lookup
 	for _, d := range allDefs {
 		if participatingIDs[d.ID] {
 			nodeIndex[d.ID] = len(nodes)
 			nodes = append(nodes, sankeyNode{Name: d.Name})
+			nodeDefIDs = append(nodeDefIDs, d.ID)
 		}
 	}
 
@@ -386,6 +389,11 @@ func (h *EventDefinitionsHandler) GetSankeyData(w http.ResponseWriter, r *http.R
 				}
 			}
 		}
+	}
+
+	// Populate node counts.
+	for i := range nodes {
+		nodes[i].Count = counts[nodes[i].Name]
 	}
 
 	// Build links: parent → child with value = child event count.

@@ -416,13 +416,24 @@ function EngagementTab() {
 
 type EventSubTab = 'flow' | 'graph';
 
-// Custom Sankey node renderer with labels.
-function SankeyNode({ x, y, width, height, payload }: { x: number; y: number; width: number; height: number; payload: { name: string; value?: number } }) {
+// Custom Sankey node renderer with labels showing count and flow-through %.
+function SankeyNode({ x, y, width, height, payload }: {
+  x: number; y: number; width: number; height: number;
+  payload: { name: string; count?: number; pct?: number };
+}) {
+  const count = payload.count ?? 0;
+  const pct = payload.pct;
+  const label = pct !== undefined
+    ? `${payload.name}  ${formatNum(count)}  (${pct.toFixed(1)}%)`
+    : `${payload.name}  ${formatNum(count)}`;
   return (
     <g>
       <rect x={x} y={y} width={width} height={height} fill="#6366f1" stroke="#818cf8" strokeWidth={1} rx={3} />
-      <text x={x + width + 8} y={y + height / 2} textAnchor="start" dominantBaseline="central" fill="#e2e8f0" fontSize={12}>
+      <text x={x + width + 8} y={y + height / 2} textAnchor="start" dominantBaseline="central" fill="#e2e8f0" fontSize={12} fontWeight={500}>
         {payload.name}
+      </text>
+      <text x={x + width + 8} y={y + height / 2 + 16} textAnchor="start" dominantBaseline="central" fill="#94a3b8" fontSize={11}>
+        {formatNum(count)}{pct !== undefined ? ` (${pct.toFixed(1)}%)` : ''}
       </text>
     </g>
   );
@@ -550,22 +561,43 @@ function FlowSubTab({ range, definitions, onEdit, onDelete }: {
     return defMap.get(def.parentId)?.name ?? null;
   };
 
+  // Enrich nodes with percentage flow-through from parent stage.
+  const enrichedData = sankeyData && sankeyData.hasDependencies ? (() => {
+    // Build a map: target node index → source node index (from first incoming link).
+    const parentOf = new Map<number, number>();
+    for (const link of sankeyData.links) {
+      if (!parentOf.has(link.target)) {
+        parentOf.set(link.target, link.source);
+      }
+    }
+    const enrichedNodes = sankeyData.nodes.map((node, i) => {
+      const parentIdx = parentOf.get(i);
+      let pct: number | undefined;
+      if (parentIdx !== undefined) {
+        const parentCount = sankeyData.nodes[parentIdx]?.count ?? 0;
+        pct = parentCount > 0 ? (node.count / parentCount) * 100 : 0;
+      }
+      return { ...node, pct };
+    });
+    return { ...sankeyData, nodes: enrichedNodes };
+  })() : null;
+
   return (
     <div className="space-y-6">
       {isLoading ? (
         <LoadingSpinner size="lg" className="py-10" />
-      ) : sankeyData && sankeyData.hasDependencies && sankeyData.nodes.length > 0 && sankeyData.links.length > 0 ? (
+      ) : enrichedData && enrichedData.nodes.length > 0 && enrichedData.links.length > 0 ? (
         <Card className="p-4">
           <h3 className="text-sm font-medium text-dark-400 mb-4">Event Flow</h3>
           <div className="overflow-x-auto">
             <Sankey
               width={900}
-              height={Math.max(300, sankeyData.nodes.length * 50)}
-              data={sankeyData}
-              nodePadding={40}
+              height={Math.max(300, enrichedData.nodes.length * 60)}
+              data={enrichedData}
+              nodePadding={50}
               nodeWidth={10}
               linkCurvature={0.5}
-              margin={{ top: 20, right: 160, bottom: 20, left: 20 }}
+              margin={{ top: 20, right: 200, bottom: 20, left: 20 }}
               node={<SankeyNode x={0} y={0} width={0} height={0} payload={{ name: '' }} />}
             >
               <Tooltip contentStyle={tooltipStyle} labelStyle={tooltipLabelStyle} />

@@ -686,7 +686,7 @@ export interface EventDefinition {
 }
 
 export interface SankeyData {
-  nodes: { name: string }[];
+  nodes: { name: string; count: number }[];
   links: { source: number; target: number; value: number }[];
   hasDependencies: boolean;
 }
