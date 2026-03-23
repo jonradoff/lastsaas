@@ -253,6 +253,8 @@ function EmailGate({ domain, score, onUnlocked }: { domain: string; score: numbe
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
 
+  const [captured, setCaptured] = useState(false);
+
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     const trimmed = email.trim();
@@ -266,6 +268,7 @@ function EmailGate({ domain, score, onUnlocked }: { domain: string; score: numbe
       const { token } = await leadsApi.capture(trimmed, domain, score);
       // Store in sessionStorage so it persists across page navigations
       sessionStorage.setItem('mcplens_fix_token', token);
+      setCaptured(true);
       onUnlocked(token);
     } catch {
       setError('Something went wrong. Please try again.');
@@ -306,6 +309,20 @@ function EmailGate({ domain, score, onUnlocked }: { domain: string; score: numbe
         </button>
       </form>
       {error && <p className="text-red-600 text-xs mt-2">{error}</p>}
+      {captured && (
+        <div className="mt-3 bg-white/70 border border-blue-200 rounded-lg p-3 text-center">
+          <p className="text-sm text-slate-700">
+            We've saved your email.{' '}
+            <Link
+              to={`/signup?email=${encodeURIComponent(email.trim())}`}
+              className="text-blue-600 hover:text-blue-700 font-semibold underline"
+            >
+              Create a free account
+            </Link>{' '}
+            to track this store's score over time.
+          </p>
+        </div>
+      )}
     </div>
   );
 }

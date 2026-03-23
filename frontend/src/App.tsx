@@ -64,6 +64,8 @@ import LandingPage from './pages/public/LandingPage';
 import CustomPage from './pages/public/CustomPage';
 import ScanPage from './pages/public/ScanPage';
 import ScanResultPage from './pages/public/ScanResultPage';
+import TermsPage from './pages/public/TermsPage';
+import PrivacyPage from './pages/public/PrivacyPage';
 
 function LazyFallback() {
   return (
@@ -81,6 +83,11 @@ const queryClient = new QueryClient({
     },
   },
 });
+
+function RegisterRedirect() {
+  const { search } = useLocation();
+  return <Navigate to={`/signup${search}`} replace />;
+}
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -140,6 +147,13 @@ export default function App() {
                     {/* Public scanner pages (no auth required) */}
                     <Route path="/scan" element={<ScanPage />} />
                     <Route path="/scan/:domain" element={<ScanResultPage />} />
+
+                    {/* Legal pages */}
+                    <Route path="/terms" element={<TermsPage />} />
+                    <Route path="/privacy" element={<PrivacyPage />} />
+
+                    {/* /register alias for /signup (preserves query params) */}
+                    <Route path="/register" element={<RegisterRedirect />} />
 
                     {/* Public custom pages */}
                     <Route path="/p/:slug" element={<CustomPage />} />

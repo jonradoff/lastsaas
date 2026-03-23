@@ -31,8 +31,9 @@ export default function SignupPage() {
   const rawInvitation = searchParams.get('invitation') || '';
   // Validate invitation token format: alphanumeric, hyphens, underscores only
   const invitationToken = /^[a-zA-Z0-9_-]{1,128}$/.test(rawInvitation) ? rawInvitation : undefined;
+  const prefillEmail = searchParams.get('email') || '';
 
-  const [form, setForm] = useState({ email: '', password: '', displayName: '' });
+  const [form, setForm] = useState({ email: prefillEmail, password: '', displayName: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -53,8 +54,10 @@ export default function SignupPage() {
     }
   };
 
-  const heading = branding.signupHeading || 'Create your account';
-  const defaultSubtext = invitationToken ? 'Accept your invitation and join the team' : 'Get started with your own organization';
+  const heading = branding.signupHeading || 'Create your free account';
+  const defaultSubtext = invitationToken
+    ? 'Accept your invitation and join the team'
+    : 'Track stores, get fix instructions, and monitor your agent readiness score.';
   const subtext = branding.signupSubtext || defaultSubtext;
   const logoUrl = branding.logoUrl;
 

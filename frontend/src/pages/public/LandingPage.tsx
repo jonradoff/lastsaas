@@ -133,9 +133,15 @@ export default function LandingPage() {
             </a>
             <Link
               to="/login"
-              className="text-sm text-slate-500 hover:text-slate-900 transition-colors"
+              className="text-sm text-slate-500 hover:text-slate-900 transition-colors hidden sm:block"
             >
               Sign in
+            </Link>
+            <Link
+              to="/signup"
+              className="text-sm px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-full transition-colors"
+            >
+              Get Started
             </Link>
           </nav>
         </div>
@@ -668,7 +674,7 @@ export default function LandingPage() {
                     ))}
                   </ul>
                   <Link
-                    to="/scan"
+                    to="/signup"
                     className={`mt-auto inline-flex items-center justify-center px-5 py-2.5 rounded-full font-semibold text-sm transition-colors ${
                       highlight
                         ? 'bg-blue-500 hover:bg-blue-600 text-white'
@@ -762,6 +768,12 @@ export default function LandingPage() {
             <a href="#" className="hover:text-slate-900 transition-colors">
               Docs
             </a>
+            <Link to="/terms" className="hover:text-slate-900 transition-colors">
+              Terms
+            </Link>
+            <Link to="/privacy" className="hover:text-slate-900 transition-colors">
+              Privacy
+            </Link>
           </nav>
 
           <div className="text-sm text-slate-400 text-center sm:text-right">
