@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Agent Commerce Readiness Audit — [YOUR AGENCY NAME]</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --primary: #6366f1;
+      --primary-light: #818cf8;
+      --primary-dark: #4f46e5;
+      --accent-emerald: #10b981;
+      --accent-purple: #a855f7;
+      --dark-950: #0a0a0f;
+      --dark-900: #111118;
+      --dark-800: #1a1a24;
+      --dark-700: #242433;
+      --dark-600: #2e2e42;
+      --dark-400: #6b6b8a;
+      --dark-300: #9898b8;
+      --dark-100: #e2e2f0;
+      --white: #ffffff;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--dark-950);
+      color: var(--dark-100);
+      line-height: 1.6;
+    }
+
+    /* Navigation */
+    .nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      background: rgba(10, 10, 15, 0.95);
+      border-bottom: 1px solid var(--dark-700);
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 100;
+      backdrop-filter: blur(8px);
+    }
+    .nav-brand {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--primary-light);
+      letter-spacing: 0.02em;
+    }
+    .nav-controls {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .nav-counter {
+      font-size: 13px;
+      color: var(--dark-400);
+    }
+    .nav-btn {
+      background: var(--dark-800);
+      border: 1px solid var(--dark-700);
+      color: var(--dark-100);
+      padding: 6px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      transition: all 0.15s;
+    }
+    .nav-btn:hover { border-color: var(--primary); color: var(--primary-light); }
+    .nav-btn:disabled { opacity: 0.3; cursor: default; }
+
+    /* Slides container */
+    .slides {
+      padding-top: 56px;
+    }
+
+    .slide {
+      display: none;
+      min-height: calc(100vh - 56px);
+      padding: 60px 80px;
+      position: relative;
+      overflow: hidden;
+    }
+    .slide.active { display: flex; flex-direction: column; justify-content: center; }
+
+    /* Slide backgrounds */
+    .slide-title { background: radial-gradient(ellipse at 20% 50%, rgba(99,102,241,0.15) 0%, transparent 60%), var(--dark-950); }
+    .slide-standard { background: var(--dark-950); }
+    .slide-accent { background: radial-gradient(ellipse at 80% 20%, rgba(168,85,247,0.1) 0%, transparent 50%), var(--dark-950); }
+    .slide-highlight { background: radial-gradient(ellipse at 50% 80%, rgba(16,185,129,0.08) 0%, transparent 60%), var(--dark-950); }
+
+    /* Slide number */
+    .slide-num {
+      position: absolute;
+      top: 24px;
+      right: 80px;
+      font-size: 12px;
+      color: var(--dark-600);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    /* Typography */
+    .label {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--primary-light);
+      margin-bottom: 16px;
+    }
+    .label-purple { color: var(--accent-purple); }
+    .label-emerald { color: var(--accent-emerald); }
+
+    h1 { font-size: 56px; font-weight: 800; color: var(--white); line-height: 1.1; letter-spacing: -0.02em; }
+    h2 { font-size: 40px; font-weight: 700; color: var(--white); line-height: 1.15; letter-spacing: -0.01em; }
+    h3 { font-size: 22px; font-weight: 600; color: var(--white); }
+
+    .subtitle { font-size: 20px; color: var(--dark-300); margin-top: 20px; max-width: 640px; }
+    .body-text { font-size: 16px; color: var(--dark-300); line-height: 1.7; }
+
+    .highlight { color: var(--primary-light); }
+    .highlight-emerald { color: var(--accent-emerald); }
+    .highlight-purple { color: var(--accent-purple); }
+
+    /* Placeholder tags */
+    .placeholder {
+      display: inline-block;
+      background: rgba(99,102,241,0.15);
+      border: 1px dashed rgba(99,102,241,0.5);
+      color: var(--primary-light);
+      border-radius: 4px;
+      padding: 1px 8px;
+      font-size: 0.9em;
+      font-style: italic;
+    }
+
+    /* Cards */
+    .card {
+      background: var(--dark-800);
+      border: 1px solid var(--dark-700);
+      border-radius: 12px;
+      padding: 24px;
+    }
+    .card-primary {
+      background: rgba(99,102,241,0.08);
+      border-color: rgba(99,102,241,0.25);
+    }
+    .card-emerald {
+      background: rgba(16,185,129,0.06);
+      border-color: rgba(16,185,129,0.2);
+    }
+    .card-red {
+      background: rgba(239,68,68,0.06);
+      border-color: rgba(239,68,68,0.2);
+    }
+
+    /* Grid layouts */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+
+    /* Score circle */
+    .score-container {
+      display: flex;
+      align-items: center;
+      gap: 60px;
+    }
+    .score-circle {
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      border: 6px solid rgba(99,102,241,0.2);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      flex-shrink: 0;
+      background: radial-gradient(circle, rgba(99,102,241,0.08) 0%, transparent 70%);
+      box-shadow: 0 0 40px rgba(99,102,241,0.1);
+    }
+    .score-number { font-size: 60px; font-weight: 800; color: var(--white); line-height: 1; }
+    .score-denom { font-size: 16px; color: var(--dark-400); margin-top: 4px; }
+    .score-ring {
+      position: absolute;
+      inset: -3px;
+      border-radius: 50%;
+      border: 6px solid transparent;
+      border-top-color: var(--primary);
+      border-right-color: var(--primary);
+      animation: none;
+    }
+
+    /* Stat blocks */
+    .stat-block { text-align: center; }
+    .stat-number { font-size: 48px; font-weight: 800; color: var(--white); line-height: 1; }
+    .stat-label { font-size: 14px; color: var(--dark-400); margin-top: 6px; }
+
+    /* Issues list */
+    .issue-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--dark-800);
+    }
+    .issue-item:last-child { border-bottom: none; }
+    .severity-badge {
+      padding: 2px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .severity-high { background: rgba(239,68,68,0.15); color: #f87171; }
+    .severity-medium { background: rgba(251,191,36,0.12); color: #fbbf24; }
+    .severity-low { background: rgba(99,102,241,0.15); color: var(--primary-light); }
+
+    /* Revenue calculator */
+    .calc-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--dark-800);
+    }
+    .calc-row:last-child { border-bottom: none; }
+    .calc-label { font-size: 15px; color: var(--dark-300); }
+    .calc-value { font-size: 18px; font-weight: 700; color: var(--white); }
+    .calc-total {
+      background: rgba(239,68,68,0.08);
+      border: 1px solid rgba(239,68,68,0.2);
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin-top: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .calc-total-label { font-size: 16px; font-weight: 600; color: #f87171; }
+    .calc-total-value { font-size: 28px; font-weight: 800; color: #f87171; }
+
+    /* Roadmap */
+    .roadmap-item {
+      display: flex;
+      gap: 20px;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--dark-800);
+    }
+    .roadmap-item:last-child { border-bottom: none; }
+    .roadmap-phase {
+      width: 80px;
+      flex-shrink: 0;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--primary-light);
+      padding-top: 2px;
+    }
+    .roadmap-title { font-size: 15px; font-weight: 600; color: var(--white); }
+    .roadmap-desc { font-size: 13px; color: var(--dark-400); margin-top: 2px; }
+    .roadmap-effort {
+      margin-left: auto;
+      flex-shrink: 0;
+      font-size: 12px;
+      color: var(--dark-400);
+      padding-top: 3px;
+    }
+
+    /* Process steps */
+    .process-step {
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+    }
+    .step-num {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(99,102,241,0.15);
+      border: 1px solid rgba(99,102,241,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--primary-light);
+      flex-shrink: 0;
+    }
+
+    /* CTA Slide */
+    .cta-box {
+      background: linear-gradient(135deg, rgba(99,102,241,0.12) 0%, rgba(168,85,247,0.08) 100%);
+      border: 1px solid rgba(99,102,241,0.25);
+      border-radius: 16px;
+      padding: 40px;
+      text-align: center;
+    }
+    .cta-price {
+      font-size: 56px;
+      font-weight: 800;
+      color: var(--white);
+      margin: 16px 0;
+    }
+    .cta-price span { font-size: 24px; color: var(--dark-400); vertical-align: top; margin-top: 14px; display: inline-block; }
+    .cta-btn {
+      display: inline-block;
+      background: var(--primary);
+      color: var(--white);
+      padding: 14px 40px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      text-decoration: none;
+      margin-top: 24px;
+      transition: background 0.15s;
+      cursor: pointer;
+      border: none;
+    }
+    .cta-btn:hover { background: var(--primary-dark); }
+
+    /* Agency logo placeholder */
+    .agency-logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--dark-800);
+      border: 1px dashed var(--dark-600);
+      border-radius: 8px;
+      padding: 10px 20px;
+      color: var(--dark-400);
+      font-size: 14px;
+      font-style: italic;
+    }
+
+    /* Divider */
+    .divider { height: 1px; background: var(--dark-800); margin: 24px 0; }
+
+    /* Tag pill */
+    .tag {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+      background: var(--dark-800);
+      border: 1px solid var(--dark-700);
+      color: var(--dark-300);
+      margin: 4px;
+    }
+
+    /* Trend arrow */
+    .trend-up { color: var(--accent-emerald); font-size: 13px; }
+
+    @media print {
+      .nav { display: none; }
+      .slide { display: flex !important; page-break-after: always; min-height: 100vh; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="nav">
+  <div class="nav-brand">[YOUR AGENCY NAME] — AI Commerce Audit Deck</div>
+  <div class="nav-controls">
+    <span class="nav-counter" id="counter">Slide 1 of 10</span>
+    <button class="nav-btn" id="prev-btn" onclick="prevSlide()" disabled>&#8592; Prev</button>
+    <button class="nav-btn" id="next-btn" onclick="nextSlide()">Next &#8594;</button>
+  </div>
+</nav>
+
+<div class="slides">
+
+  <!-- Slide 1: Title -->
+  <div class="slide slide-title active" id="slide-1">
+    <div class="slide-num">01 / 10</div>
+    <div style="margin-bottom: 24px;">
+      <div class="agency-logo">&#128247; [YOUR LOGO HERE]</div>
+    </div>
+    <div class="label">Confidential — Prepared for <span class="placeholder">[CLIENT STORE]</span></div>
+    <h1>AI Agent Commerce<br/>Readiness Audit</h1>
+    <p class="subtitle">How well does <span class="placeholder">[CLIENT STORE]</span> work with AI shopping agents — and what's it costing you?</p>
+    <div class="divider" style="max-width: 200px; margin-top: 40px;"></div>
+    <div style="margin-top: 24px; display: flex; align-items: center; gap: 24px;">
+      <div>
+        <div style="font-size: 14px; color: var(--dark-400);">Prepared by</div>
+        <div style="font-size: 16px; font-weight: 600; color: var(--white); margin-top: 2px;"><span class="placeholder">[YOUR AGENCY NAME]</span></div>
+      </div>
+      <div style="width: 1px; height: 36px; background: var(--dark-700);"></div>
+      <div>
+        <div style="font-size: 14px; color: var(--dark-400);">Audit Date</div>
+        <div style="font-size: 16px; font-weight: 600; color: var(--white); margin-top: 2px;"><span class="placeholder">[DATE]</span></div>
+      </div>
+      <div style="width: 1px; height: 36px; background: var(--dark-700);"></div>
+      <div>
+        <div style="font-size: 14px; color: var(--dark-400);">Powered by</div>
+        <div style="font-size: 16px; font-weight: 600; color: var(--primary-light); margin-top: 2px;">MCPLens</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 2: The Shift -->
+  <div class="slide slide-accent" id="slide-2">
+    <div class="slide-num">02 / 10</div>
+    <div class="label label-purple">The Market Shift</div>
+    <h2>AI agents are shopping<br/>for your customers</h2>
+    <p class="subtitle" style="margin-bottom: 40px;">The way people discover and buy products is fundamentally changing. AI assistants are becoming the layer between shoppers and stores.</p>
+
+    <div class="grid-3" style="margin-top: 8px;">
+      <div class="card card-primary">
+        <div class="stat-block">
+          <div class="stat-number highlight">15–30%</div>
+          <div class="stat-label">Higher conversion rate when AI agents can fully access a store's catalog</div>
+        </div>
+      </div>
+      <div class="card card-primary">
+        <div class="stat-block">
+          <div class="stat-number highlight">67%</div>
+          <div class="stat-label">of consumers already use AI assistants for product research (McKinsey, 2024)</div>
+        </div>
+      </div>
+      <div class="card card-primary">
+        <div class="stat-block">
+          <div class="stat-number highlight">$9.4T</div>
+          <div class="stat-label">Projected value of AI-influenced commerce by 2027 (Gartner)</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top: 24px;">
+      <p class="body-text">The Model Context Protocol (MCP) is the emerging standard that lets AI agents read, compare, and transact across e-commerce stores. Stores that aren't MCP-ready are invisible to this channel.</p>
+    </div>
+  </div>
+
+  <!-- Slide 3: The Problem -->
+  <div class="slide slide-standard" id="slide-3">
+    <div class="slide-num">03 / 10</div>
+    <div class="label">The Problem</div>
+    <h2>Most Shopify stores<br/>aren't agent-ready</h2>
+
+    <div class="grid-2" style="margin-top: 32px; align-items: start;">
+      <div>
+        <p class="body-text" style="margin-bottom: 24px;">When an AI agent tries to shop at a typical Shopify store, it runs into walls. Missing data, broken structures, and incomplete APIs mean the agent either gives up or shops elsewhere.</p>
+        <div class="card card-red">
+          <p style="font-size: 14px; color: #f87171; font-weight: 600; margin-bottom: 12px;">Common gaps we find in audits:</p>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <div style="display: flex; align-items: center; gap-10px;">&#10006; <span style="margin-left: 10px; font-size: 14px; color: var(--dark-300);">Missing or inconsistent product prices</span></div>
+            <div style="display: flex; align-items: center;">&#10006; <span style="margin-left: 10px; font-size: 14px; color: var(--dark-300);">Product descriptions too short for agent reasoning</span></div>
+            <div style="display: flex; align-items: center;">&#10006; <span style="margin-left: 10px; font-size: 14px; color: var(--dark-300);">No structured variant or inventory data</span></div>
+            <div style="display: flex; align-items: center;">&#10006; <span style="margin-left: 10px; font-size: 14px; color: var(--dark-300);">Broken checkout/cart API integration</span></div>
+            <div style="display: flex; align-items: center;">&#10006; <span style="margin-left: 10px; font-size: 14px; color: var(--dark-300);">Slow MCP response times (&gt;2s)</span></div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="card" style="margin-bottom: 20px;">
+          <div class="label" style="margin-bottom: 8px;">Industry average</div>
+          <div style="font-size: 36px; font-weight: 800; color: var(--white);">52<span style="font-size: 20px; color: var(--dark-400);">/100</span></div>
+          <div style="font-size: 14px; color: var(--dark-400); margin-top: 4px;">AI readiness score across Shopify stores we've audited</div>
+        </div>
+        <div class="card card-emerald">
+          <div class="label label-emerald" style="margin-bottom: 8px;">First-mover opportunity</div>
+          <p style="font-size: 14px; color: var(--dark-300);">Only 8% of e-commerce stores have invested in AI agent optimization. The window to own this channel is open — but closing fast.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 4: Your Store's Score -->
+  <div class="slide slide-standard" id="slide-4">
+    <div class="slide-num">04 / 10</div>
+    <div class="label">Your Audit Results</div>
+    <h2>Your store's AI readiness score</h2>
+
+    <div class="score-container" style="margin-top: 40px;">
+      <div class="score-circle">
+        <div class="score-ring"></div>
+        <div class="score-number"><span class="placeholder">[XX]</span></div>
+        <div class="score-denom">out of 100</div>
+      </div>
+
+      <div style="flex: 1;">
+        <div style="display: flex; flex-direction: column; gap: 16px;">
+          <div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+              <span style="font-size: 14px; color: var(--dark-300);">Product Data Completeness</span>
+              <span style="font-size: 14px; font-weight: 600; color: var(--white);"><span class="placeholder">[XX]</span>/100</span>
+            </div>
+            <div style="height: 8px; background: var(--dark-800); border-radius: 4px; overflow: hidden;">
+              <div style="height: 100%; width: 45%; background: linear-gradient(90deg, var(--primary), var(--primary-light)); border-radius: 4px;"></div>
+            </div>
+          </div>
+          <div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+              <span style="font-size: 14px; color: var(--dark-300);">Pricing Accuracy</span>
+              <span style="font-size: 14px; font-weight: 600; color: var(--white);"><span class="placeholder">[XX]</span>/100</span>
+            </div>
+            <div style="height: 8px; background: var(--dark-800); border-radius: 4px; overflow: hidden;">
+              <div style="height: 100%; width: 70%; background: linear-gradient(90deg, var(--primary), var(--primary-light)); border-radius: 4px;"></div>
+            </div>
+          </div>
+          <div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+              <span style="font-size: 14px; color: var(--dark-300);">Variant & Inventory Data</span>
+              <span style="font-size: 14px; font-weight: 600; color: var(--white);"><span class="placeholder">[XX]</span>/100</span>
+            </div>
+            <div style="height: 8px; background: var(--dark-800); border-radius: 4px; overflow: hidden;">
+              <div style="height: 100%; width: 30%; background: linear-gradient(90deg, var(--primary), var(--primary-light)); border-radius: 4px;"></div>
+            </div>
+          </div>
+          <div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+              <span style="font-size: 14px; color: var(--dark-300);">Checkout Agent Compatibility</span>
+              <span style="font-size: 14px; font-weight: 600; color: var(--white);"><span class="placeholder">[XX]</span>/100</span>
+            </div>
+            <div style="height: 8px; background: var(--dark-800); border-radius: 4px; overflow: hidden;">
+              <div style="height: 100%; width: 55%; background: linear-gradient(90deg, var(--primary), var(--primary-light)); border-radius: 4px;"></div>
+            </div>
+          </div>
+          <div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+              <span style="font-size: 14px; color: var(--dark-300);">MCP Response Performance</span>
+              <span style="font-size: 14px; font-weight: 600; color: var(--white);"><span class="placeholder">[XX]</span>/100</span>
+            </div>
+            <div style="height: 8px; background: var(--dark-800); border-radius: 4px; overflow: hidden;">
+              <div style="height: 100%; width: 80%; background: linear-gradient(90deg, var(--accent-emerald), #34d399); border-radius: 4px;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top: 32px;">
+      <p style="font-size: 14px; color: var(--dark-400);">Scanned: <span class="placeholder">[CLIENT STORE URL]</span> &nbsp;|&nbsp; Products analyzed: <span class="placeholder">[N]</span> &nbsp;|&nbsp; Audit methodology: MCPLens protocol v2.1</p>
+    </div>
+  </div>
+
+  <!-- Slide 5: What We Found -->
+  <div class="slide slide-standard" id="slide-5">
+    <div class="slide-num">05 / 10</div>
+    <div class="label">Key Findings</div>
+    <h2>Top 3 issues blocking<br/>AI agent sales</h2>
+
+    <div style="margin-top: 32px;">
+      <div class="issue-item">
+        <span class="severity-badge severity-high">High</span>
+        <div>
+          <div class="roadmap-title"><span class="placeholder">[ISSUE 1 — e.g., Missing product prices on 34% of catalog]</span></div>
+          <div class="roadmap-desc" style="margin-top: 4px;"><span class="placeholder">[Detail: AI agents cannot recommend or compare products without accurate pricing. Affected: [N] products.]</span></div>
+        </div>
+      </div>
+      <div class="issue-item">
+        <span class="severity-badge severity-high">High</span>
+        <div>
+          <div class="roadmap-title"><span class="placeholder">[ISSUE 2 — e.g., Product descriptions average 31 words (minimum: 80)]</span></div>
+          <div class="roadmap-desc" style="margin-top: 4px;"><span class="placeholder">[Detail: Short descriptions reduce agent confidence scores. Agents default to competitor products with richer data.]</span></div>
+        </div>
+      </div>
+      <div class="issue-item">
+        <span class="severity-badge severity-medium">Medium</span>
+        <div>
+          <div class="roadmap-title"><span class="placeholder">[ISSUE 3 — e.g., Variant data not exposed via MCP — size, color, material missing]</span></div>
+          <div class="roadmap-desc" style="margin-top: 4px;"><span class="placeholder">[Detail: Agents cannot surface the right variant to buyers, leading to cart abandonment or no recommendation.]</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card card-primary" style="margin-top: 24px; display: flex; align-items: center; gap: 20px;">
+      <div style="font-size: 32px;">&#128270;</div>
+      <div>
+        <div style="font-size: 15px; font-weight: 600; color: var(--primary-light); margin-bottom: 4px;">Full Audit Report Available</div>
+        <div style="font-size: 14px; color: var(--dark-300);">We have a complete breakdown of all <span class="placeholder">[N]</span> issues found, sorted by revenue impact and fix complexity.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 6: Revenue Impact -->
+  <div class="slide slide-standard" id="slide-6">
+    <div class="slide-num">06 / 10</div>
+    <div class="label label-purple">Business Impact</div>
+    <h2>Estimated revenue lost<br/>to poor AI readiness</h2>
+
+    <div class="grid-2" style="margin-top: 32px; align-items: start;">
+      <div class="card">
+        <h3 style="margin-bottom: 20px; font-size: 18px;">Revenue Calculator</h3>
+        <div class="calc-row">
+          <span class="calc-label">Monthly store revenue</span>
+          <span class="calc-value"><span class="placeholder">[CLIENT REVENUE]</span></span>
+        </div>
+        <div class="calc-row">
+          <span class="calc-label">AI-referred traffic share (est.)</span>
+          <span class="calc-value">~18%</span>
+        </div>
+        <div class="calc-row">
+          <span class="calc-label">Conversion loss from poor readiness</span>
+          <span class="calc-value">~22%</span>
+        </div>
+        <div class="calc-row">
+          <span class="calc-label">Current score penalty factor</span>
+          <span class="calc-value"><span class="placeholder">[SCORE]</span>/100</span>
+        </div>
+        <div class="calc-total">
+          <span class="calc-total-label">Estimated monthly revenue at risk</span>
+          <span class="calc-total-value"><span class="placeholder">[$X,XXX]</span></span>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 16px;">
+        <div class="card card-emerald">
+          <div style="font-size: 13px; color: var(--accent-emerald); font-weight: 600; margin-bottom: 8px;">POST-OPTIMIZATION UPSIDE</div>
+          <div style="font-size: 36px; font-weight: 800; color: var(--white);"><span class="placeholder">[+$X,XXX/mo]</span></div>
+          <div style="font-size: 13px; color: var(--dark-400); margin-top: 4px;">Estimated recovery at 85+ score</div>
+        </div>
+        <div class="card">
+          <div style="font-size: 13px; color: var(--dark-400); font-weight: 600; margin-bottom: 8px;">PAYBACK PERIOD</div>
+          <div style="font-size: 28px; font-weight: 700; color: var(--white);">&lt;<span class="placeholder">[N]</span> months</div>
+          <div style="font-size: 13px; color: var(--dark-400); margin-top: 4px;">Typical optimization investment recovery</div>
+        </div>
+        <div class="card">
+          <div style="font-size: 13px; color: var(--dark-400); font-weight: 600; margin-bottom: 8px;">12-MONTH PROJECTED UPSIDE</div>
+          <div style="font-size: 28px; font-weight: 700; color: var(--white);"><span class="placeholder">[$XX,XXX]</span></div>
+          <div style="font-size: 13px; color: var(--dark-400); margin-top: 4px;">Cumulative additional agent-driven revenue</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 7: The Fix -->
+  <div class="slide slide-standard" id="slide-7">
+    <div class="slide-num">07 / 10</div>
+    <div class="label label-emerald">The Roadmap</div>
+    <h2>Prioritized fix plan for<br/><span class="placeholder">[CLIENT STORE]</span></h2>
+
+    <div style="margin-top: 32px;">
+      <div class="roadmap-item">
+        <div class="roadmap-phase">Phase 1<br/><span style="font-size: 10px; color: var(--dark-400);">Week 1–2</span></div>
+        <div>
+          <div class="roadmap-title"><span class="placeholder">[Quick Win — e.g., Price data completeness audit &amp; fix]</span></div>
+          <div class="roadmap-desc"><span class="placeholder">[Populate missing prices, fix currency formatting, validate via MCP endpoint]</span></div>
+        </div>
+        <div class="roadmap-effort"><span class="tag">Low effort</span><br/><span style="font-size: 11px; color: var(--accent-emerald);">High impact</span></div>
+      </div>
+      <div class="roadmap-item">
+        <div class="roadmap-phase">Phase 2<br/><span style="font-size: 10px; color: var(--dark-400);">Week 2–4</span></div>
+        <div>
+          <div class="roadmap-title"><span class="placeholder">[Core Fix — e.g., Product description expansion (top 100 SKUs)]</span></div>
+          <div class="roadmap-desc"><span class="placeholder">[Rewrite descriptions to 150+ words with structured specs, materials, use cases]</span></div>
+        </div>
+        <div class="roadmap-effort"><span class="tag">Med effort</span><br/><span style="font-size: 11px; color: #fbbf24;">High impact</span></div>
+      </div>
+      <div class="roadmap-item">
+        <div class="roadmap-phase">Phase 3<br/><span style="font-size: 10px; color: var(--dark-400);">Week 3–5</span></div>
+        <div>
+          <div class="roadmap-title"><span class="placeholder">[Structural Fix — e.g., Variant &amp; metafield configuration]</span></div>
+          <div class="roadmap-desc"><span class="placeholder">[Set up structured metafields for size, color, material; expose via Storefront API]</span></div>
+        </div>
+        <div class="roadmap-effort"><span class="tag">Med effort</span><br/><span style="font-size: 11px; color: #fbbf24;">Med impact</span></div>
+      </div>
+      <div class="roadmap-item">
+        <div class="roadmap-phase">Phase 4<br/><span style="font-size: 10px; color: var(--dark-400);">Week 5–6</span></div>
+        <div>
+          <div class="roadmap-title"><span class="placeholder">[Validation — e.g., Full MCP re-audit &amp; score verification]</span></div>
+          <div class="roadmap-desc"><span class="placeholder">[Re-run MCPLens audit, verify score improvement, hand off monitoring dashboard]</span></div>
+        </div>
+        <div class="roadmap-effort"><span class="tag">Low effort</span><br/><span style="font-size: 11px; color: var(--accent-emerald);">Ongoing</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 8: Why Now -->
+  <div class="slide slide-accent" id="slide-8">
+    <div class="slide-num">08 / 10</div>
+    <div class="label label-purple">Market Timing</div>
+    <h2>The AI commerce window<br/>is open right now</h2>
+
+    <div class="grid-2" style="margin-top: 32px; align-items: start;">
+      <div style="display: flex; flex-direction: column; gap: 16px;">
+        <div class="card card-primary">
+          <div style="font-size: 13px; color: var(--primary-light); font-weight: 600; margin-bottom: 8px;">2024</div>
+          <div style="font-size: 15px; color: var(--white); font-weight: 600;">MCP standard launched</div>
+          <div style="font-size: 13px; color: var(--dark-400);">Anthropic, OpenAI, Google adopt protocol</div>
+        </div>
+        <div class="card card-primary">
+          <div style="font-size: 13px; color: var(--primary-light); font-weight: 600; margin-bottom: 8px;">2025</div>
+          <div style="font-size: 15px; color: var(--white); font-weight: 600;">Agent commerce goes mainstream</div>
+          <div style="font-size: 13px; color: var(--dark-400);">Perplexity, ChatGPT, Gemini all route purchases via MCP</div>
+        </div>
+        <div class="card card-primary">
+          <div style="font-size: 13px; color: var(--primary-light); font-weight: 600; margin-bottom: 8px;">2026 (Now)</div>
+          <div style="font-size: 15px; color: var(--white); font-weight: 600;">First-mover window closing</div>
+          <div style="font-size: 13px; color: var(--dark-400);">Brands that optimize now build durable agent preference</div>
+        </div>
+        <div class="card card-emerald">
+          <div style="font-size: 13px; color: var(--accent-emerald); font-weight: 600; margin-bottom: 8px;">2027+</div>
+          <div style="font-size: 15px; color: var(--white); font-weight: 600;">Agent-driven commerce normalized</div>
+          <div style="font-size: 13px; color: var(--dark-400);">Optimization becomes table stakes. Early movers dominate.</div>
+        </div>
+      </div>
+
+      <div class="card" style="align-self: center;">
+        <div style="margin-bottom: 24px;">
+          <div style="font-size: 13px; color: var(--dark-400); font-weight: 600; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.08em;">Agent Commerce Growth</div>
+          <div style="display: flex; align-items: flex-end; gap: 8px; height: 120px; padding-bottom: 4px;">
+            <div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px;">
+              <div style="flex: 1; background: var(--dark-700); border-radius: 4px 4px 0 0; width: 100%; height: 15%;"></div>
+              <span style="font-size: 11px; color: var(--dark-500);">2023</span>
+            </div>
+            <div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px;">
+              <div style="flex: 1; background: rgba(99,102,241,0.5); border-radius: 4px 4px 0 0; width: 100%; height: 30%;"></div>
+              <span style="font-size: 11px; color: var(--dark-500);">2024</span>
+            </div>
+            <div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px;">
+              <div style="flex: 1; background: rgba(99,102,241,0.7); border-radius: 4px 4px 0 0; width: 100%; height: 55%;"></div>
+              <span style="font-size: 11px; color: var(--dark-500);">2025</span>
+            </div>
+            <div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; position: relative;">
+              <div style="background: var(--primary); border-radius: 4px 4px 0 0; width: 100%; height: 80%; margin-top: auto; position: absolute; bottom: 20px;"></div>
+              <span style="font-size: 11px; color: var(--primary-light); font-weight: 600; position: absolute; bottom: 0;">Now</span>
+            </div>
+            <div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px;">
+              <div style="flex: 1; background: rgba(99,102,241,0.3); border-radius: 4px 4px 0 0; width: 100%; height: 100%; border: 1px dashed rgba(99,102,241,0.4);"></div>
+              <span style="font-size: 11px; color: var(--dark-500);">2027</span>
+            </div>
+          </div>
+        </div>
+        <p style="font-size: 13px; color: var(--dark-400);">Brands optimizing for AI agents in 2025–2026 are building preference signals that persist as the technology matures.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 9: Our Process -->
+  <div class="slide slide-standard" id="slide-9">
+    <div class="slide-num">09 / 10</div>
+    <div class="label">How We Work</div>
+    <h2>Our 4-step optimization<br/>delivery process</h2>
+
+    <div class="grid-2" style="margin-top: 32px; align-items: start; gap: 32px;">
+      <div style="display: flex; flex-direction: column; gap: 24px;">
+        <div class="process-step">
+          <div class="step-num">1</div>
+          <div>
+            <div class="roadmap-title">Deep Audit</div>
+            <div class="roadmap-desc">We run MCPLens across your full catalog — products, variants, pricing, checkout. You get a scored report with every issue ranked by revenue impact.</div>
+          </div>
+        </div>
+        <div class="process-step">
+          <div class="step-num">2</div>
+          <div>
+            <div class="roadmap-title">Prioritized Roadmap</div>
+            <div class="roadmap-desc">We build a fix plan scoped to your budget and timeline. You approve it. No surprise scope.</div>
+          </div>
+        </div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 24px;">
+        <div class="process-step">
+          <div class="step-num">3</div>
+          <div>
+            <div class="roadmap-title">Implementation</div>
+            <div class="roadmap-desc">Our team handles Liquid templates, metafield configuration, API setup, and content expansion. You stay in the loop with weekly updates.</div>
+          </div>
+        </div>
+        <div class="process-step">
+          <div class="step-num">4</div>
+          <div>
+            <div class="roadmap-title">Verify &amp; Monitor</div>
+            <div class="roadmap-desc">We re-audit post-implementation. You get a final score report and access to ongoing monitoring so you can track readiness over time.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card card-emerald" style="margin-top: 32px; display: flex; align-items: center; gap: 20px;">
+      <div style="font-size: 32px;">&#9989;</div>
+      <div>
+        <div style="font-size: 15px; font-weight: 600; color: var(--accent-emerald); margin-bottom: 4px;">Guaranteed score improvement</div>
+        <div style="font-size: 14px; color: var(--dark-300);">We commit to a minimum 20-point improvement in your MCPLens score — or we continue working until we hit it.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 10: Next Steps -->
+  <div class="slide slide-highlight" id="slide-10">
+    <div class="slide-num">10 / 10</div>
+    <div class="label label-emerald">Get Started</div>
+    <h2>Next steps for<br/><span class="placeholder">[CLIENT STORE]</span></h2>
+
+    <div class="grid-2" style="margin-top: 32px; align-items: start;">
+      <div class="cta-box">
+        <div class="label label-emerald">Investment</div>
+        <div class="cta-price">
+          <span>$</span><span class="placeholder">[XXXX]</span>
+        </div>
+        <div style="font-size: 14px; color: var(--dark-400);">One-time optimization + 90-day monitoring</div>
+        <div class="divider" style="margin: 20px 0;"></div>
+        <div style="display: flex; flex-direction: column; gap: 10px; text-align: left;">
+          <div style="display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--dark-300);">
+            <span style="color: var(--accent-emerald);">&#10003;</span> Full MCPLens audit report
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--dark-300);">
+            <span style="color: var(--accent-emerald);">&#10003;</span> Complete implementation by <span class="placeholder" style="margin-left: 4px;">[YOUR AGENCY NAME]</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--dark-300);">
+            <span style="color: var(--accent-emerald);">&#10003;</span> 90-day score monitoring
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--dark-300);">
+            <span style="color: var(--accent-emerald);">&#10003;</span> Guaranteed 20+ point improvement
+          </div>
+        </div>
+        <button class="cta-btn" onclick="window.open('mailto:[YOUR EMAIL]', '_blank')">Book a Strategy Call</button>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 16px;">
+        <div class="card">
+          <div style="font-size: 14px; font-weight: 600; color: var(--white); margin-bottom: 8px;">Timeline</div>
+          <div style="font-size: 13px; color: var(--dark-300);">
+            <div style="margin-bottom: 6px;">&#8226; Audit report: <strong>Within 48 hours</strong></div>
+            <div style="margin-bottom: 6px;">&#8226; Implementation kickoff: <strong>Week 1</strong></div>
+            <div style="margin-bottom: 6px;">&#8226; Full delivery: <strong><span class="placeholder">[4–6 weeks]</span></strong></div>
+            <div>&#8226; Verification audit: <strong>End of project</strong></div>
+          </div>
+        </div>
+        <div class="card">
+          <div style="font-size: 14px; font-weight: 600; color: var(--white); margin-bottom: 8px;">Contact</div>
+          <div style="font-size: 13px; color: var(--dark-300);">
+            <div style="margin-bottom: 4px;"><span class="placeholder">[YOUR NAME]</span></div>
+            <div style="margin-bottom: 4px;"><span class="placeholder">[YOUR EMAIL]</span></div>
+            <div><span class="placeholder">[YOUR PHONE]</span></div>
+          </div>
+        </div>
+        <div class="card card-primary">
+          <div style="font-size: 13px; color: var(--primary-light); font-weight: 600; margin-bottom: 6px;">Questions about this report?</div>
+          <div style="font-size: 13px; color: var(--dark-300);">This audit was generated using MCPLens, the industry-standard AI readiness scanner for Shopify stores. All findings reflect live data from your Shopify MCP endpoint.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  let current = 1;
+  const total = 10;
+
+  function showSlide(n) {
+    document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+    document.getElementById('slide-' + n).classList.add('active');
+    document.getElementById('counter').textContent = 'Slide ' + n + ' of ' + total;
+    document.getElementById('prev-btn').disabled = n === 1;
+    document.getElementById('next-btn').disabled = n === total;
+    current = n;
+  }
+
+  function nextSlide() { if (current < total) showSlide(current + 1); }
+  function prevSlide() { if (current > 1) showSlide(current - 1); }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') nextSlide();
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') prevSlide();
+  });
+</script>
+
+</body>
+</html>
