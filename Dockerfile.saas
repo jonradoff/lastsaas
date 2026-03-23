@@ -1,0 +1,50 @@
+# Stage 1: Build Go backend
+FROM golang:1.25-alpine AS backend-builder
+RUN apk add --no-cache git
+WORKDIR /build
+COPY backend/go.mod backend/go.sum ./
+RUN go mod download
+COPY backend/ ./
+COPY VERSION ./VERSION
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags "-X lastsaas/internal/version.buildVersion=$(cat VERSION)" -o mcplens ./cmd/server
+
+# Stage 2: Build React frontend
+FROM node:22-alpine AS frontend-builder
+WORKDIR /build
+COPY frontend/package.json frontend/package-lock.json ./
+RUN npm ci
+COPY frontend/ ./
+RUN npm run build
+
+# Stage 3: Build Node.js scanner
+FROM node:22-alpine AS scanner-builder
+WORKDIR /build
+COPY scanner/package.json scanner/package-lock.json ./
+RUN npm ci
+COPY scanner/ ./
+RUN npm run build
+
+# Stage 4: Runtime
+FROM alpine:3.21
+# Node.js runtime is required to execute the scanner CLI at runtime
+RUN apk add --no-cache ca-certificates nodejs
+WORKDIR /app
+
+# Copy Go backend binary
+COPY --from=backend-builder /build/mcplens ./mcplens
+
+# Copy prod config
+COPY backend/config/prod.example.yaml ./config/prod.yaml
+
+# Copy React frontend build
+COPY --from=frontend-builder /build/dist ./static
+
+# Copy scanner dist and scenarios
+COPY --from=scanner-builder /build/dist ./scanner/dist
+COPY --from=scanner-builder /build/scenarios ./scanner/scenarios
+
+ENV LASTSAAS_ENV=prod
+ENV SCANNER_PATH=/app/scanner/dist
+EXPOSE 8080
+
+CMD ["./mcplens"]
