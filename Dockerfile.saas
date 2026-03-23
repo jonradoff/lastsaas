@@ -44,6 +44,7 @@ COPY --from=scanner-builder /build/dist ./scanner/dist
 COPY --from=scanner-builder /build/scenarios ./scanner/scenarios
 COPY --from=scanner-builder /build/node_modules ./scanner/node_modules
 COPY --from=scanner-builder /build/package.json ./scanner/package.json
+COPY --from=scanner-builder /build/scenario-schema.json ./scanner/scenario-schema.json
 
 ENV LASTSAAS_ENV=prod
 ENV SCANNER_PATH=/app/scanner/dist
