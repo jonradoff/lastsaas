@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Plus, TrendingUp, TrendingDown, Minus, Zap, X, Trash2, Store } from 'lucide-react';
 import { toast } from 'sonner';
 import DOMPurify from 'dompurify';
-import { trackedStoresApi, plansApi } from '../../api/client';
+import { trackedStoresApi } from '../../api/client';
 import type { TrackedStore } from '../../api/client';
 import { useBranding } from '../../contexts/BrandingContext';
 import { getErrorMessage } from '../../utils/errors';

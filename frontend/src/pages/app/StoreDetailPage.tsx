@@ -119,7 +119,7 @@ function ScoreTimelineChart({ scans }: { scans: StoredScanEntry[] }) {
         {sorted.filter((_, i) => {
           if (sorted.length <= 4) return true;
           return i === 0 || i === sorted.length - 1 || i === Math.floor(sorted.length / 2);
-        }).map((scan, _, arr) => {
+        }).map((scan) => {
           const origIndex = sorted.indexOf(scan);
           return (
             <text
