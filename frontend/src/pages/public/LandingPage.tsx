@@ -13,7 +13,7 @@ const prefersReducedMotion =
 
 // ── Animation variants ──────────────────────────────────────────────────────
 const fadeInUp = prefersReducedMotion
-  ? {}
+  ? undefined
   : {
       hidden: { opacity: 0, y: 20 },
       visible: {
@@ -24,13 +24,13 @@ const fadeInUp = prefersReducedMotion
     };
 
 const staggerContainer = prefersReducedMotion
-  ? {}
+  ? undefined
   : {
       hidden: {},
       visible: { transition: { staggerChildren: 0.075 } },
     };
 
-const cardHover = prefersReducedMotion
+const _cardHover = prefersReducedMotion
   ? {}
   : {
       whileHover: { y: -4, boxShadow: '0 10px 25px rgba(0,0,0,0.08)' },
@@ -38,7 +38,7 @@ const cardHover = prefersReducedMotion
     };
 
 // Shared props for scroll-triggered sections
-function sectionMotionProps() {
+function sectionMotionProps(): Record<string, unknown> {
   if (prefersReducedMotion) return {};
   return {
     initial: 'hidden' as const,
