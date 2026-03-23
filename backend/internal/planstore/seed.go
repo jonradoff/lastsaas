@@ -22,6 +22,7 @@ func Seed(ctx context.Context, database *db.MongoDB) error {
 		plan := models.Plan{
 			Name:                 "Free",
 			Description:          "Default free plan",
+			PricingModel:         models.PricingModelFlat,
 			MonthlyPriceCents:    0,
 			AnnualDiscountPct:    0,
 			UsageCreditsPerMonth: 0,
