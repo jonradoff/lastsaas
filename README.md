@@ -81,21 +81,27 @@ jobs:
 
 ## Pricing
 
-MCPLens is **open source and free** for scanning. Paid tiers add fix instructions, CI/CD, tracking, and agency features:
+MCPLens is **open source and free** for scanning. Paid tiers add fix instructions, tracking, buyer agent simulation, and agency features:
 
-| | Free | Pro ($99/mo) | Agency ($199/mo) |
-|---|---|---|---|
-| Unlimited scans | ✅ | ✅ | ✅ |
-| HTML reports | ✅ | ✅ | ✅ |
-| CLI access | ✅ | ✅ | ✅ |
-| Fix instructions | — | ✅ | ✅ |
-| CI/CD integration | — | ✅ | ✅ |
-| Store tracking | — | 5 stores | 50 stores |
-| Score history | — | 90 days | 1 year |
-| Scheduled scans | — | Weekly | Daily |
-| White-label reports | — | — | ✅ |
-| API access | — | — | ✅ |
-| Agency bonuses | — | — | ✅ |
+| | Free | Pro ($50/mo) | Max ($200/mo) | Agency ($600/mo) |
+|---|---|---|---|---|
+| Layer 1 scan + score | ✅ | ✅ | ✅ | ✅ |
+| Shareable report URL | ✅ | ✅ | ✅ | ✅ |
+| Fix instructions | — | ✅ | ✅ | ✅ |
+| Store tracking | — | 3 stores | 15 stores | 50 stores |
+| Scheduled scans | — | Weekly | Daily | Daily |
+| CI/CD integration | — | ✅ | ✅ | ✅ |
+| Email alerts | — | ✅ | ✅ | ✅ |
+| Simulated Buyer Agent (Layer 3) | — | — | Early Access | ✅ |
+| LLM Quality Assessment (Layer 2) | — | — | Early Access | ✅ |
+| Revenue impact calculator | — | — | ✅ | ✅ |
+| White-label reports | — | — | — | ✅ |
+| API access | — | — | — | ✅ |
+| Batch scanning | — | — | — | ✅ |
+| Team/multi-user | — | — | — | ✅ |
+| Agency bonuses | — | — | — | ✅ |
+
+Annual billing saves 2 months on every plan. Founding user promos available for the first 100 users.
 
 ## Why MCPLens?
 
