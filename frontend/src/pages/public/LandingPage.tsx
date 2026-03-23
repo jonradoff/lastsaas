@@ -30,7 +30,7 @@ const staggerContainer = prefersReducedMotion
       visible: { transition: { staggerChildren: 0.075 } },
     };
 
-const _cardHover = prefersReducedMotion
+const cardHover = prefersReducedMotion
   ? {}
   : {
       whileHover: { y: -4, boxShadow: '0 10px 25px rgba(0,0,0,0.08)' },
