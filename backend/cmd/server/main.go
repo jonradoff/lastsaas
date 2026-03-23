@@ -16,6 +16,7 @@ import (
 	"lastsaas/internal/auth"
 	"lastsaas/internal/config"
 	"lastsaas/internal/configstore"
+	"lastsaas/internal/datadog"
 	"lastsaas/internal/db"
 	"lastsaas/internal/email"
 	"lastsaas/internal/events"
@@ -24,10 +25,10 @@ import (
 	"lastsaas/internal/middleware"
 	"lastsaas/internal/models"
 	"lastsaas/internal/planstore"
+	"lastsaas/internal/scanner"
 	stripeservice "lastsaas/internal/stripe"
 	"lastsaas/internal/syslog"
 	"lastsaas/internal/telemetry"
-	"lastsaas/internal/datadog"
 	"lastsaas/internal/version"
 	"lastsaas/internal/webhooks"
 
@@ -361,6 +362,8 @@ func main() {
 	brandingHandler := handlers.NewBrandingHandler(database, cfgStore, sysLogger)
 	announcementsHandler := handlers.NewAnnouncementsHandler(database, sysLogger)
 	usageHandler := handlers.NewUsageHandler(database)
+	scannerSvc := scanner.NewService(database.Database)
+	scannerHandler := handlers.NewScannerHandler(scannerSvc)
 	brandingHandler.SetAuthProviders(map[string]bool{
 		"google":    googleOAuth != nil,
 		"github":    githubOAuth != nil,
@@ -631,6 +634,28 @@ func main() {
 		telemetryHandler.TrackBatch,
 	)).Methods("POST")
 
+	// --- Scanner routes ---
+	// POST /api/scan — public, rate-limited (5/hour unauthenticated)
+	// NOTE: scans can take up to 60 seconds; the server WriteTimeout should be raised
+	// accordingly (see srv configuration below).
+	api.HandleFunc("/scan", rateLimiter.RateLimitHandler(
+		middleware.ScanPublicLimit,
+		func(r *http.Request) string { return "scan:" + middleware.GetClientIP(r) },
+		scannerHandler.TriggerScan,
+	)).Methods("POST")
+
+	// GET /api/scan/domain/{domain} — public, must be registered before /scan/{id}
+	api.HandleFunc("/scan/domain/{domain}", scannerHandler.GetLatestDomainScan).Methods("GET")
+
+	// GET /api/scan/{id} — public
+	api.HandleFunc("/scan/{id}", scannerHandler.GetScan).Methods("GET")
+
+	// GET /api/scans — requires auth + tenant (paid feature)
+	scansAPI := guarded.PathPrefix("/scans").Subrouter()
+	scansAPI.Use(authMiddleware.RequireAuth)
+	scansAPI.Use(tenantMiddleware.RequireTenant)
+	scansAPI.HandleFunc("", scannerHandler.ListScans).Methods("GET")
+
 	// Webhook route (no auth — uses Stripe signature verification)
 	api.HandleFunc("/billing/webhook", webhookHandler.HandleWebhook).Methods("POST")
 
@@ -812,7 +837,7 @@ func main() {
 		Handler:           handler,
 		ReadHeaderTimeout: 5 * time.Second,
 		ReadTimeout:       15 * time.Second,
-		WriteTimeout:      15 * time.Second,
+		WriteTimeout:      90 * time.Second, // raised to accommodate scanner CLI (up to 60s)
 		IdleTimeout:       60 * time.Second,
 	}
 

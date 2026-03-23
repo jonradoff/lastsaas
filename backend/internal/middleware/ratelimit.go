@@ -65,6 +65,9 @@ var (
 	CSVExportLimit              = RateLimitConfig{MaxRequests: 5, Window: time.Hour}
 	TelemetryAnonymousLimit     = RateLimitConfig{MaxRequests: 60, Window: time.Minute}
 	TelemetryAuthenticatedLimit = RateLimitConfig{MaxRequests: 120, Window: time.Minute}
+	// Scanner limits
+	ScanPublicLimit        = RateLimitConfig{MaxRequests: 5, Window: time.Hour}
+	ScanAuthenticatedLimit = RateLimitConfig{MaxRequests: 20, Window: time.Hour}
 )
 
 // NewRateLimiter creates an in-memory-only rate limiter (fallback mode).

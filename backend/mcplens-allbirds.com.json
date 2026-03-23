@@ -1,0 +1,1188 @@
+{
+  "serverIdentifier": "local",
+  "timestamp": 1774267798669,
+  "durationMs": 6522,
+  "compositeScore": 100,
+  "categories": [
+    {
+      "category": "data-quality",
+      "tested": true,
+      "score": 100,
+      "cappedScore": 100,
+      "weight": 0.35,
+      "effectiveWeight": 0,
+      "scenarios": [
+        {
+          "scenario": {
+            "name": "shopify-description-check",
+            "description": "Checks that Shopify product listings include a title and that most have non-empty descriptions",
+            "category": "data-quality",
+            "requires_capabilities": [
+              "search"
+            ],
+            "setup": [
+              {
+                "action": "search",
+                "params": {
+                  "query": "sneakers",
+                  "limit": 10,
+                  "context": "browsing"
+                },
+                "save_as": "search_results"
+              }
+            ],
+            "steps": [
+              {
+                "assertion": "array_non_empty",
+                "source": "search_results.products",
+                "severity": "high",
+                "score_weight": 5,
+                "message": "Search returned no products — cannot check descriptions"
+              },
+              {
+                "assertion": "each_item_has_field",
+                "source": "search_results.products",
+                "field": "title",
+                "condition": "non_null",
+                "severity": "high",
+                "score_weight": 10,
+                "message": "Products missing required 'title' field"
+              },
+              {
+                "assertion": "percentage_threshold",
+                "source": "search_results.products",
+                "field": "title",
+                "condition": "non_null",
+                "threshold": 100,
+                "severity": "high",
+                "score_weight": 8,
+                "message": "Some products are missing a title — {fail_count} of {fail_count} items affected"
+              },
+              {
+                "assertion": "percentage_threshold",
+                "source": "search_results.products",
+                "field": "description",
+                "condition": "non_null",
+                "threshold": 60,
+                "severity": "medium",
+                "score_weight": 7,
+                "message": "{fail_pct}% of products lack a description (threshold: 40%)"
+              },
+              {
+                "assertion": "each_item_has_field",
+                "source": "search_results.products",
+                "field": "url",
+                "condition": "non_null",
+                "severity": "medium",
+                "score_weight": 5,
+                "message": "Products missing 'url' field — agents cannot link to product pages"
+              }
+            ],
+            "teardown": []
+          },
+          "status": "passed",
+          "score": 100,
+          "assertions": [
+            {
+              "assertion": {
+                "assertion": "array_non_empty",
+                "source": "search_results.products",
+                "severity": "high",
+                "score_weight": 5,
+                "message": "Search returned no products — cannot check descriptions"
+              },
+              "passed": true,
+              "score": 100,
+              "message": "Array is non-empty"
+            },
+            {
+              "assertion": {
+                "assertion": "each_item_has_field",
+                "source": "search_results.products",
+                "field": "title",
+                "condition": "non_null",
+                "severity": "high",
+                "score_weight": 10,
+                "message": "Products missing required 'title' field"
+              },
+              "passed": true,
+              "score": 100,
+              "message": "All 10 items have field 'title'",
+              "details": {
+                "failCount": 0,
+                "total": 10
+              }
+            },
+            {
+              "assertion": {
+                "assertion": "percentage_threshold",
+                "source": "search_results.products",
+                "field": "title",
+                "condition": "non_null",
+                "threshold": 100,
+                "severity": "high",
+                "score_weight": 8,
+                "message": "Some products are missing a title — {fail_count} of {fail_count} items affected"
+              },
+              "passed": true,
+              "score": 100,
+              "message": "Some products are missing a title — 0 of {fail_count} items affected",
+              "details": {
+                "passCount": 10,
+                "failCount": 0,
+                "total": 10,
+                "passRate": 1
+              }
+            },
+            {
+              "assertion": {
+                "assertion": "percentage_threshold",
+                "source": "search_results.products",
+                "field": "description",
+                "condition": "non_null",
+                "threshold": 60,
+                "severity": "medium",
+                "score_weight": 7,
+                "message": "{fail_pct}% of products lack a description (threshold: 40%)"
+              },
+              "passed": true,
+              "score": 100,
+              "message": "0% of products lack a description (threshold: 40%)",
+              "details": {
+                "passCount": 10,
+                "failCount": 0,
+                "total": 10,
+                "passRate": 1
+              }
+            },
+            {
+              "assertion": {
+                "assertion": "each_item_has_field",
+                "source": "search_results.products",
+                "field": "url",
+                "condition": "non_null",
+                "severity": "medium",
+                "score_weight": 5,
+                "message": "Products missing 'url' field — agents cannot link to product pages"
+              },
+              "passed": true,
+              "score": 100,
+              "message": "All 10 items have field 'url'",
+              "details": {
+                "failCount": 0,
+                "total": 10
+              }
+            }
+          ],
+          "durationMs": 567
+        },
+        {
+          "scenario": {
+            "name": "shopify-image-check",
+            "description": "Checks that Shopify products expose image URLs that agents can use in responses",
+            "category": "data-quality",
+            "requires_capabilities": [
+              "search"
+            ],
+            "setup": [
+              {
+                "action": "search",
+                "params": {
+                  "query": "running",
+                  "limit": 10,
+                  "context": "browsing"
+                },
+                "save_as": "search_results"
+              }
+            ],
+            "steps": [
+              {
+                "assertion": "array_non_empty",
+                "source": "search_results.products",
+                "severity": "high",
+                "score_weight": 5,
+                "message": "Search returned no products — cannot check images"
+              },
+              {
+                "assertion": "percentage_threshold",
+                "source": "search_results.products",
+                "field": "image_url",
+                "condition": "non_null",
+                "threshold": 80,
+                "severity": "medium",
+                "score_weight": 8,
+                "message": "{fail_pct}% of products lack an image_url (threshold: 20%)"
+              },
+              {
+                "assertion": "field_present",
+                "source": "search_results.products.0",
+                "field": "image_url",
+                "severity": "medium",
+                "score_weight": 5,
+                "message": "First product is missing image_url field"
+              }
+            ],
+            "teardown": []
+          },
+          "status": "passed",
+          "score": 100,
+          "assertions": [
+            {
+              "assertion": {
+                "assertion": "array_non_empty",
+                "source": "search_results.products",
+                "severity": "high",
+                "score_weight": 5,
+                "message": "Search returned no products — cannot check images"
+              },
+              "passed": true,
+              "score": 100,
+              "message": "Array is non-empty"
+            },
+            {
+              "assertion": {
+                "assertion": "percentage_threshold",
+                "source": "search_results.products",
+                "field": "image_url",
+                "condition": "non_null",
+                "threshold": 80,
+                "severity": "medium",
+                "score_weight": 8,
+                "message": "{fail_pct}% of products lack an image_url (threshold: 20%)"
+              },
+              "passed": true,
+              "score": 100,
+              "message": "0% of products lack an image_url (threshold: 20%)",
+              "details": {
+                "passCount": 10,
+                "failCount": 0,
+                "total": 10,
+                "passRate": 1
+              }
+            },
+            {
+              "assertion": {
+                "assertion": "field_present",
+                "source": "search_results.products.0",
+                "field": "image_url",
+                "severity": "medium",
+                "score_weight": 5,
+                "message": "First product is missing image_url field"
+              },
+              "passed": true,
+              "score": 100,
+              "message": "Field 'image_url' is present"
+            }
+          ],
+          "durationMs": 549
+        },
+        {
+          "scenario": {
+            "name": "shopify-price-check",
+            "description": "Checks that returned Shopify products have price_range data with a valid min price",
+            "category": "data-quality",
+            "requires_capabilities": [
+              "search"
+            ],
+            "setup": [
+              {
+                "action": "search",
+                "params": {
+                  "query": "shoes",
+                  "limit": 10,
+                  "context": "browsing"
+                },
+                "save_as": "search_results"
+              }
+            ],
+            "steps": [
+              {
+                "assertion": "array_non_empty",
+                "source": "search_results.products",
+                "severity": "high",
+                "score_weight": 5,
+                "message": "Search returned no products — cannot check pricing"
+              },
+              {
+                "assertion": "each_item_has_field",
+                "source": "search_results.products",
+                "field": "price_range",
+                "condition": "non_null",
+                "severity": "high",
+                "score_weight": 10,
+                "message": "Products missing price_range field"
+              },
+              {
+                "assertion": "percentage_threshold",
+                "source": "search_results.products",
+                "field": "price_range",
+                "condition": "non_null",
+                "threshold": 90,
+                "severity": "high",
+                "score_weight": 10,
+                "on_fail": "score_killer",
+                "score_killer_cap": 50,
+                "message": "{fail_pct}% of returned products lack price_range data (threshold: 10%)"
+              },
+              {
+                "assertion": "field_present",
+                "source": "search_results.products.0.price_range",
+                "field": "min",
+                "severity": "medium",
+                "score_weight": 5,
+                "message": "price_range missing 'min' field on first product"
+              },
+              {
+                "assertion": "field_present",
+                "source": "search_results.products.0.price_range",
+                "field": "currency",
+                "severity": "medium",
+                "score_weight": 5,
+                "message": "price_range missing 'currency' field on first product"
+              }
+            ],
+            "teardown": []
+          },
+          "status": "passed",
+          "score": 100,
+          "assertions": [
+            {
+              "assertion": {
+                "assertion": "array_non_empty",
+                "source": "search_results.products",
+                "severity": "high",
+                "score_weight": 5,
+                "message": "Search returned no products — cannot check pricing"
+              },
+              "passed": true,
+              "score": 100,
+              "message": "Array is non-empty"
+            },
+            {
+              "assertion": {
+                "assertion": "each_item_has_field",
+                "source": "search_results.products",
+                "field": "price_range",
+                "condition": "non_null",
+                "severity": "high",
+                "score_weight": 10,
+                "message": "Products missing price_range field"
+              },
+              "passed": true,
+              "score": 100,
+              "message": "All 10 items have field 'price_range'",
+              "details": {
+                "failCount": 0,
+                "total": 10
+              }
+            },
+            {
+              "assertion": {
+                "assertion": "percentage_threshold",
+                "source": "search_results.products",
+                "field": "price_range",
+                "condition": "non_null",
+                "threshold": 90,
+                "severity": "high",
+                "score_weight": 10,
+                "on_fail": "score_killer",
+                "score_killer_cap": 50,
+                "message": "{fail_pct}% of returned products lack price_range data (threshold: 10%)"
+              },
+              "passed": true,
+              "score": 100,
+              "message": "0% of returned products lack price_range data (threshold: 10%)",
+              "details": {
+                "passCount": 10,
+                "failCount": 0,
+                "total": 10,
+                "passRate": 1
+              }
+            },
+            {
+              "assertion": {
+                "assertion": "field_present",
+                "source": "search_results.products.0.price_range",
+                "field": "min",
+                "severity": "medium",
+                "score_weight": 5,
+                "message": "price_range missing 'min' field on first product"
+              },
+              "passed": true,
+              "score": 100,
+              "message": "Field 'min' is present"
+            },
+            {
+              "assertion": {
+                "assertion": "field_present",
+                "source": "search_results.products.0.price_range",
+                "field": "currency",
+                "severity": "medium",
+                "score_weight": 5,
+                "message": "price_range missing 'currency' field on first product"
+              },
+              "passed": true,
+              "score": 100,
+              "message": "Field 'currency' is present"
+            }
+          ],
+          "durationMs": 515
+        },
+        {
+          "scenario": {
+            "name": "shopify-variant-check",
+            "description": "Checks that Shopify products expose variant or option data so agents can assist with size/color selection",
+            "category": "data-quality",
+            "requires_capabilities": [
+              "search"
+            ],
+            "setup": [
+              {
+                "action": "search",
+                "params": {
+                  "query": "shoe bag",
+                  "limit": 5,
+                  "context": "browsing"
+                },
+                "save_as": "search_results"
+              }
+            ],
+            "steps": [
+              {
+                "assertion": "array_non_empty",
+                "source": "search_results.products",
+                "severity": "high",
+                "score_weight": 5,
+                "message": "Search returned no products — cannot check variant data"
+              },
+              {
+                "assertion": "each_item_has_field",
+                "source": "search_results.products",
+                "field": "product_id",
+                "condition": "non_null",
+                "severity": "high",
+                "score_weight": 8,
+                "message": "Products missing 'product_id' — agents cannot fetch product details for variant selection"
+              },
+              {
+                "assertion": "field_present",
+                "source": "search_results.products.0.variants.0",
+                "field": "variant_id",
+                "severity": "medium",
+                "score_weight": 5,
+                "message": "First variant missing 'variant_id' — agents may not be able to add simple products to cart directly"
+              },
+              {
+                "assertion": "field_present",
+                "source": "search_results.products.0.variants.0",
+                "field": "price",
+                "severity": "medium",
+                "score_weight": 5,
+                "message": "First variant missing 'price' field"
+              },
+              {
+                "assertion": "field_present",
+                "source": "search_results.products.0.variants.0",
+                "field": "available",
+                "severity": "low",
+                "score_weight": 3,
+                "message": "First variant missing 'available' field — agents cannot check stock"
+              }
+            ],
+            "teardown": []
+          },
+          "status": "passed",
+          "score": 100,
+          "assertions": [
+            {
+              "assertion": {
+                "assertion": "array_non_empty",
+                "source": "search_results.products",
+                "severity": "high",
+                "score_weight": 5,
+                "message": "Search returned no products — cannot check variant data"
+              },
+              "passed": true,
+              "score": 100,
+              "message": "Array is non-empty"
+            },
+            {
+              "assertion": {
+                "assertion": "each_item_has_field",
+                "source": "search_results.products",
+                "field": "product_id",
+                "condition": "non_null",
+                "severity": "high",
+                "score_weight": 8,
+                "message": "Products missing 'product_id' — agents cannot fetch product details for variant selection"
+              },
+              "passed": true,
+              "score": 100,
+              "message": "All 5 items have field 'product_id'",
+              "details": {
+                "failCount": 0,
+                "total": 5
+              }
+            },
+            {
+              "assertion": {
+                "assertion": "field_present",
+                "source": "search_results.products.0.variants.0",
+                "field": "variant_id",
+                "severity": "medium",
+                "score_weight": 5,
+                "message": "First variant missing 'variant_id' — agents may not be able to add simple products to cart directly"
+              },
+              "passed": true,
+              "score": 100,
+              "message": "Field 'variant_id' is present"
+            },
+            {
+              "assertion": {
+                "assertion": "field_present",
+                "source": "search_results.products.0.variants.0",
+                "field": "price",
+                "severity": "medium",
+                "score_weight": 5,
+                "message": "First variant missing 'price' field"
+              },
+              "passed": true,
+              "score": 100,
+              "message": "Field 'price' is present"
+            },
+            {
+              "assertion": {
+                "assertion": "field_present",
+                "source": "search_results.products.0.variants.0",
+                "field": "available",
+                "severity": "low",
+                "score_weight": 3,
+                "message": "First variant missing 'available' field — agents cannot check stock"
+              },
+              "passed": true,
+              "score": 100,
+              "message": "Field 'available' is present"
+            }
+          ],
+          "durationMs": 583
+        }
+      ],
+      "scoreKillers": []
+    },
+    {
+      "category": "product-discovery",
+      "tested": true,
+      "score": 100,
+      "cappedScore": 100,
+      "weight": 0.3,
+      "effectiveWeight": 0,
+      "scenarios": [
+        {
+          "scenario": {
+            "name": "shopify-filtered-search",
+            "description": "Filtered Shopify search returns results and exposes available_filters for refinement",
+            "category": "product-discovery",
+            "requires_capabilities": [
+              "search"
+            ],
+            "setup": [
+              {
+                "action": "search",
+                "params": {
+                  "query": "running shoes",
+                  "limit": 10,
+                  "context": "browsing"
+                },
+                "save_as": "search_results"
+              }
+            ],
+            "steps": [
+              {
+                "assertion": "array_non_empty",
+                "source": "search_results.products",
+                "severity": "high",
+                "score_weight": 10,
+                "message": "Filtered search for 'running shoes' returned no products"
+              },
+              {
+                "assertion": "field_present",
+                "source": "search_results",
+                "field": "available_filters",
+                "severity": "medium",
+                "score_weight": 8,
+                "message": "Search missing 'available_filters' — agents cannot offer follow-up filtering"
+              },
+              {
+                "assertion": "each_item_has_field",
+                "source": "search_results.products",
+                "field": "product_id",
+                "condition": "non_null",
+                "severity": "high",
+                "score_weight": 7,
+                "message": "Products missing 'product_id' — agents cannot fetch product details"
+              }
+            ],
+            "teardown": []
+          },
+          "status": "passed",
+          "score": 100,
+          "assertions": [
+            {
+              "assertion": {
+                "assertion": "array_non_empty",
+                "source": "search_results.products",
+                "severity": "high",
+                "score_weight": 10,
+                "message": "Filtered search for 'running shoes' returned no products"
+              },
+              "passed": true,
+              "score": 100,
+              "message": "Array is non-empty"
+            },
+            {
+              "assertion": {
+                "assertion": "field_present",
+                "source": "search_results",
+                "field": "available_filters",
+                "severity": "medium",
+                "score_weight": 8,
+                "message": "Search missing 'available_filters' — agents cannot offer follow-up filtering"
+              },
+              "passed": true,
+              "score": 100,
+              "message": "Field 'available_filters' is present"
+            },
+            {
+              "assertion": {
+                "assertion": "each_item_has_field",
+                "source": "search_results.products",
+                "field": "product_id",
+                "condition": "non_null",
+                "severity": "high",
+                "score_weight": 7,
+                "message": "Products missing 'product_id' — agents cannot fetch product details"
+              },
+              "passed": true,
+              "score": 100,
+              "message": "All 10 items have field 'product_id'",
+              "details": {
+                "failCount": 0,
+                "total": 10
+              }
+            }
+          ],
+          "durationMs": 569
+        },
+        {
+          "scenario": {
+            "name": "shopify-search-response-time",
+            "description": "Shopify catalog search should respond within acceptable time for good agent UX",
+            "category": "product-discovery",
+            "requires_capabilities": [
+              "search"
+            ],
+            "setup": [
+              {
+                "action": "search",
+                "params": {
+                  "query": "wool runner",
+                  "limit": 5,
+                  "context": "browsing"
+                },
+                "save_as": "search_results"
+              }
+            ],
+            "steps": [
+              {
+                "assertion": "response_time",
+                "source": "search_results_durationMs",
+                "ideal": 1500,
+                "acceptable": 4000,
+                "fail": 8000,
+                "severity": "high",
+                "score_weight": 10,
+                "message": "Shopify catalog search response time exceeded acceptable threshold"
+              },
+              {
+                "assertion": "array_non_empty",
+                "source": "search_results.products",
+                "severity": "high",
+                "score_weight": 5,
+                "message": "Search returned no products"
+              }
+            ],
+            "teardown": []
+          },
+          "status": "passed",
+          "score": 100,
+          "assertions": [
+            {
+              "assertion": {
+                "assertion": "response_time",
+                "source": "search_results_durationMs",
+                "ideal": 1500,
+                "acceptable": 4000,
+                "fail": 8000,
+                "severity": "high",
+                "score_weight": 10,
+                "message": "Shopify catalog search response time exceeded acceptable threshold"
+              },
+              "passed": true,
+              "score": 100,
+              "message": "Response time 425ms (ideal: 1500ms, acceptable: 4000ms, fail: 8000ms)"
+            },
+            {
+              "assertion": {
+                "assertion": "array_non_empty",
+                "source": "search_results.products",
+                "severity": "high",
+                "score_weight": 5,
+                "message": "Search returned no products"
+              },
+              "passed": true,
+              "score": 100,
+              "message": "Array is non-empty"
+            }
+          ],
+          "durationMs": 425
+        },
+        {
+          "scenario": {
+            "name": "shopify-search",
+            "description": "Basic search returns results using Shopify's search_shop_catalog tool",
+            "category": "product-discovery",
+            "requires_capabilities": [
+              "search"
+            ],
+            "setup": [
+              {
+                "action": "search",
+                "params": {
+                  "query": "sneakers",
+                  "limit": 10,
+                  "context": "browsing"
+                },
+                "save_as": "search_results"
+              }
+            ],
+            "steps": [
+              {
+                "assertion": "schema_match",
+                "source": "search_results",
+                "severity": "high",
+                "score_weight": 10,
+                "message": "Search response is not a valid object"
+              },
+              {
+                "assertion": "field_present",
+                "source": "search_results",
+                "field": "products",
+                "severity": "high",
+                "score_weight": 10,
+                "message": "Search response missing 'products' field — Shopify MCP schema may have changed"
+              },
+              {
+                "assertion": "array_non_empty",
+                "source": "search_results.products",
+                "severity": "high",
+                "score_weight": 10,
+                "message": "Search for 'sneakers' returned no products"
+              },
+              {
+                "assertion": "field_present",
+                "source": "search_results",
+                "field": "pagination",
+                "severity": "medium",
+                "score_weight": 5,
+                "message": "Search response missing 'pagination' field"
+              },
+              {
+                "assertion": "field_present",
+                "source": "search_results",
+                "field": "available_filters",
+                "severity": "low",
+                "score_weight": 3,
+                "message": "Search response missing 'available_filters' — agents cannot offer filter refinement"
+              }
+            ],
+            "teardown": []
+          },
+          "status": "passed",
+          "score": 100,
+          "assertions": [
+            {
+              "assertion": {
+                "assertion": "schema_match",
+                "source": "search_results",
+                "severity": "high",
+                "score_weight": 10,
+                "message": "Search response is not a valid object"
+              },
+              "passed": true,
+              "score": 100,
+              "message": "Data matches schema (is an object)"
+            },
+            {
+              "assertion": {
+                "assertion": "field_present",
+                "source": "search_results",
+                "field": "products",
+                "severity": "high",
+                "score_weight": 10,
+                "message": "Search response missing 'products' field — Shopify MCP schema may have changed"
+              },
+              "passed": true,
+              "score": 100,
+              "message": "Field 'products' is present"
+            },
+            {
+              "assertion": {
+                "assertion": "array_non_empty",
+                "source": "search_results.products",
+                "severity": "high",
+                "score_weight": 10,
+                "message": "Search for 'sneakers' returned no products"
+              },
+              "passed": true,
+              "score": 100,
+              "message": "Array is non-empty"
+            },
+            {
+              "assertion": {
+                "assertion": "field_present",
+                "source": "search_results",
+                "field": "pagination",
+                "severity": "medium",
+                "score_weight": 5,
+                "message": "Search response missing 'pagination' field"
+              },
+              "passed": true,
+              "score": 100,
+              "message": "Field 'pagination' is present"
+            },
+            {
+              "assertion": {
+                "assertion": "field_present",
+                "source": "search_results",
+                "field": "available_filters",
+                "severity": "low",
+                "score_weight": 3,
+                "message": "Search response missing 'available_filters' — agents cannot offer filter refinement"
+              },
+              "passed": true,
+              "score": 100,
+              "message": "Field 'available_filters' is present"
+            }
+          ],
+          "durationMs": 579
+        }
+      ],
+      "scoreKillers": []
+    },
+    {
+      "category": "checkout-flow",
+      "tested": true,
+      "score": 100,
+      "cappedScore": 100,
+      "weight": 0.25,
+      "effectiveWeight": 0,
+      "scenarios": [
+        {
+          "scenario": {
+            "name": "shopify-cart-update",
+            "description": "Verify that products from search have the data needed to add to cart (product_id and either variants or options)",
+            "category": "checkout-flow",
+            "requires_capabilities": [
+              "add_to_cart",
+              "search"
+            ],
+            "setup": [
+              {
+                "action": "search",
+                "params": {
+                  "query": "shoe bag",
+                  "limit": 3,
+                  "context": "browsing"
+                },
+                "save_as": "search_results"
+              }
+            ],
+            "steps": [
+              {
+                "assertion": "array_non_empty",
+                "source": "search_results.products",
+                "severity": "high",
+                "score_weight": 5,
+                "message": "Search returned no products — cannot test cart readiness"
+              },
+              {
+                "assertion": "each_item_has_field",
+                "source": "search_results.products",
+                "field": "product_id",
+                "condition": "non_null",
+                "severity": "high",
+                "score_weight": 10,
+                "message": "Products missing 'product_id' — agents cannot add items to cart"
+              },
+              {
+                "assertion": "field_present",
+                "source": "search_results.products.0",
+                "field": "product_id",
+                "severity": "high",
+                "score_weight": 10,
+                "message": "First product missing 'product_id' field — cannot construct add-to-cart payload"
+              }
+            ],
+            "teardown": []
+          },
+          "status": "passed",
+          "score": 100,
+          "assertions": [
+            {
+              "assertion": {
+                "assertion": "array_non_empty",
+                "source": "search_results.products",
+                "severity": "high",
+                "score_weight": 5,
+                "message": "Search returned no products — cannot test cart readiness"
+              },
+              "passed": true,
+              "score": 100,
+              "message": "Array is non-empty"
+            },
+            {
+              "assertion": {
+                "assertion": "each_item_has_field",
+                "source": "search_results.products",
+                "field": "product_id",
+                "condition": "non_null",
+                "severity": "high",
+                "score_weight": 10,
+                "message": "Products missing 'product_id' — agents cannot add items to cart"
+              },
+              "passed": true,
+              "score": 100,
+              "message": "All 3 items have field 'product_id'",
+              "details": {
+                "failCount": 0,
+                "total": 3
+              }
+            },
+            {
+              "assertion": {
+                "assertion": "field_present",
+                "source": "search_results.products.0",
+                "field": "product_id",
+                "severity": "high",
+                "score_weight": 10,
+                "message": "First product missing 'product_id' field — cannot construct add-to-cart payload"
+              },
+              "passed": true,
+              "score": 100,
+              "message": "Field 'product_id' is present"
+            }
+          ],
+          "durationMs": 524
+        }
+      ],
+      "scoreKillers": []
+    },
+    {
+      "category": "protocol-compliance",
+      "tested": true,
+      "score": 100,
+      "cappedScore": 100,
+      "weight": 0.1,
+      "effectiveWeight": 0,
+      "scenarios": [
+        {
+          "scenario": {
+            "name": "shopify-error-handling",
+            "description": "Shopify MCP search handles edge-case queries gracefully without crashing",
+            "category": "protocol-compliance",
+            "requires_capabilities": [
+              "search"
+            ],
+            "setup": [
+              {
+                "action": "search",
+                "params": {
+                  "query": "xzxzxzxz_nonexistent_product_12345",
+                  "limit": 5,
+                  "context": "testing"
+                },
+                "save_as": "search_results"
+              }
+            ],
+            "steps": [
+              {
+                "assertion": "schema_match",
+                "source": "search_results",
+                "severity": "high",
+                "score_weight": 10,
+                "message": "search_shop_catalog did not return a valid object for an empty-results query"
+              },
+              {
+                "assertion": "field_present",
+                "source": "search_results",
+                "field": "products",
+                "severity": "high",
+                "score_weight": 8,
+                "message": "Response missing 'products' field even for no-results query — error response returned instead"
+              }
+            ],
+            "teardown": []
+          },
+          "status": "passed",
+          "score": 100,
+          "assertions": [
+            {
+              "assertion": {
+                "assertion": "schema_match",
+                "source": "search_results",
+                "severity": "high",
+                "score_weight": 10,
+                "message": "search_shop_catalog did not return a valid object for an empty-results query"
+              },
+              "passed": true,
+              "score": 100,
+              "message": "Data matches schema (is an object)"
+            },
+            {
+              "assertion": {
+                "assertion": "field_present",
+                "source": "search_results",
+                "field": "products",
+                "severity": "high",
+                "score_weight": 8,
+                "message": "Response missing 'products' field even for no-results query — error response returned instead"
+              },
+              "passed": true,
+              "score": 100,
+              "message": "Field 'products' is present"
+            }
+          ],
+          "durationMs": 300
+        },
+        {
+          "scenario": {
+            "name": "shopify-tool-list",
+            "description": "Verify that the Shopify MCP server exposes search_shop_catalog and it is callable",
+            "category": "protocol-compliance",
+            "requires_capabilities": [
+              "search"
+            ],
+            "setup": [
+              {
+                "action": "search",
+                "params": {
+                  "query": "test product",
+                  "limit": 5,
+                  "context": "testing"
+                },
+                "save_as": "search_results"
+              }
+            ],
+            "steps": [
+              {
+                "assertion": "schema_match",
+                "source": "search_results",
+                "severity": "high",
+                "score_weight": 10,
+                "message": "search_shop_catalog did not return a valid object response"
+              },
+              {
+                "assertion": "field_present",
+                "source": "search_results",
+                "field": "products",
+                "severity": "high",
+                "score_weight": 10,
+                "message": "search_shop_catalog response missing 'products' field"
+              },
+              {
+                "assertion": "field_present",
+                "source": "search_results",
+                "field": "pagination",
+                "severity": "medium",
+                "score_weight": 5,
+                "message": "search_shop_catalog response missing 'pagination' — pagination support not confirmed"
+              }
+            ],
+            "teardown": []
+          },
+          "status": "passed",
+          "score": 100,
+          "assertions": [
+            {
+              "assertion": {
+                "assertion": "schema_match",
+                "source": "search_results",
+                "severity": "high",
+                "score_weight": 10,
+                "message": "search_shop_catalog did not return a valid object response"
+              },
+              "passed": true,
+              "score": 100,
+              "message": "Data matches schema (is an object)"
+            },
+            {
+              "assertion": {
+                "assertion": "field_present",
+                "source": "search_results",
+                "field": "products",
+                "severity": "high",
+                "score_weight": 10,
+                "message": "search_shop_catalog response missing 'products' field"
+              },
+              "passed": true,
+              "score": 100,
+              "message": "Field 'products' is present"
+            },
+            {
+              "assertion": {
+                "assertion": "field_present",
+                "source": "search_results",
+                "field": "pagination",
+                "severity": "medium",
+                "score_weight": 5,
+                "message": "search_shop_catalog response missing 'pagination' — pagination support not confirmed"
+              },
+              "passed": true,
+              "score": 100,
+              "message": "Field 'pagination' is present"
+            }
+          ],
+          "durationMs": 1711
+        }
+      ],
+      "scoreKillers": []
+    }
+  ],
+  "partialResults": false,
+  "mappings": [
+    {
+      "capability": "search",
+      "toolName": "search_shop_catalog",
+      "confidence": "high"
+    },
+    {
+      "capability": "get_detail",
+      "toolName": "get_product_details",
+      "confidence": "high"
+    },
+    {
+      "capability": "add_to_cart",
+      "toolName": "get_cart",
+      "confidence": "high"
+    }
+  ],
+  "version": "0.1.0",
+  "schemaVersion": "1.0",
+  "scenarioCount": 10,
+  "testedCategories": [
+    "data-quality",
+    "product-discovery",
+    "checkout-flow",
+    "protocol-compliance"
+  ]
+}
