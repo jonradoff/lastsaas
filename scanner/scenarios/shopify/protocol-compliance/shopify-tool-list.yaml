@@ -1,0 +1,33 @@
+name: "shopify-tool-list"
+description: "Verify that the Shopify MCP server exposes search_shop_catalog and it is callable"
+category: protocol-compliance
+requires_capabilities:
+  - search
+
+setup:
+  - action: search
+    params: { query: "test product", limit: 5, context: "testing" }
+    save_as: search_results
+
+steps:
+  - assertion: schema_match
+    source: search_results
+    severity: high
+    score_weight: 10
+    message: "search_shop_catalog did not return a valid object response"
+
+  - assertion: field_present
+    source: search_results
+    field: products
+    severity: high
+    score_weight: 10
+    message: "search_shop_catalog response missing 'products' field"
+
+  - assertion: field_present
+    source: search_results
+    field: pagination
+    severity: medium
+    score_weight: 5
+    message: "search_shop_catalog response missing 'pagination' — pagination support not confirmed"
+
+teardown: []

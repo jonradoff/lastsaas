@@ -1,0 +1,26 @@
+name: "shopify-error-handling"
+description: "Shopify MCP search handles edge-case queries gracefully without crashing"
+category: protocol-compliance
+requires_capabilities:
+  - search
+
+setup:
+  - action: search
+    params: { query: "xzxzxzxz_nonexistent_product_12345", limit: 5, context: "testing" }
+    save_as: search_results
+
+steps:
+  - assertion: schema_match
+    source: search_results
+    severity: high
+    score_weight: 10
+    message: "search_shop_catalog did not return a valid object for an empty-results query"
+
+  - assertion: field_present
+    source: search_results
+    field: products
+    severity: high
+    score_weight: 8
+    message: "Response missing 'products' field even for no-results query — error response returned instead"
+
+teardown: []

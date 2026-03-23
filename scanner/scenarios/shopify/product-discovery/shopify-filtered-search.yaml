@@ -1,0 +1,34 @@
+name: "shopify-filtered-search"
+description: "Filtered Shopify search returns results and exposes available_filters for refinement"
+category: product-discovery
+requires_capabilities:
+  - search
+
+setup:
+  - action: search
+    params: { query: "running shoes", limit: 10, context: "browsing" }
+    save_as: search_results
+
+steps:
+  - assertion: array_non_empty
+    source: search_results.products
+    severity: high
+    score_weight: 10
+    message: "Filtered search for 'running shoes' returned no products"
+
+  - assertion: field_present
+    source: search_results
+    field: available_filters
+    severity: medium
+    score_weight: 8
+    message: "Search missing 'available_filters' — agents cannot offer follow-up filtering"
+
+  - assertion: each_item_has_field
+    source: search_results.products
+    field: product_id
+    condition: non_null
+    severity: high
+    score_weight: 7
+    message: "Products missing 'product_id' — agents cannot fetch product details"
+
+teardown: []

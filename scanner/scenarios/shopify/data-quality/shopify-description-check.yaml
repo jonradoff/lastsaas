@@ -1,0 +1,53 @@
+name: "shopify-description-check"
+description: "Checks that Shopify product listings include a title and that most have non-empty descriptions"
+category: data-quality
+requires_capabilities:
+  - search
+
+setup:
+  - action: search
+    params: { query: "sneakers", limit: 10, context: "browsing" }
+    save_as: search_results
+
+steps:
+  - assertion: array_non_empty
+    source: search_results.products
+    severity: high
+    score_weight: 5
+    message: "Search returned no products — cannot check descriptions"
+
+  - assertion: each_item_has_field
+    source: search_results.products
+    field: title
+    condition: non_null
+    severity: high
+    score_weight: 10
+    message: "Products missing required 'title' field"
+
+  - assertion: percentage_threshold
+    source: search_results.products
+    field: title
+    condition: non_null
+    threshold: 100
+    severity: high
+    score_weight: 8
+    message: "Some products are missing a title — {fail_count} of {fail_count} items affected"
+
+  - assertion: percentage_threshold
+    source: search_results.products
+    field: description
+    condition: non_null
+    threshold: 60
+    severity: medium
+    score_weight: 7
+    message: "{fail_pct}% of products lack a description (threshold: 40%)"
+
+  - assertion: each_item_has_field
+    source: search_results.products
+    field: url
+    condition: non_null
+    severity: medium
+    score_weight: 5
+    message: "Products missing 'url' field — agents cannot link to product pages"
+
+teardown: []

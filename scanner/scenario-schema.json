@@ -1,0 +1,145 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentlens.dev/scenario-schema.json",
+  "title": "AgentLens Scenario",
+  "description": "Schema for AgentLens scenario YAML files",
+  "type": "object",
+  "required": ["name", "description", "category", "requires_capabilities", "steps"],
+  "additionalProperties": false,
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "category": {
+      "type": "string",
+      "enum": ["data-quality", "product-discovery", "checkout-flow", "protocol-compliance"]
+    },
+    "requires_capabilities": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "enum": ["search", "get_detail", "add_to_cart", "checkout"]
+      }
+    },
+    "setup": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/setupTeardownStep"
+      }
+    },
+    "teardown": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/setupTeardownStep"
+      }
+    },
+    "steps": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/step"
+      }
+    }
+  },
+  "$defs": {
+    "setupTeardownStep": {
+      "type": "object",
+      "required": ["action", "params"],
+      "additionalProperties": false,
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": ["search", "get_detail", "add_to_cart", "checkout"]
+        },
+        "params": {
+          "type": "object"
+        },
+        "save_as": {
+          "type": "string"
+        }
+      }
+    },
+    "step": {
+      "type": "object",
+      "required": ["assertion", "severity", "score_weight"],
+      "additionalProperties": false,
+      "properties": {
+        "assertion": {
+          "type": "string",
+          "enum": [
+            "field_present",
+            "field_type",
+            "field_non_empty",
+            "each_item_has_field",
+            "percentage_threshold",
+            "response_time",
+            "status_code",
+            "schema_match",
+            "array_non_empty",
+            "url_format",
+            "value_range",
+            "value_positive"
+          ]
+        },
+        "severity": {
+          "type": "string",
+          "enum": ["high", "medium", "low"]
+        },
+        "score_weight": {
+          "type": "number",
+          "minimum": 0
+        },
+        "source": {
+          "type": "string"
+        },
+        "field": {
+          "type": "string"
+        },
+        "condition": {
+          "type": "string"
+        },
+        "threshold": {
+          "type": "number"
+        },
+        "on_fail": {
+          "type": "string",
+          "enum": ["score_killer"]
+        },
+        "score_killer_cap": {
+          "type": "number"
+        },
+        "message": {
+          "type": "string"
+        },
+        "expected_type": {
+          "type": "string"
+        },
+        "schema": {
+          "type": "object"
+        },
+        "min": {
+          "type": "number"
+        },
+        "max": {
+          "type": "number"
+        },
+        "min_length": {
+          "type": "number"
+        },
+        "ideal": {
+          "type": "number"
+        },
+        "acceptable": {
+          "type": "number"
+        },
+        "fail": {
+          "type": "number"
+        }
+      }
+    }
+  }
+}

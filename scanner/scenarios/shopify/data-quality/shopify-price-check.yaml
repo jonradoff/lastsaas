@@ -1,0 +1,52 @@
+name: "shopify-price-check"
+description: "Checks that returned Shopify products have price_range data with a valid min price"
+category: data-quality
+requires_capabilities:
+  - search
+
+setup:
+  - action: search
+    params: { query: "shoes", limit: 10, context: "browsing" }
+    save_as: search_results
+
+steps:
+  - assertion: array_non_empty
+    source: search_results.products
+    severity: high
+    score_weight: 5
+    message: "Search returned no products — cannot check pricing"
+
+  - assertion: each_item_has_field
+    source: search_results.products
+    field: price_range
+    condition: non_null
+    severity: high
+    score_weight: 10
+    message: "Products missing price_range field"
+
+  - assertion: percentage_threshold
+    source: search_results.products
+    field: price_range
+    condition: non_null
+    threshold: 90
+    severity: high
+    score_weight: 10
+    on_fail: score_killer
+    score_killer_cap: 50
+    message: "{fail_pct}% of returned products lack price_range data (threshold: 10%)"
+
+  - assertion: field_present
+    source: search_results.products.0.price_range
+    field: min
+    severity: medium
+    score_weight: 5
+    message: "price_range missing 'min' field on first product"
+
+  - assertion: field_present
+    source: search_results.products.0.price_range
+    field: currency
+    severity: medium
+    score_weight: 5
+    message: "price_range missing 'currency' field on first product"
+
+teardown: []

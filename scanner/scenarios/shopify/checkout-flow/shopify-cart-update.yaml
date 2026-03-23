@@ -1,0 +1,35 @@
+name: "shopify-cart-update"
+description: "Verify that products from search have the data needed to add to cart (product_id and either variants or options)"
+category: checkout-flow
+requires_capabilities:
+  - add_to_cart
+  - search
+
+setup:
+  - action: search
+    params: { query: "shoe bag", limit: 3, context: "browsing" }
+    save_as: search_results
+
+steps:
+  - assertion: array_non_empty
+    source: search_results.products
+    severity: high
+    score_weight: 5
+    message: "Search returned no products — cannot test cart readiness"
+
+  - assertion: each_item_has_field
+    source: search_results.products
+    field: product_id
+    condition: non_null
+    severity: high
+    score_weight: 10
+    message: "Products missing 'product_id' — agents cannot add items to cart"
+
+  - assertion: field_present
+    source: search_results.products.0
+    field: product_id
+    severity: high
+    score_weight: 10
+    message: "First product missing 'product_id' field — cannot construct add-to-cart payload"
+
+teardown: []

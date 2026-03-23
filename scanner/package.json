@@ -1,0 +1,33 @@
+{
+  "name": "mcplens",
+  "version": "0.1.0",
+  "description": "Scan any store's AI agent readiness — Lighthouse for agent commerce",
+  "type": "module",
+  "bin": {
+    "mcplens": "dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsc && npm run copy-assets",
+    "copy-assets": "cp -r scenarios dist/ && cp scenario-schema.json dist/",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.0",
+    "commander": "^13.0.0",
+    "js-yaml": "^4.1.0",
+    "ajv": "^8.17.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.0",
+    "vitest": "^3.0.0",
+    "@types/js-yaml": "^4.0.9",
+    "@types/node": "^22.0.0"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/reesthomas212/mcplens"
+  },
+  "keywords": ["mcp", "shopify", "agent-commerce", "testing", "scanner", "lighthouse"]
+}

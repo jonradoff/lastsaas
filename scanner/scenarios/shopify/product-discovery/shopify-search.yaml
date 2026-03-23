@@ -1,0 +1,46 @@
+name: "shopify-search"
+description: "Basic search returns results using Shopify's search_shop_catalog tool"
+category: product-discovery
+requires_capabilities:
+  - search
+
+setup:
+  - action: search
+    params: { query: "sneakers", limit: 10, context: "browsing" }
+    save_as: search_results
+
+steps:
+  - assertion: schema_match
+    source: search_results
+    severity: high
+    score_weight: 10
+    message: "Search response is not a valid object"
+
+  - assertion: field_present
+    source: search_results
+    field: products
+    severity: high
+    score_weight: 10
+    message: "Search response missing 'products' field — Shopify MCP schema may have changed"
+
+  - assertion: array_non_empty
+    source: search_results.products
+    severity: high
+    score_weight: 10
+    message: "Search for 'sneakers' returned no products"
+
+  - assertion: field_present
+    source: search_results
+    field: pagination
+    severity: medium
+    score_weight: 5
+    message: "Search response missing 'pagination' field"
+
+  - assertion: field_present
+    source: search_results
+    field: available_filters
+    severity: low
+    score_weight: 3
+    message: "Search response missing 'available_filters' — agents cannot offer filter refinement"
+
+teardown: []

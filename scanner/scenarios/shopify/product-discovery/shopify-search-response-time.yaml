@@ -1,0 +1,28 @@
+name: "shopify-search-response-time"
+description: "Shopify catalog search should respond within acceptable time for good agent UX"
+category: product-discovery
+requires_capabilities:
+  - search
+
+setup:
+  - action: search
+    params: { query: "wool runner", limit: 5, context: "browsing" }
+    save_as: search_results
+
+steps:
+  - assertion: response_time
+    source: search_results_durationMs
+    ideal: 1500
+    acceptable: 4000
+    fail: 8000
+    severity: high
+    score_weight: 10
+    message: "Shopify catalog search response time exceeded acceptable threshold"
+
+  - assertion: array_non_empty
+    source: search_results.products
+    severity: high
+    score_weight: 5
+    message: "Search returned no products"
+
+teardown: []

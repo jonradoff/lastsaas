@@ -42,3 +42,5 @@ dist/
 
 # MCP registry tokens
 .mcpregistry_*
+scanner/node_modules/
+scanner/dist/
