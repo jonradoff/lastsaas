@@ -39,9 +39,11 @@ COPY backend/config/prod.example.yaml ./config/prod.yaml
 # Copy React frontend build
 COPY --from=frontend-builder /build/dist ./static
 
-# Copy scanner dist and scenarios
+# Copy scanner dist, scenarios, and node_modules (needed at runtime for imports)
 COPY --from=scanner-builder /build/dist ./scanner/dist
 COPY --from=scanner-builder /build/scenarios ./scanner/scenarios
+COPY --from=scanner-builder /build/node_modules ./scanner/node_modules
+COPY --from=scanner-builder /build/package.json ./scanner/package.json
 
 ENV LASTSAAS_ENV=prod
 ENV SCANNER_PATH=/app/scanner/dist
