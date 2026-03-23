@@ -1,10 +1,54 @@
 import { useState, type FormEvent, useEffect } from 'react';
 import { Navigate, Link, useNavigate } from 'react-router-dom';
 import DOMPurify from 'dompurify';
+import { motion } from 'framer-motion';
 import { useBranding } from '../../contexts/BrandingContext';
 import { useAuth } from '../../contexts/AuthContext';
-import RevenueCalculator from '../../components/RevenueCalculator';
+import ScanDemo from '../../components/ScanDemo';
 
+// ── Reduced motion ──────────────────────────────────────────────────────────
+const prefersReducedMotion =
+  typeof window !== 'undefined' &&
+  window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// ── Animation variants ──────────────────────────────────────────────────────
+const fadeInUp = prefersReducedMotion
+  ? {}
+  : {
+      hidden: { opacity: 0, y: 20 },
+      visible: {
+        opacity: 1,
+        y: 0,
+        transition: { duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] as const },
+      },
+    };
+
+const staggerContainer = prefersReducedMotion
+  ? {}
+  : {
+      hidden: {},
+      visible: { transition: { staggerChildren: 0.075 } },
+    };
+
+const cardHover = prefersReducedMotion
+  ? {}
+  : {
+      whileHover: { y: -4, boxShadow: '0 10px 25px rgba(0,0,0,0.08)' },
+      transition: { duration: 0.2 },
+    };
+
+// Shared props for scroll-triggered sections
+function sectionMotionProps() {
+  if (prefersReducedMotion) return {};
+  return {
+    initial: 'hidden' as const,
+    whileInView: 'visible' as const,
+    viewport: { once: true, amount: 0.2 as const },
+    variants: fadeInUp,
+  };
+}
+
+// ── Component ───────────────────────────────────────────────────────────────
 export default function LandingPage() {
   const { branding, loaded } = useBranding();
   const { isAuthenticated } = useAuth();
@@ -99,53 +143,99 @@ export default function LandingPage() {
 
       <main className="flex-1">
         {/* ── Hero ── */}
-        <section className="px-6 py-24 sm:py-32">
-          <div className="max-w-2xl mx-auto text-center w-full">
-            <div className="inline-flex items-center gap-2 bg-blue-50 border border-blue-200 rounded-full px-4 py-1.5 text-sm text-blue-600 mb-8">
-              AI Agent Readiness Scanner
-            </div>
+        <section className="px-6 py-20 sm:py-28">
+          <div className="max-w-5xl mx-auto">
+            <div className="flex flex-col lg:flex-row lg:items-center lg:gap-16">
+              {/* Left: copy + form */}
+              <div className="flex-1 text-center lg:text-left">
+                <motion.div
+                  initial={prefersReducedMotion ? false : { opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0 }}
+                  className="inline-flex items-center gap-2 bg-blue-50 border border-blue-200 rounded-full px-4 py-1.5 text-sm text-blue-600 mb-8"
+                >
+                  AI Agent Readiness Scanner
+                </motion.div>
 
-            <h1 className="text-4xl sm:text-5xl font-bold text-slate-900 leading-tight tracking-tight mb-6">
-              Are AI agents skipping your store?
-            </h1>
+                <motion.h1
+                  initial={prefersReducedMotion ? false : { opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.1 }}
+                  className="text-4xl sm:text-5xl font-bold text-slate-900 leading-tight tracking-tight mb-6"
+                >
+                  Are AI agents skipping your store?
+                </motion.h1>
 
-            <p className="text-lg text-slate-500 leading-relaxed mb-10">
-              If AI agents can&apos;t find, compare, or purchase your products, you&apos;re
-              already losing sales you&apos;ll never see.
-            </p>
+                <motion.p
+                  initial={prefersReducedMotion ? false : { opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.3 }}
+                  className="text-lg text-slate-500 leading-relaxed mb-10"
+                >
+                  If AI agents can&apos;t find, compare, or purchase your products, you&apos;re
+                  already losing sales you&apos;ll never see.
+                </motion.p>
 
-            <form
-              onSubmit={handleHeroSubmit}
-              className="flex flex-col sm:flex-row gap-3 w-full max-w-xl mx-auto"
-            >
-              <input
-                type="text"
-                value={heroDomain}
-                onChange={(e) => setHeroDomain(e.target.value)}
-                placeholder="allbirds.com"
-                className="flex-1 px-4 py-3 bg-white border border-slate-300 rounded-lg text-slate-900 text-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                autoFocus
-              />
-              <button
-                type="submit"
-                disabled={!heroDomain.trim()}
-                className="px-6 py-3 bg-blue-500 hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold rounded-full transition-colors whitespace-nowrap"
+                <motion.form
+                  initial={prefersReducedMotion ? false : { opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.45 }}
+                  onSubmit={handleHeroSubmit}
+                  className="flex flex-col sm:flex-row gap-3 w-full max-w-xl mx-auto lg:mx-0"
+                >
+                  <input
+                    type="text"
+                    value={heroDomain}
+                    onChange={(e) => setHeroDomain(e.target.value)}
+                    placeholder="allbirds.com"
+                    className="flex-1 px-4 py-3 bg-white border border-slate-300 rounded-lg text-slate-900 text-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                    autoFocus
+                  />
+                  <button
+                    type="submit"
+                    disabled={!heroDomain.trim()}
+                    className="px-6 py-3 bg-blue-500 hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold rounded-full transition-colors whitespace-nowrap"
+                  >
+                    Scan Free &rarr;
+                  </button>
+                </motion.form>
+
+                <motion.p
+                  initial={prefersReducedMotion ? false : { opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.5, delay: 0.6 }}
+                  className="mt-4 text-sm text-slate-400"
+                >
+                  Get a scored report instantly. No credit card. No follow-up emails.
+                </motion.p>
+                <motion.p
+                  initial={prefersReducedMotion ? false : { opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.5, delay: 0.65 }}
+                  className="mt-1 text-sm text-slate-400"
+                >
+                  We scan only public endpoints &mdash; no store credentials needed.
+                </motion.p>
+              </div>
+
+              {/* Right: animated product demo */}
+              <motion.div
+                initial={prefersReducedMotion ? false : { opacity: 0, x: 24 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.7, delay: 0.5 }}
+                className="mt-14 lg:mt-0 lg:w-[340px] shrink-0"
               >
-                Scan Free &rarr;
-              </button>
-            </form>
-
-            <p className="mt-4 text-sm text-slate-400">
-              Get a scored report instantly. No credit card. No follow-up emails.
-            </p>
-            <p className="mt-1 text-sm text-slate-400">
-              We scan only public endpoints &mdash; no store credentials needed.
-            </p>
+                <ScanDemo />
+              </motion.div>
+            </div>
           </div>
         </section>
 
         {/* ── Why This Matters Now ── */}
-        <section className="px-6 py-16 border-t border-slate-200">
+        <motion.section
+          {...sectionMotionProps()}
+          className="px-6 py-16 border-t border-slate-200"
+        >
           <div className="max-w-3xl mx-auto">
             <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 text-center tracking-tight mb-10">
               Agent commerce is here. Most stores aren&apos;t ready.
@@ -174,15 +264,24 @@ export default function LandingPage() {
               </p>
             </div>
           </div>
-        </section>
+        </motion.section>
 
         {/* ── How It Works ── */}
-        <section className="px-6 py-16 border-t border-slate-200">
+        <motion.section
+          {...sectionMotionProps()}
+          className="px-6 py-16 border-t border-slate-200"
+        >
           <div className="max-w-5xl mx-auto">
             <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 text-center tracking-tight mb-12">
               How it works
             </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 relative">
+            <motion.div
+              className="grid grid-cols-1 sm:grid-cols-3 gap-8 relative"
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.2 }}
+              variants={staggerContainer}
+            >
               {[
                 {
                   step: '01',
@@ -215,21 +314,28 @@ export default function LandingPage() {
                   desc: 'See exactly where agents fail and what to fix — prioritized by impact.',
                 },
               ].map(({ step, icon, title, desc }) => (
-                <div key={step} className="flex flex-col items-center text-center gap-4">
+                <motion.div
+                  key={step}
+                  variants={fadeInUp}
+                  className="flex flex-col items-center text-center gap-4"
+                >
                   <div className="w-14 h-14 rounded-2xl bg-blue-50 border border-blue-200 flex items-center justify-center">
                     {icon}
                   </div>
                   <div className="text-xs font-mono text-blue-500 tracking-widest">{step}</div>
                   <h3 className="text-lg font-semibold text-slate-900">{title}</h3>
                   <p className="text-sm text-slate-500 leading-relaxed">{desc}</p>
-                </div>
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
           </div>
-        </section>
+        </motion.section>
 
         {/* ── Sample Report Preview ── */}
-        <section className="px-6 py-16 border-t border-slate-200">
+        <motion.section
+          {...sectionMotionProps()}
+          className="px-6 py-16 border-t border-slate-200"
+        >
           <div className="max-w-3xl mx-auto">
             <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 text-center tracking-tight mb-4">
               See what you get
@@ -238,9 +344,10 @@ export default function LandingPage() {
               Every scan produces a detailed report. Here&apos;s what one looks like.
             </p>
 
-            {/* Report mockup */}
-            <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
-              {/* Report header */}
+            <motion.div
+              {...(prefersReducedMotion ? {} : cardHover)}
+              className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden cursor-default"
+            >
               <div className="px-6 py-5 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
                   <div className="text-xs font-mono text-slate-400 uppercase tracking-wider mb-1">
@@ -257,7 +364,6 @@ export default function LandingPage() {
                 </div>
               </div>
 
-              {/* Category scores */}
               <div className="px-6 py-5 grid grid-cols-2 sm:grid-cols-4 gap-4">
                 {[
                   { name: 'Data Quality', score: 31, color: 'text-red-600' },
@@ -272,7 +378,6 @@ export default function LandingPage() {
                 ))}
               </div>
 
-              {/* Sample finding */}
               <div className="px-6 py-4 border-t border-slate-200 bg-amber-50">
                 <div className="flex items-start gap-3">
                   <span className="text-amber-500 text-lg leading-none mt-0.5">&#9888;</span>
@@ -287,42 +392,47 @@ export default function LandingPage() {
                   </div>
                 </div>
               </div>
-            </div>
+            </motion.div>
           </div>
-        </section>
+        </motion.section>
 
         {/* ── Trust / Real Data ── */}
-        <section className="px-6 py-16 border-t border-slate-200">
+        <motion.section
+          {...sectionMotionProps()}
+          className="px-6 py-16 border-t border-slate-200"
+        >
           <div className="max-w-5xl mx-auto">
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            <motion.div
+              className="grid grid-cols-1 sm:grid-cols-3 gap-6"
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.2 }}
+              variants={staggerContainer}
+            >
               {[
-                {
-                  stat: '100+',
-                  label: 'Stores scanned',
-                },
-                {
-                  stat: '11 – 100',
-                  label: 'Score range across scans',
-                },
-                {
-                  stat: '~15 sec',
-                  label: 'Average scan time',
-                },
+                { stat: '100+', label: 'Stores scanned' },
+                { stat: '11 – 100', label: 'Score range across scans' },
+                { stat: '~15 sec', label: 'Average scan time' },
               ].map(({ stat, label }) => (
-                <div
+                <motion.div
                   key={stat}
-                  className="bg-white rounded-xl p-6 text-center border border-slate-200 shadow-sm"
+                  variants={fadeInUp}
+                  {...(prefersReducedMotion ? {} : cardHover)}
+                  className="bg-white rounded-xl p-6 text-center border border-slate-200 shadow-sm cursor-default"
                 >
                   <div className="text-3xl font-bold text-blue-500 mb-2">{stat}</div>
                   <div className="text-sm text-slate-500">{label}</div>
-                </div>
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
           </div>
-        </section>
+        </motion.section>
 
         {/* ── Scoring Categories ── */}
-        <section className="px-6 py-16 border-t border-slate-200">
+        <motion.section
+          {...sectionMotionProps()}
+          className="px-6 py-16 border-t border-slate-200"
+        >
           <div className="max-w-5xl mx-auto">
             <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 text-center tracking-tight mb-4">
               What gets scored
@@ -330,7 +440,13 @@ export default function LandingPage() {
             <p className="text-center text-slate-500 mb-12 max-w-xl mx-auto">
               Every scan produces a 0&ndash;100 score across four weighted categories.
             </p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <motion.div
+              className="grid grid-cols-1 sm:grid-cols-2 gap-6"
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.2 }}
+              variants={staggerContainer}
+            >
               {[
                 {
                   name: 'Data Quality',
@@ -357,9 +473,11 @@ export default function LandingPage() {
                   question: 'Does the public endpoint follow the spec correctly?',
                 },
               ].map(({ name, weight, color, question }) => (
-                <div
+                <motion.div
                   key={name}
-                  className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm flex flex-col gap-3"
+                  variants={fadeInUp}
+                  {...(prefersReducedMotion ? {} : cardHover)}
+                  className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm flex flex-col gap-3 cursor-default"
                 >
                   <div className="flex items-center justify-between">
                     <span className="font-semibold text-slate-900">{name}</span>
@@ -372,20 +490,29 @@ export default function LandingPage() {
                     />
                   </div>
                   <p className="text-sm text-slate-500">{question}</p>
-                </div>
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
           </div>
-        </section>
-
-        {/* ── Revenue Impact Calculator ── */}
-        <RevenueCalculator />
+        </motion.section>
 
         {/* ── Before / After ── */}
-        <section className="px-6 py-16 border-t border-slate-200">
+        <motion.section
+          {...sectionMotionProps()}
+          className="px-6 py-16 border-t border-slate-200"
+        >
           <div className="max-w-3xl mx-auto">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-7">
+            <motion.div
+              className="grid grid-cols-1 sm:grid-cols-2 gap-6"
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.2 }}
+              variants={staggerContainer}
+            >
+              <motion.div
+                variants={fadeInUp}
+                className="bg-white border border-slate-200 rounded-xl shadow-sm p-7"
+              >
                 <div className="text-xs font-mono text-red-600 uppercase tracking-widest mb-4">
                   Before MCPLens
                 </div>
@@ -393,8 +520,11 @@ export default function LandingPage() {
                   You deployed your Shopify store. AI agents visit. Some buy. Most don&apos;t.
                   You have no idea why.
                 </p>
-              </div>
-              <div className="bg-blue-50 border border-blue-200 rounded-xl p-7">
+              </motion.div>
+              <motion.div
+                variants={fadeInUp}
+                className="bg-blue-50 border border-blue-200 rounded-xl p-7"
+              >
                 <div className="text-xs font-mono text-blue-600 uppercase tracking-widest mb-4">
                   After MCPLens
                 </div>
@@ -402,13 +532,16 @@ export default function LandingPage() {
                   You scan your store. You see exactly where agents fail. You fix the gaps.
                   Your agent conversion rate climbs.
                 </p>
-              </div>
-            </div>
+              </motion.div>
+            </motion.div>
           </div>
-        </section>
+        </motion.section>
 
         {/* ── Agencies CTA ── */}
-        <section className="px-6 py-16 border-t border-slate-200">
+        <motion.section
+          {...sectionMotionProps()}
+          className="px-6 py-16 border-t border-slate-200"
+        >
           <div className="max-w-3xl mx-auto bg-gradient-to-br from-blue-50 to-violet-50 border border-blue-200 rounded-2xl p-10 text-center">
             <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight mb-4">
               Win clients with data, not decks
@@ -427,218 +560,138 @@ export default function LandingPage() {
               Start scanning &rarr;
             </Link>
           </div>
-        </section>
+        </motion.section>
 
         {/* ── Pricing ── */}
-        <section id="pricing" className="px-6 py-16 border-t border-slate-200">
-          <div className="max-w-6xl mx-auto">
-            <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 text-center tracking-tight mb-3">
-              Pick your plan
+        <motion.section
+          {...sectionMotionProps()}
+          id="pricing"
+          className="px-6 py-16 border-t border-slate-200"
+        >
+          <div className="max-w-5xl mx-auto">
+            <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 text-center tracking-tight mb-4">
+              Simple, transparent pricing
             </h2>
             <p className="text-center text-slate-500 mb-12">
-              Start free. Upgrade when you need tracking, fixes, or clients.
+              See the problems free. Pay for the solutions.
             </p>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6 items-start">
-
-              {/* Card 1: Done-For-You (Anchor) */}
-              <div className="rounded-xl p-7 border flex flex-col gap-5 bg-slate-900 border-slate-800 shadow-lg text-white">
-                <div>
-                  <div className="text-xs font-semibold uppercase tracking-widest text-slate-400 mb-2">
-                    Done-For-You
-                  </div>
-                  <h3 className="text-lg font-bold text-white mb-1">
-                    We Guarantee a Perfect Score
-                  </h3>
-                  <p className="text-xs text-slate-400 italic mb-4">
-                    Best for: Enterprise brands who want it done right
-                  </p>
-                  <div className="flex items-end gap-1">
-                    <span className="text-4xl font-bold text-white">$2,500</span>
-                    <span className="text-slate-400 mb-1 text-sm">one-time</span>
-                  </div>
-                </div>
-                <ul className="flex flex-col gap-2">
-                  {[
-                    'Our team audits and fixes every issue',
-                    'Guaranteed 100/100 agent readiness',
-                    'Priority support for 90 days',
-                    'Custom implementation roadmap',
-                  ].map((f) => (
-                    <li key={f} className="flex items-start gap-2 text-sm text-slate-300">
-                      <svg className="w-4 h-4 mt-0.5 text-blue-400 shrink-0" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                      </svg>
-                      {f}
-                    </li>
-                  ))}
-                </ul>
-                <a
-                  href="mailto:hello@mcplens.com"
-                  className="mt-auto inline-flex items-center justify-center px-5 py-2.5 rounded-full font-semibold text-sm transition-colors bg-white text-slate-900 hover:bg-slate-100"
-                >
-                  Book a Call &rarr;
-                </a>
-              </div>
-
-              {/* Card 2: Agency — MOST POPULAR */}
-              <div className="rounded-xl p-7 border flex flex-col gap-5 bg-white border-blue-500 shadow-lg ring-2 ring-blue-500 relative">
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                  <span className="inline-block bg-blue-500 text-white text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full shadow">
-                    Most Popular
-                  </span>
-                </div>
-                <div className="pt-2">
-                  <div className="text-xs font-semibold uppercase tracking-widest text-blue-500 mb-2">
-                    Agency
-                  </div>
-                  <h3 className="text-lg font-bold text-slate-900 mb-1">
-                    The Client Acquisition Engine
-                  </h3>
-                  <p className="text-xs text-slate-500 italic mb-4">
-                    Best for: Agencies selling AI readiness services
-                  </p>
-                  <div className="flex items-end gap-1">
-                    <span className="text-4xl font-bold text-slate-900">$199</span>
-                    <span className="text-slate-500 mb-1 text-sm">/ month</span>
-                  </div>
-                </div>
-                <ul className="flex flex-col gap-2">
-                  {[
-                    'White-label audits for unlimited prospects',
-                    '50 tracked stores with daily monitoring',
-                    'API access for custom integrations',
-                    'Full fix instructions with code snippets',
-                  ].map((f) => (
-                    <li key={f} className="flex items-start gap-2 text-sm text-slate-600">
-                      <svg className="w-4 h-4 mt-0.5 text-blue-500 shrink-0" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                      </svg>
-                      {f}
-                    </li>
-                  ))}
-                </ul>
-                {/* Bonus value stack */}
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 flex flex-col gap-2">
-                  <p className="text-xs font-semibold text-blue-700 uppercase tracking-wider mb-1">
-                    Bonuses included
-                  </p>
-                  {[
-                    { label: 'Agency Pitch Deck', value: '$2,000' },
-                    { label: 'Cold Email Swipe File', value: '$500' },
-                  ].map(({ label, value }) => (
-                    <div key={label} className="flex items-center gap-2 text-sm text-slate-700">
-                      <span className="text-blue-500">✦</span>
-                      <span>{label}</span>
-                      <span className="text-slate-400 line-through text-xs">({value})</span>
-                      <span className="text-blue-600 text-xs font-semibold ml-auto">included</span>
-                    </div>
-                  ))}
-                  <p className="text-xs text-slate-500 mt-1 border-t border-blue-200 pt-2">
-                    Client-Closing Guarantee: land 1 client in 30 days or your money back.
-                  </p>
-                </div>
-                <Link
-                  to="/scan"
-                  className="mt-auto inline-flex items-center justify-center px-5 py-2.5 rounded-full font-semibold text-sm transition-colors bg-blue-500 hover:bg-blue-600 text-white"
-                >
-                  Start Landing Clients &rarr;
-                </Link>
-              </div>
-
-              {/* Card 3: Pro */}
-              <div className="rounded-xl p-7 border flex flex-col gap-5 bg-white border-slate-200 shadow-sm" style={{ background: 'linear-gradient(135deg, #ffffff 0%, #eff6ff 100%)' }}>
-                <div>
-                  <div className="text-xs font-semibold uppercase tracking-widest text-slate-400 mb-2">
-                    Pro
-                  </div>
-                  <h3 className="text-lg font-bold text-slate-900 mb-1">
-                    Stop Losing Sales You Can't See
-                  </h3>
-                  <p className="text-xs text-slate-500 italic mb-4">
-                    Best for: Store owners tracking their score
-                  </p>
-                  <div className="flex items-end gap-1">
-                    <span className="text-4xl font-bold text-slate-900">$99</span>
-                    <span className="text-slate-500 mb-1 text-sm">/ month</span>
-                  </div>
-                </div>
-                <ul className="flex flex-col gap-2">
-                  {[
-                    'Full fix instructions with code',
-                    '5 tracked stores, weekly monitoring',
-                    'CI/CD integration (--fail-under)',
-                    'Email alerts on score drops',
-                  ].map((f) => (
-                    <li key={f} className="flex items-start gap-2 text-sm text-slate-600">
-                      <svg className="w-4 h-4 mt-0.5 text-blue-500 shrink-0" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                      </svg>
-                      {f}
-                    </li>
-                  ))}
-                </ul>
-                <Link
-                  to="/scan"
-                  className="mt-auto inline-flex items-center justify-center px-5 py-2.5 rounded-full font-semibold text-sm transition-colors bg-white text-slate-700 border border-slate-300 hover:bg-slate-50"
-                >
-                  Start Free Trial &rarr;
-                </Link>
-              </div>
-
-              {/* Card 4: Free */}
-              <div className="rounded-xl p-7 border flex flex-col gap-5 bg-white border-slate-200 shadow-sm">
-                <div>
-                  <div className="text-xs font-semibold uppercase tracking-widest text-slate-400 mb-2">
-                    Free
-                  </div>
-                  <h3 className="text-lg font-bold text-slate-900 mb-1">
-                    See What AI Agents See
-                  </h3>
-                  <p className="text-xs text-slate-500 italic mb-4">
-                    Best for: Quick readiness checks
-                  </p>
-                  <div className="flex items-end gap-1">
-                    <span className="text-4xl font-bold text-slate-900">$0</span>
-                    <span className="text-slate-500 mb-1 text-sm">forever</span>
-                  </div>
-                </div>
-                <ul className="flex flex-col gap-2">
-                  {[
+            <motion.div
+              className="grid grid-cols-1 sm:grid-cols-3 gap-6 items-start"
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.2 }}
+              variants={staggerContainer}
+            >
+              {[
+                {
+                  name: 'Free',
+                  price: '$0',
+                  period: 'forever',
+                  cta: 'Get Started',
+                  highlight: false,
+                  bestFor: 'Best for: seeing what is broken',
+                  features: [
                     'Unlimited scans',
-                    'Score + what\'s failing',
-                    'Shareable report URL',
-                    'No signup required',
-                  ].map((f) => (
-                    <li key={f} className="flex items-start gap-2 text-sm text-slate-600">
-                      <svg className="w-4 h-4 mt-0.5 text-blue-500 shrink-0" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                      </svg>
-                      {f}
-                    </li>
-                  ))}
-                </ul>
-                <Link
-                  to="/scan"
-                  className="mt-auto inline-flex items-center justify-center px-5 py-2.5 rounded-full font-semibold text-sm transition-colors bg-white text-slate-700 border border-slate-300 hover:bg-slate-50"
+                    'Score + category breakdown',
+                    'Issue detection',
+                    'CLI access',
+                  ],
+                },
+                {
+                  name: 'Pro',
+                  price: '$99',
+                  period: 'per month',
+                  cta: 'Start Pro',
+                  highlight: true,
+                  bestFor: 'Best for: store owners fixing their score',
+                  features: [
+                    'Fix instructions for every issue',
+                    'CI/CD integration',
+                    '5 tracked stores',
+                    '90-day score history',
+                    'Weekly automated scans',
+                  ],
+                },
+                {
+                  name: 'Agency',
+                  price: '$199',
+                  period: 'per month',
+                  cta: 'Start Agency',
+                  highlight: false,
+                  bestFor: 'Best for: agencies landing clients with data',
+                  features: [
+                    '50 tracked stores',
+                    'Daily scans',
+                    'White-label reports',
+                    'API access',
+                    'Pitch deck + email swipes',
+                  ],
+                },
+              ].map(({ name, price, period, cta, highlight, bestFor, features }) => (
+                <motion.div
+                  key={name}
+                  variants={fadeInUp}
+                  {...(prefersReducedMotion ? {} : cardHover)}
+                  className={`rounded-xl p-7 border flex flex-col gap-6 cursor-default ${
+                    highlight
+                      ? 'bg-blue-50 border-blue-300 ring-1 ring-blue-300'
+                      : 'bg-white border-slate-200 shadow-sm'
+                  }`}
                 >
-                  Scan Your Store &rarr;
-                </Link>
-              </div>
-
-            </div>
-
-            <p className="text-center text-sm text-slate-400 mt-8">
-              Cancel anytime. No lock-in. Switch plans whenever.
-            </p>
-            <p className="text-center text-sm text-slate-500 mt-2">
-              Which plan is right for me? Start free, upgrade when you need tracking.
+                  {highlight && (
+                    <div className="text-xs font-semibold text-blue-600 uppercase tracking-widest -mb-2">
+                      Most popular
+                    </div>
+                  )}
+                  <div>
+                    <div className="text-lg font-bold text-slate-900 mb-1">{name}</div>
+                    <div className="text-xs text-slate-500 mb-3">{bestFor}</div>
+                    <div className="flex items-end gap-1">
+                      <span className="text-4xl font-bold text-slate-900">{price}</span>
+                      <span className="text-slate-500 mb-1 text-sm">/ {period}</span>
+                    </div>
+                  </div>
+                  <ul className="flex flex-col gap-2">
+                    {features.map((f) => (
+                      <li key={f} className="flex items-start gap-2 text-sm text-slate-600">
+                        <svg
+                          className="w-4 h-4 mt-0.5 text-blue-500 shrink-0"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth={2}
+                          viewBox="0 0 24 24"
+                        >
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                        </svg>
+                        {f}
+                      </li>
+                    ))}
+                  </ul>
+                  <Link
+                    to="/scan"
+                    className={`mt-auto inline-flex items-center justify-center px-5 py-2.5 rounded-full font-semibold text-sm transition-colors ${
+                      highlight
+                        ? 'bg-blue-500 hover:bg-blue-600 text-white'
+                        : 'bg-white text-slate-700 border border-slate-300 hover:bg-slate-50'
+                    }`}
+                  >
+                    {cta}
+                  </Link>
+                </motion.div>
+              ))}
+            </motion.div>
+            <p className="text-center text-sm text-slate-400 mt-6">
+              Cancel anytime. No lock-in. Start with Free &mdash; upgrade when you want to
+              track scores over time.
             </p>
           </div>
-        </section>
+        </motion.section>
 
         {/* ── CLI Section ── */}
-        <section className="px-6 py-16 border-t border-slate-200">
+        <motion.section
+          {...sectionMotionProps()}
+          className="px-6 py-16 border-t border-slate-200"
+        >
           <div className="max-w-3xl mx-auto text-center">
             <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight mb-4">
               Works in your terminal too
@@ -678,7 +731,7 @@ export default function LandingPage() {
               </a>
             </div>
           </div>
-        </section>
+        </motion.section>
       </main>
 
       {/* ── Footer ── */}

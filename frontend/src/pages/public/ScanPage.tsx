@@ -1,5 +1,10 @@
 import { useState, type FormEvent } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
+
+const prefersReducedMotion =
+  typeof window !== 'undefined' &&
+  window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 export default function ScanPage() {
   const [domain, setDomain] = useState('');
@@ -34,7 +39,12 @@ export default function ScanPage() {
 
       {/* Hero */}
       <main className="flex-1 flex items-center justify-center px-6 py-24">
-        <div className="max-w-2xl mx-auto text-center w-full">
+        <motion.div
+          initial={prefersReducedMotion ? false : { opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
+          className="max-w-2xl mx-auto text-center w-full"
+        >
           <div className="inline-flex items-center gap-2 bg-blue-50 border border-blue-200 rounded-full px-4 py-1.5 text-sm text-blue-600 mb-8">
             AI Agent Readiness Scanner
           </div>
@@ -64,7 +74,7 @@ export default function ScanPage() {
               Scan
             </button>
           </form>
-        </div>
+        </motion.div>
       </main>
 
       {/* Footer */}
