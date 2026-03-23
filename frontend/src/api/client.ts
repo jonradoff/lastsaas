@@ -500,6 +500,52 @@ export const pmApi = {
     api.get<SankeyData>('/admin/pm/event-definitions/sankey', { params }).then(r => r.data),
 };
 
+// --- Scanner (public, no auth) ---
+export interface ScanCategoryResult {
+  category: string;
+  tested: boolean;
+  score: number;
+  cappedScore: number;
+  weight: number;
+  effectiveWeight: number;
+  scoreKillers: Array<{ condition: string; cap: number }>;
+}
+
+export interface ScanResult {
+  serverIdentifier: string;
+  timestamp: number;
+  durationMs: number;
+  compositeScore: number;
+  categories: ScanCategoryResult[];
+  partialResults: boolean;
+  partialReason?: string;
+  version: string;
+  schemaVersion: string;
+  scenarioCount: number;
+  testedCategories: string[];
+}
+
+export const scanApi = {
+  trigger: async (domain: string): Promise<ScanResult> => {
+    const response = await fetch('/api/scan', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ domain }),
+    });
+    if (!response.ok) {
+      const text = await response.text();
+      throw new Error(text || `Scan failed with status ${response.status}`);
+    }
+    return response.json();
+  },
+  getLatest: async (domain: string): Promise<ScanResult | null> => {
+    const response = await fetch(`/api/scan/domain/${domain}`);
+    if (response.status === 404) return null;
+    if (!response.ok) return null;
+    return response.json();
+  },
+};
+
 // --- Telemetry ---
 export const telemetryApi = {
   trackAnonymous: (data: { sessionId: string; event: string; properties?: Record<string, unknown> }) =>

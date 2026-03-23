@@ -60,6 +60,8 @@ const AdminPMPage = lazy(() => import('./pages/admin/PMPage'));
 // Public pages
 import LandingPage from './pages/public/LandingPage';
 import CustomPage from './pages/public/CustomPage';
+import ScanPage from './pages/public/ScanPage';
+import ScanResultPage from './pages/public/ScanResultPage';
 
 function LazyFallback() {
   return (
@@ -132,6 +134,10 @@ export default function App() {
                   <Routes>
                     {/* Public landing page */}
                     <Route path="/" element={<LandingPage />} />
+
+                    {/* Public scanner pages (no auth required) */}
+                    <Route path="/scan" element={<ScanPage />} />
+                    <Route path="/scan/:domain" element={<ScanResultPage />} />
 
                     {/* Public custom pages */}
                     <Route path="/p/:slug" element={<CustomPage />} />
