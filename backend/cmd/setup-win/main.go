@@ -47,7 +47,7 @@ func main() {
 
 	orgName := "MCPLens"
 	displayName := "Admin"
-	email := "admin@transparentfunnel.com"
+	email := "admin@mcplens.dev"
 	password := "McpLens2026!"
 
 	passwordService := auth.NewPasswordService()

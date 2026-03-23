@@ -145,8 +145,8 @@ export default function TermsPage() {
               <h2 className="text-xl font-semibold text-slate-900 mt-8 mb-3">10. Contact</h2>
               <p>
                 If you have questions about these terms, please contact us at{' '}
-                <a href="mailto:hello@transparentfunnel.com" className="text-blue-600 hover:text-blue-700 underline">
-                  hello@transparentfunnel.com
+                <a href="mailto:hello@mcplens.dev" className="text-blue-600 hover:text-blue-700 underline">
+                  hello@mcplens.dev
                 </a>.
               </p>
             </section>

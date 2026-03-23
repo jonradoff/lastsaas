@@ -25,7 +25,7 @@ fly deploy -c fly.saas.toml
 - MongoDB Atlas cluster
 - Stripe account with products/prices configured
 - Resend account (transactional email)
-- Cloudflare DNS access for transparentfunnel.com
+- Cloudflare DNS access for mcplens.dev
 - Docker installed locally (for local build verification)
 
 ---
@@ -72,12 +72,12 @@ fly secrets set \
   WEBHOOK_ENCRYPTION_KEY="<generate: openssl rand -hex 32>" \
   RESEND_API_KEY="re_..." \
   APP_NAME="MCPLens" \
-  FROM_EMAIL="hello@transparentfunnel.com" \
+  FROM_EMAIL="hello@mcplens.dev" \
   FROM_NAME="MCPLens" \
-  FRONTEND_URL="https://transparentfunnel.com" \
+  FRONTEND_URL="https://mcplens.dev" \
   GOOGLE_CLIENT_ID="<optional>" \
   GOOGLE_CLIENT_SECRET="<optional>" \
-  GOOGLE_REDIRECT_URL="https://transparentfunnel.com/api/auth/google/callback" \
+  GOOGLE_REDIRECT_URL="https://mcplens.dev/api/auth/google/callback" \
   DATADOG_API_KEY="<optional — omit if not using Datadog>"
 ```
 
@@ -99,7 +99,7 @@ After first deploy, get the Fly app hostname:
 fly status -c fly.saas.toml
 ```
 
-In Cloudflare DNS for `transparentfunnel.com`:
+In Cloudflare DNS for `mcplens.dev`:
 
 | Type  | Name | Target              | Proxy  |
 |-------|------|---------------------|--------|
@@ -108,15 +108,15 @@ In Cloudflare DNS for `transparentfunnel.com`:
 Or use Fly's custom domain feature to get a TLS cert provisioned automatically:
 
 ```bash
-fly certs add transparentfunnel.com -c fly.saas.toml
-fly certs show transparentfunnel.com -c fly.saas.toml
+fly certs add mcplens.dev -c fly.saas.toml
+fly certs show mcplens.dev -c fly.saas.toml
 ```
 
 ### 7. Update Stripe Webhook
 
 In the Stripe dashboard, update (or create) the webhook endpoint:
 
-- **URL:** `https://transparentfunnel.com/api/billing/webhook`
+- **URL:** `https://mcplens.dev/api/billing/webhook`
 - **Events:** `checkout.session.completed`, `customer.subscription.updated`, `customer.subscription.deleted`, `invoice.payment_failed`
 
 ---
@@ -155,7 +155,7 @@ railway up
 ### 6. Configure custom domain
 
 In Railway dashboard → your service → Settings → Domains:
-- Add `transparentfunnel.com`
+- Add `mcplens.dev`
 - Copy the CNAME target and add it in Cloudflare
 
 ---
@@ -179,13 +179,13 @@ Successful build confirms:
 
 ## Post-Deploy Verification Checklist
 
-1. `https://transparentfunnel.com` — landing page loads
-2. `https://transparentfunnel.com/scan` — public scanner page loads
+1. `https://mcplens.dev` — landing page loads
+2. `https://mcplens.dev/scan` — public scanner page loads
 3. Try scanning a store (e.g. `allbirds.com`) — results appear
-4. `https://transparentfunnel.com/login` — login form loads with correct branding
+4. `https://mcplens.dev/login` — login form loads with correct branding
 5. Test login with admin account
 6. Test Stripe checkout flow
-7. `https://transparentfunnel.com/health` — returns `{"status":"ok"}`
+7. `https://mcplens.dev/health` — returns `{"status":"ok"}`
 
 ---
 

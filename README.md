@@ -39,7 +39,7 @@ Scores are color-coded: 🟢 80-100 (Good), 🟡 50-79 (Needs Work), 🔴 0-49 (
 
 ## Web Scanner
 
-Try it without installing anything: [transparentfunnel.com/scan](https://transparentfunnel.com/scan)
+Try it without installing anything: [mcplens.dev/scan](https://mcplens.dev/scan)
 
 ## CLI Reference
 
@@ -126,4 +126,4 @@ MIT — see [LICENSE](LICENSE) for details.
 
 ---
 
-Built with [Claude Code](https://claude.ai/claude-code) | [Web Scanner](https://transparentfunnel.com/scan) | [GitHub](https://github.com/reesthomas212/mcplens)
+Built with [Claude Code](https://claude.ai/claude-code) | [Web Scanner](https://mcplens.dev/scan) | [GitHub](https://github.com/reesthomas212/mcplens)

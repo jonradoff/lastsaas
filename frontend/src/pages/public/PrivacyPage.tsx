@@ -80,8 +80,8 @@ export default function PrivacyPage() {
               </ul>
               <p className="mt-2">
                 To exercise these rights, email us at{' '}
-                <a href="mailto:hello@transparentfunnel.com" className="text-blue-600 hover:text-blue-700 underline">
-                  hello@transparentfunnel.com
+                <a href="mailto:hello@mcplens.dev" className="text-blue-600 hover:text-blue-700 underline">
+                  hello@mcplens.dev
                 </a>.
                 We will respond within 30 days.
               </p>
@@ -124,8 +124,8 @@ export default function PrivacyPage() {
               <h2 className="text-xl font-semibold text-slate-900 mt-8 mb-3">9. Contact</h2>
               <p>
                 If you have questions about this Privacy Policy or your data, please contact us at{' '}
-                <a href="mailto:hello@transparentfunnel.com" className="text-blue-600 hover:text-blue-700 underline">
-                  hello@transparentfunnel.com
+                <a href="mailto:hello@mcplens.dev" className="text-blue-600 hover:text-blue-700 underline">
+                  hello@mcplens.dev
                 </a>.
               </p>
             </section>
