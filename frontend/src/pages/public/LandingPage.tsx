@@ -105,12 +105,12 @@ export default function LandingPage() {
             </div>
 
             <h1 className="text-4xl sm:text-5xl font-bold text-white leading-tight mb-6">
-              How agent-ready is your Shopify store?
+              Are AI agents skipping your store?
             </h1>
 
             <p className="text-lg text-slate-400 leading-relaxed mb-10">
-              MCPLens scans your store&apos;s public MCP endpoint and shows exactly how well AI
-              buyer agents can find, evaluate, and purchase your products.
+              If AI agents can&apos;t find, compare, or purchase your products, you&apos;re
+              already losing sales you&apos;ll never see.
             </p>
 
             <form
@@ -130,43 +130,47 @@ export default function LandingPage() {
                 disabled={!heroDomain.trim()}
                 className="px-6 py-3 bg-sky-500 hover:bg-sky-400 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold rounded-lg transition-colors whitespace-nowrap"
               >
-                Scan Free →
+                Scan Free &rarr;
               </button>
             </form>
 
-            <p className="mt-4 text-sm text-slate-500">No signup required. Free forever.</p>
+            <p className="mt-4 text-sm text-slate-500">
+              Get a scored report instantly. No credit card. No follow-up emails.
+            </p>
+            <p className="mt-1 text-sm text-slate-500">
+              We scan only public endpoints &mdash; no store credentials needed.
+            </p>
           </div>
         </section>
 
-        {/* ── Social Proof / Stats ── */}
+        {/* ── Why This Matters Now ── */}
         <section className="px-6 py-16 border-t border-slate-800">
-          <div className="max-w-5xl mx-auto">
-            <p className="text-center text-sm text-slate-500 uppercase tracking-widest mb-10">
-              Trusted by developers building agent-ready commerce
-            </p>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-              {[
-                {
-                  stat: '5.5M+',
-                  label: 'Shopify stores with MCP endpoints',
-                },
-                {
-                  stat: '15–30%',
-                  label: 'Agent-assisted conversion rate (vs 3% traditional)',
-                },
-                {
-                  stat: '10 scenarios',
-                  label: 'Across 4 categories, scored 0–100',
-                },
-              ].map(({ stat, label }) => (
-                <div
-                  key={stat}
-                  className="bg-[#1e293b] rounded-xl p-6 text-center border border-slate-700"
-                >
-                  <div className="text-3xl font-bold text-sky-400 mb-2">{stat}</div>
-                  <div className="text-sm text-slate-400">{label}</div>
-                </div>
-              ))}
+          <div className="max-w-3xl mx-auto">
+            <h2 className="text-2xl sm:text-3xl font-bold text-white text-center mb-10">
+              Agent commerce is here. Most stores aren&apos;t ready.
+            </h2>
+
+            <div className="space-y-6 text-slate-400 leading-relaxed">
+              <p>
+                AI-assisted shopping converts at 15&ndash;30%, compared to 3% for traditional
+                browsing{' '}
+                <span className="text-slate-500">(UCP Hub, 2026; McKinsey, 2026)</span>.
+                Stores that work well with AI agents don&apos;t just keep up &mdash; they
+                pull ahead.
+              </p>
+              <p>
+                Every Shopify store now has a public MCP endpoint &mdash; the interface AI
+                agents use to shop your store. Agents from ChatGPT, Gemini, and others are
+                already using these endpoints to browse, compare, and buy.
+              </p>
+              <p>
+                But most stores have critical gaps: missing price data, incomplete
+                descriptions, broken checkout flows. These gaps make your store invisible to
+                agents &mdash; or worse, make agents choose a competitor instead.
+              </p>
+              <p className="text-sky-400 font-semibold">
+                MCPLens finds these gaps in seconds.
+              </p>
             </div>
           </div>
         </section>
@@ -196,8 +200,8 @@ export default function LandingPage() {
                       <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 0 1-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.3 24.3 0 0 1 4.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15M14.25 3.104c.251.023.501.05.75.082M19.8 15l-1.322.977A7.5 7.5 0 0 1 12 18a7.5 7.5 0 0 1-6.478-2.023L4.2 15m15.6 0-4.2-3.073" />
                     </svg>
                   ),
-                  title: 'We scan the MCP endpoint',
-                  desc: 'MCPLens runs 10 agent commerce scenarios against the live endpoint.',
+                  title: 'We scan the public endpoint',
+                  desc: 'MCPLens runs 10 agent commerce scenarios against the live interface AI agents use to shop your store.',
                 },
                 {
                   step: '03',
@@ -223,6 +227,99 @@ export default function LandingPage() {
           </div>
         </section>
 
+        {/* ── Sample Report Preview ── */}
+        <section className="px-6 py-16 border-t border-slate-800">
+          <div className="max-w-3xl mx-auto">
+            <h2 className="text-2xl sm:text-3xl font-bold text-white text-center mb-4">
+              See what you get
+            </h2>
+            <p className="text-center text-slate-400 mb-10">
+              Every scan produces a detailed report. Here&apos;s what one looks like.
+            </p>
+
+            {/* Report mockup */}
+            <div className="bg-[#1e293b] border border-slate-700 rounded-xl overflow-hidden">
+              {/* Report header */}
+              <div className="px-6 py-5 border-b border-slate-700 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div>
+                  <div className="text-xs font-mono text-slate-500 uppercase tracking-wider mb-1">
+                    Agent Readiness Report
+                  </div>
+                  <div className="text-white font-semibold text-lg">example-store.com</div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="text-4xl font-bold text-amber-400">47</div>
+                  <div className="text-sm text-slate-400 leading-tight">
+                    <div>out of</div>
+                    <div>100</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Category scores */}
+              <div className="px-6 py-5 grid grid-cols-2 sm:grid-cols-4 gap-4">
+                {[
+                  { name: 'Data Quality', score: 31, color: 'text-red-400' },
+                  { name: 'Discovery', score: 62, color: 'text-sky-400' },
+                  { name: 'Checkout', score: 45, color: 'text-amber-400' },
+                  { name: 'Protocol', score: 89, color: 'text-emerald-400' },
+                ].map(({ name, score, color }) => (
+                  <div key={name} className="text-center">
+                    <div className={`text-2xl font-bold ${color}`}>{score}</div>
+                    <div className="text-xs text-slate-500 mt-1">{name}</div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Sample finding */}
+              <div className="px-6 py-4 border-t border-slate-700 bg-amber-500/5">
+                <div className="flex items-start gap-3">
+                  <span className="text-amber-400 text-lg leading-none mt-0.5">&#9888;</span>
+                  <div>
+                    <div className="text-sm text-white font-medium">
+                      34% of products missing price data
+                    </div>
+                    <div className="text-sm text-slate-400 mt-1">
+                      Agents can&apos;t compare or purchase these products. This directly
+                      reduces your visibility in agent-assisted shopping.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ── Trust / Real Data ── */}
+        <section className="px-6 py-16 border-t border-slate-800">
+          <div className="max-w-5xl mx-auto">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+              {[
+                {
+                  stat: '100+',
+                  label: 'Stores scanned',
+                },
+                {
+                  stat: '11 – 100',
+                  label: 'Score range across scans',
+                },
+                {
+                  stat: '~15 sec',
+                  label: 'Average scan time',
+                },
+              ].map(({ stat, label }) => (
+                <div
+                  key={stat}
+                  className="bg-[#1e293b] rounded-xl p-6 text-center border border-slate-700"
+                >
+                  <div className="text-3xl font-bold text-sky-400 mb-2">{stat}</div>
+                  <div className="text-sm text-slate-400">{label}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
         {/* ── Scoring Categories ── */}
         <section className="px-6 py-16 border-t border-slate-800">
           <div className="max-w-5xl mx-auto">
@@ -230,7 +327,7 @@ export default function LandingPage() {
               What gets scored
             </h2>
             <p className="text-center text-slate-400 mb-12 max-w-xl mx-auto">
-              Every scan produces a 0–100 score across four weighted categories.
+              Every scan produces a 0&ndash;100 score across four weighted categories.
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               {[
@@ -256,7 +353,7 @@ export default function LandingPage() {
                   name: 'Protocol Compliance',
                   weight: '10%',
                   color: 'bg-amber-500',
-                  question: 'Does your MCP endpoint follow the spec?',
+                  question: 'Does the public endpoint follow the spec correctly?',
                 },
               ].map(({ name, weight, color, question }) => (
                 <div
@@ -280,21 +377,50 @@ export default function LandingPage() {
           </div>
         </section>
 
+        {/* ── Before / After ── */}
+        <section className="px-6 py-16 border-t border-slate-800">
+          <div className="max-w-3xl mx-auto">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <div className="bg-[#1e293b] border border-slate-700 rounded-xl p-7">
+                <div className="text-xs font-mono text-red-400 uppercase tracking-widest mb-4">
+                  Before MCPLens
+                </div>
+                <p className="text-slate-400 leading-relaxed">
+                  You deployed your Shopify store. AI agents visit. Some buy. Most don&apos;t.
+                  You have no idea why.
+                </p>
+              </div>
+              <div className="bg-sky-500/10 border border-sky-500/20 rounded-xl p-7">
+                <div className="text-xs font-mono text-sky-400 uppercase tracking-widest mb-4">
+                  After MCPLens
+                </div>
+                <p className="text-slate-300 leading-relaxed">
+                  You scan your store. You see exactly where agents fail. You fix the gaps.
+                  Your agent conversion rate climbs.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* ── Agencies CTA ── */}
         <section className="px-6 py-16 border-t border-slate-800">
           <div className="max-w-3xl mx-auto bg-gradient-to-br from-sky-500/10 to-violet-500/10 border border-sky-500/20 rounded-2xl p-10 text-center">
             <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4">
-              Agencies: Win clients with agent readiness audits
+              Win clients with data, not decks
             </h2>
-            <p className="text-slate-400 mb-8 max-w-xl mx-auto">
+            <p className="text-slate-400 mb-4 max-w-xl mx-auto">
               Scan any prospect&apos;s store before the first call. Show them exactly where
-              they&apos;re losing to competitors who have already optimized for AI buyer agents.
+              they&apos;re losing to competitors. Close deals with evidence.
+            </p>
+            <p className="text-slate-300 mb-8 max-w-xl mx-auto font-medium">
+              One agency scan can justify a $5,000/month retainer.
             </p>
             <Link
               to="/scan"
               className="inline-flex items-center justify-center gap-2 px-8 py-3 bg-sky-500 hover:bg-sky-400 text-white font-semibold rounded-lg transition-colors"
             >
-              Start scanning →
+              Start scanning &rarr;
             </Link>
           </div>
         </section>
@@ -316,6 +442,7 @@ export default function LandingPage() {
                   period: 'forever',
                   cta: 'Get Started',
                   highlight: false,
+                  bestFor: 'Best for: quick checks',
                   features: [
                     'Unlimited scans',
                     'HTML reports',
@@ -329,6 +456,7 @@ export default function LandingPage() {
                   period: 'per month',
                   cta: 'Start Trial',
                   highlight: true,
+                  bestFor: 'Best for: store owners tracking their score',
                   features: [
                     '5 tracked stores',
                     'Score history',
@@ -342,6 +470,7 @@ export default function LandingPage() {
                   period: 'per month',
                   cta: 'Start Trial',
                   highlight: false,
+                  bestFor: 'Best for: agencies auditing client stores',
                   features: [
                     '25 tracked stores',
                     'Daily scans',
@@ -349,7 +478,7 @@ export default function LandingPage() {
                     'API access',
                   ],
                 },
-              ].map(({ name, price, period, cta, highlight, features }) => (
+              ].map(({ name, price, period, cta, highlight, bestFor, features }) => (
                 <div
                   key={name}
                   className={`rounded-xl p-7 border flex flex-col gap-6 ${
@@ -365,6 +494,7 @@ export default function LandingPage() {
                   )}
                   <div>
                     <div className="text-lg font-bold text-white mb-1">{name}</div>
+                    <div className="text-xs text-slate-400 mb-3">{bestFor}</div>
                     <div className="flex items-end gap-1">
                       <span className="text-4xl font-bold text-white">{price}</span>
                       <span className="text-slate-400 mb-1 text-sm">/ {period}</span>
@@ -399,6 +529,10 @@ export default function LandingPage() {
                 </div>
               ))}
             </div>
+            <p className="text-center text-sm text-slate-500 mt-6">
+              Cancel anytime. No lock-in. Start with Free &mdash; upgrade when you want to
+              track scores over time.
+            </p>
           </div>
         </section>
 
@@ -477,8 +611,8 @@ export default function LandingPage() {
           </nav>
 
           <div className="text-sm text-slate-500 text-center sm:text-right">
-            <div>Built with Claude Code</div>
-            <div>© {new Date().getFullYear()} MCPLens</div>
+            <div>Free account, no credit card required</div>
+            <div>&copy; {new Date().getFullYear()} MCPLens</div>
           </div>
         </div>
       </footer>
