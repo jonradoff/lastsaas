@@ -108,11 +108,11 @@ export default function Layout() {
     : defaultNavItems;
 
   // Resolve logo display
-  const appName = branding.appName || 'LastSaaS';
+  const appName = branding.appName || 'MCPLens';
   const logoMode = branding.logoMode || 'text';
   const logoUrl = branding.logoUrl;
 
-  const isImpersonating = localStorage.getItem('lastsaas_impersonating') === 'true';
+  const isImpersonating = localStorage.getItem('mcplens_impersonating') === 'true';
 
   return (
     <div className="min-h-screen bg-dark-950">

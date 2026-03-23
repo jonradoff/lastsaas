@@ -624,7 +624,7 @@ func (h *BrandingHandler) DeletePage(w http.ResponseWriter, r *http.Request) {
 
 func defaultBrandingConfig(appName string) models.BrandingConfig {
 	if appName == "" {
-		appName = "LastSaaS"
+		appName = "MCPLens"
 	}
 	return models.BrandingConfig{
 		AppName:  appName,

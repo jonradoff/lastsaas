@@ -301,7 +301,7 @@ export default function TestEntitlementsPage() {
         const templateVars = {
           EntitlementName: entMeta?.description || testingKey,
           PlanName: currentPlan?.name || '',
-          AppName: 'LastSaaS',
+          AppName: 'MCPLens',
           RecommendedPlanName: recommended?.name || 'a higher plan',
           RequestedValue: testedValue,
           CurrentValue: currentPlan?.entitlements?.[testingKey]?.numericValue ?? 0,

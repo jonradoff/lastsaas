@@ -37,7 +37,7 @@ export default function BootstrapPage() {
         <div className="bg-dark-900/50 backdrop-blur-sm border border-dark-800 rounded-2xl p-6 space-y-5">
           <div className="bg-dark-950 border border-dark-700 rounded-lg p-4 font-mono text-sm">
             <div className="text-dark-500 mb-1">$</div>
-            <div className="text-primary-400">cd backend && go run ./cmd/lastsaas setup</div>
+            <div className="text-primary-400">cd backend && go run ./cmd/mcplens setup</div>
           </div>
 
           <p className="text-dark-400 text-sm">
@@ -47,8 +47,8 @@ export default function BootstrapPage() {
 
           <div className="text-dark-500 text-xs space-y-1">
             <p>Other useful commands:</p>
-            <p className="font-mono text-dark-400 ml-2">go run ./cmd/lastsaas status</p>
-            <p className="font-mono text-dark-400 ml-2">go run ./cmd/lastsaas change-password --email you@example.com</p>
+            <p className="font-mono text-dark-400 ml-2">go run ./cmd/mcplens status</p>
+            <p className="font-mono text-dark-400 ml-2">go run ./cmd/mcplens change-password --email you@example.com</p>
           </div>
 
           <button

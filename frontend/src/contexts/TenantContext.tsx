@@ -12,7 +12,7 @@ interface TenantContextType {
 
 const TenantContext = createContext<TenantContextType | null>(null);
 
-const ACTIVE_TENANT_KEY = 'lastsaas_active_tenant';
+const ACTIVE_TENANT_KEY = 'mcplens_active_tenant';
 
 export function TenantProvider({ children }: { children: ReactNode }) {
   const { memberships, isAuthenticated } = useAuth();

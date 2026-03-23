@@ -11,7 +11,7 @@ var Current string
 
 // buildVersion is set at compile time via:
 //
-//	go build -ldflags "-X lastsaas/internal/version.buildVersion=1.00"
+//	go build -ldflags "-X lastsaas/internal/version.buildVersion=1.00" // (module path unchanged)
 //
 // This is the preferred mechanism — it bakes the version into the binary
 // so downstream projects don't need to copy a VERSION file at runtime.

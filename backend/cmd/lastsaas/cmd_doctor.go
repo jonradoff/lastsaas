@@ -63,7 +63,7 @@ func cmdDoctor() {
 	// 3. System initialized
 	var sys models.SystemConfig
 	sysErr := database.SystemConfig().FindOne(ctx, bson.M{}).Decode(&sys)
-	check("System initialized", sysErr == nil && sys.Initialized, "Run 'lastsaas setup' to initialize")
+	check("System initialized", sysErr == nil && sys.Initialized, "Run 'mcplens setup' to initialize")
 
 	// 4. Version match
 	if sys.Initialized {

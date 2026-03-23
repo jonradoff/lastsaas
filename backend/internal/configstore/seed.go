@@ -17,7 +17,7 @@ func appNameDefault() string {
 	if name := os.Getenv("APP_NAME"); name != "" {
 		return name
 	}
-	return "LastSaaS"
+	return "MCPLens"
 }
 
 // SystemDefaults defines the system-level configuration variables that must always exist.

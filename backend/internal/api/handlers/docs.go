@@ -446,7 +446,7 @@ func apiReference() []apiSection {
 					Summary:  "List all config variables",
 					Detail:   "Returns all configuration variables as a map keyed by variable name. Includes system variables (read-only name/type) and user-created variables.",
 					Auth:     "admin",
-					Response: `{"configs":{"app.name":{"name":"app.name","type":"string","value":"LastSaaS","description":"Application name","isSystem":true,"options":""},...}}`,
+					Response: `{"configs":{"app.name":{"name":"app.name","type":"string","value":"MCPLens","description":"Application name","isSystem":true,"options":""},...}}`,
 				},
 				{
 					Method:   "POST",
@@ -464,7 +464,7 @@ func apiReference() []apiSection {
 					Detail:  "Returns a single configuration variable by name.",
 					Auth:    "admin",
 					Params:  []apiParam{{"name", "string", true, "Config variable name"}},
-					Response: `{"name":"app.name","type":"string","value":"LastSaaS","description":"Application name","isSystem":true,"options":""}`,
+					Response: `{"name":"app.name","type":"string","value":"MCPLens","description":"Application name","isSystem":true,"options":""}`,
 				},
 				{
 					Method:  "PUT",
@@ -957,7 +957,7 @@ func DocsHTML(w http.ResponseWriter, r *http.Request) {
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>LastSaaS API Reference</title>
+<title>MCPLens API Reference</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#0a0a0f;color:#c8c8d0;line-height:1.6;padding:2rem 1rem;max-width:1000px;margin:0 auto}
@@ -1002,7 +1002,7 @@ a{color:#60a5fa;text-decoration:none}a:hover{text-decoration:underline}
 </head>
 <body>
 `)
-	sb.WriteString(fmt.Sprintf(`<h1>LastSaaS API Reference</h1><p class="subtitle">Version %s</p>`, html.EscapeString(version.Current)))
+	sb.WriteString(fmt.Sprintf(`<h1>MCPLens API Reference</h1><p class="subtitle">Version %s</p>`, html.EscapeString(version.Current)))
 
 	// Auth note
 	sb.WriteString(`<div class="note">
@@ -1110,7 +1110,7 @@ func DocsMarkdown(w http.ResponseWriter, r *http.Request) {
 	events := webhookEventsDoc()
 	var sb strings.Builder
 
-	sb.WriteString(fmt.Sprintf("# LastSaaS API Reference\n\n**Version:** %s\n\n", version.Current))
+	sb.WriteString(fmt.Sprintf("# MCPLens API Reference\n\n**Version:** %s\n\n", version.Current))
 
 	sb.WriteString("## Authentication\n\n")
 	sb.WriteString("Include an access token or API key as `Authorization: Bearer <token>`.\n")

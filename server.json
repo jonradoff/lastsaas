@@ -1,16 +1,16 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
-  "name": "io.github.jonradoff/lastsaas",
-  "description": "Read-only admin MCP server for LastSaaS — dashboards, users, tenants, billing, logs, health.",
+  "name": "io.github.jonradoff/mcplens",
+  "description": "Read-only admin MCP server for MCPLens — dashboards, users, tenants, billing, logs, health.",
   "repository": {
-    "url": "https://github.com/jonradoff/lastsaas",
+    "url": "https://github.com/jonradoff/mcplens",
     "source": "github"
   },
   "version": "1.0.0",
   "packages": [
     {
       "registryType": "mcpb",
-      "identifier": "https://github.com/jonradoff/lastsaas/releases/download/v1.0.0/lastsaas-darwin-arm64.mcpb",
+      "identifier": "https://github.com/jonradoff/mcplens/releases/download/v1.0.0/mcplens-darwin-arm64.mcpb",
       "version": "1.0.0",
       "fileSha256": "bdd36be9e481def3b8dd36801ada11bffb9f52c0d6f81a6a9afb6efb3c3933a0",
       "transport": {
@@ -18,15 +18,15 @@
       },
       "environmentVariables": [
         {
-          "name": "LASTSAAS_URL",
-          "description": "Base URL of the LastSaaS instance (e.g., https://your-app.fly.dev or http://localhost:4290)",
+          "name": "MCPLENS_URL",
+          "description": "Base URL of the MCPLens instance (e.g., https://your-app.fly.dev or http://localhost:4290)",
           "isRequired": true,
           "isSecret": false,
           "format": "string"
         },
         {
-          "name": "LASTSAAS_API_KEY",
-          "description": "Root-tenant API key with admin authority (starts with lsk_). Create in Admin → API Keys.",
+          "name": "MCPLENS_API_KEY",
+          "description": "Root-tenant API key with admin authority. Create in Admin → API Keys.",
           "isRequired": true,
           "isSecret": true,
           "format": "string"

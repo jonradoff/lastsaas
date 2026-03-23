@@ -32,7 +32,7 @@ export default function AboutPage() {
         <div className="space-y-6">
           <div>
             <p className="text-sm text-dark-400 mb-1">Software</p>
-            <p className="text-lg font-semibold text-white">LastSaaS</p>
+            <p className="text-lg font-semibold text-white">MCPLens</p>
           </div>
           <div>
             <p className="text-sm text-dark-400 mb-1">Version</p>

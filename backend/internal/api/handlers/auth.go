@@ -852,7 +852,7 @@ func (h *AuthHandler) MFASetup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	appName := "LastSaaS"
+	appName := "MCPLens"
 	if h.getConfig != nil {
 		if name := h.getConfig("app.name"); name != "" {
 			appName = name

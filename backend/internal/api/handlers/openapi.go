@@ -97,7 +97,7 @@ func DocsOpenAPI(w http.ResponseWriter, r *http.Request) {
 	spec := openAPISpec{
 		OpenAPI: "3.0.3",
 		Info: openAPIInfo{
-			Title:   "LastSaaS API",
+			Title:   "MCPLens API",
 			Version: version.Current,
 		},
 		Servers: []openAPIServer{

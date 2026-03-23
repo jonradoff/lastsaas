@@ -3,7 +3,7 @@ import type { BrandingConfig } from '../types';
 import { brandingApi } from '../api/client';
 
 const defaultBranding: BrandingConfig = {
-  appName: 'LastSaaS',
+  appName: 'MCPLens',
   tagline: '',
   logoMode: 'text',
   logoUrl: '',

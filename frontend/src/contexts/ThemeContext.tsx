@@ -13,7 +13,7 @@ interface ThemeContextType {
 
 const ThemeContext = createContext<ThemeContextType | null>(null);
 
-const THEME_KEY = 'lastsaas_theme';
+const THEME_KEY = 'mcplens_theme';
 
 function getSystemTheme(): ResolvedTheme {
   if (typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: light)').matches) {

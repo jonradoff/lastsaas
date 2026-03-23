@@ -83,10 +83,10 @@ func main() {
 }
 
 func printUsage() {
-	fmt.Println(`lastsaas - LastSaaS system administration tool
+	fmt.Println(`mcplens - MCPLens system administration tool
 
 Usage:
-  lastsaas <command> [flags] [--json]
+  mcplens <command> [flags] [--json]
 
 Commands:
   setup                Initialize the system (create root tenant + owner account)
@@ -116,34 +116,34 @@ Global flags:
   --json               Output in JSON format (works with most commands)
 
 Examples:
-  lastsaas setup
-  lastsaas start --backend
-  lastsaas stop
+  mcplens setup
+  mcplens start --backend
+  mcplens stop
 
-  lastsaas logs --severity critical,high --tail 100
-  lastsaas logs --follow --category security
-  lastsaas logs --from 24h
-  lastsaas users list --json
-  lastsaas users get --email admin@example.com
-  lastsaas users suspend --email bad@example.com
-  lastsaas tenants list
-  lastsaas tenants get root
+  mcplens logs --severity critical,high --tail 100
+  mcplens logs --follow --category security
+  mcplens logs --from 24h
+  mcplens users list --json
+  mcplens users get --email admin@example.com
+  mcplens users suspend --email bad@example.com
+  mcplens tenants list
+  mcplens tenants get root
 
-  lastsaas health
-  lastsaas stats --json
-  lastsaas financial summary
-  lastsaas financial transactions --type subscription --limit 50
-  lastsaas financial metrics --days 30
-  lastsaas doctor
-  lastsaas db stats
+  mcplens health
+  mcplens stats --json
+  mcplens financial summary
+  mcplens financial transactions --type subscription --limit 50
+  mcplens financial metrics --days 30
+  mcplens doctor
+  mcplens db stats
 
-  lastsaas config list
-  lastsaas config get log.min_level
-  lastsaas config set log.min_level high
-  lastsaas config reset log.min_level
-  lastsaas change-password --email admin@example.com
+  mcplens config list
+  mcplens config get log.min_level
+  mcplens config set log.min_level high
+  mcplens config reset log.min_level
+  mcplens change-password --email admin@example.com
 
-  LASTSAAS_URL=http://localhost:3000 LASTSAAS_API_KEY=lsk_xxx lastsaas mcp`)
+  MCPLENS_URL=http://localhost:3000 MCPLENS_API_KEY=lsk_xxx mcplens mcp`)
 }
 
 // connectDB loads config and connects to MongoDB, printing helpful guidance on failure.
@@ -241,11 +241,11 @@ func cmdSetup() {
 		}
 
 		fmt.Println()
-		fmt.Println("If you need to change a user's password, use: lastsaas change-password --email <email>")
+		fmt.Println("If you need to change a user's password, use: mcplens change-password --email <email>")
 		os.Exit(0)
 	}
 
-	fmt.Println("=== LastSaaS Initial Setup ===")
+	fmt.Println("=== MCPLens Initial Setup ===")
 	fmt.Println()
 
 	reader := bufio.NewReader(os.Stdin)
@@ -368,8 +368,8 @@ func cmdSetup() {
 	welcomeMsg := models.Message{
 		ID:        primitive.NewObjectID(),
 		UserID:    user.ID,
-		Subject:   "Welcome to LastSaaS v" + version.Current,
-		Body:      "Your system has been initialized. Welcome to LastSaaS!",
+		Subject:   "Welcome to MCPLens v" + version.Current,
+		Body:      "Your system has been initialized. Welcome to MCPLens!",
 		IsSystem:  true,
 		Read:      false,
 		CreatedAt: now,
@@ -394,7 +394,7 @@ func cmdChangePassword() {
 	fs.Parse(os.Args[2:])
 
 	if *emailFlag == "" {
-		fmt.Fprintln(os.Stderr, "Usage: lastsaas change-password --email <email>")
+		fmt.Fprintln(os.Stderr, "Usage: mcplens change-password --email <email>")
 		os.Exit(1)
 	}
 
@@ -465,7 +465,7 @@ func cmdSendMessage() {
 	fs.Parse(os.Args[2:])
 
 	if *emailFlag == "" || *messageFlag == "" {
-		fmt.Fprintln(os.Stderr, "Usage: lastsaas send-message --email <email> --message \"Your message here\"")
+		fmt.Fprintln(os.Stderr, "Usage: mcplens send-message --email <email> --message \"Your message here\"")
 		fmt.Fprintln(os.Stderr, "  --subject \"Optional subject\" (default: \"System Message\")")
 		os.Exit(1)
 	}
@@ -528,7 +528,7 @@ func cmdSendMessage() {
 
 func cmdConfig() {
 	if len(os.Args) < 3 {
-		fmt.Fprintln(os.Stderr, `Usage: lastsaas config <subcommand>
+		fmt.Fprintln(os.Stderr, `Usage: mcplens config <subcommand>
 
 Subcommands:
   list              List all configuration variables
@@ -543,19 +543,19 @@ Subcommands:
 		cmdConfigList()
 	case "get":
 		if len(os.Args) < 4 {
-			fmt.Fprintln(os.Stderr, "Usage: lastsaas config get <name>")
+			fmt.Fprintln(os.Stderr, "Usage: mcplens config get <name>")
 			os.Exit(1)
 		}
 		cmdConfigGet(os.Args[3])
 	case "set":
 		if len(os.Args) < 5 {
-			fmt.Fprintln(os.Stderr, "Usage: lastsaas config set <name> <value>")
+			fmt.Fprintln(os.Stderr, "Usage: mcplens config set <name> <value>")
 			os.Exit(1)
 		}
 		cmdConfigSet(os.Args[3], strings.Join(os.Args[4:], " "))
 	case "reset":
 		if len(os.Args) < 4 {
-			fmt.Fprintln(os.Stderr, "Usage: lastsaas config reset <name>")
+			fmt.Fprintln(os.Stderr, "Usage: mcplens config reset <name>")
 			os.Exit(1)
 		}
 		cmdConfigReset(os.Args[3])
@@ -730,7 +730,7 @@ func cmdTransferRootOwner() {
 	fs.Parse(os.Args[2:])
 
 	if *emailFlag == "" {
-		fmt.Fprintln(os.Stderr, "Usage: lastsaas transfer-root-owner --email <new-owner-email>")
+		fmt.Fprintln(os.Stderr, "Usage: mcplens transfer-root-owner --email <new-owner-email>")
 		os.Exit(1)
 	}
 
@@ -851,7 +851,7 @@ func cmdTransferRootOwner() {
 // --- version command ---
 
 func cmdVersion() {
-	fmt.Printf("LastSaaS v%s (binary)\n", version.Current)
+	fmt.Printf("MCPLens v%s (binary)\n", version.Current)
 
 	database, cfg, cleanup := connectDB()
 	defer cleanup()
@@ -907,7 +907,7 @@ func cmdStatus() {
 	if err != nil || !sys.Initialized {
 		fmt.Println("Initialized: No")
 		fmt.Println()
-		fmt.Println("Run 'lastsaas setup' to initialize the system.")
+		fmt.Println("Run 'mcplens setup' to initialize the system.")
 		return
 	}
 	fmt.Printf("Initialized: Yes (v%s)\n", sys.Version)

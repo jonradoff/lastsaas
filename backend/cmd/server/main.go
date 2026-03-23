@@ -97,7 +97,7 @@ func main() {
 		slog.Error("Failed to load config", "error", err)
 		os.Exit(1)
 	}
-	slog.Info("Starting LastSaaS", "mode", cfg.Environment)
+	slog.Info("Starting MCPLens", "mode", cfg.Environment)
 
 	// Connect to MongoDB
 	database, err := db.NewMongoDB(cfg.Database.URI, cfg.Database.Name)
@@ -161,7 +161,7 @@ func main() {
 		slog.Warn("DataDog integration not configured", "reason", "missing API key")
 	}
 
-	sysLogger.Critical(context.Background(), fmt.Sprintf("System startup: LastSaaS v%s", version.Current))
+	sysLogger.Critical(context.Background(), fmt.Sprintf("System startup: MCPLens v%s", version.Current))
 
 	// Initialize services
 	jwtService := auth.NewJWTService(

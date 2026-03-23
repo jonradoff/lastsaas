@@ -236,7 +236,7 @@ export default function BrandingPage() {
       {tab === 'identity' && (
         <div className="space-y-6">
           <Section title="App Identity">
-            <Field label="App Name" description="Replaces 'LastSaaS' everywhere in the app">
+            <Field label="App Name" description="Replaces 'MCPLens' everywhere in the app">
               <input value={config.appName} onChange={e => update('appName', e.target.value)} className={isOwner ? inputClass : disabledInputClass} disabled={!isOwner} placeholder="My App" />
             </Field>
             <Field label="Tagline">

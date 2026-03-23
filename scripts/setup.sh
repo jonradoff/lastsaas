@@ -6,7 +6,7 @@ PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 CONFIG_DIR="$PROJECT_DIR/backend/config"
 ENV_FILE="$PROJECT_DIR/.env"
 
-echo "=== LastSaaS Setup ==="
+echo "=== MCPLens Setup ==="
 echo ""
 
 # Determine which environment to configure
@@ -34,8 +34,8 @@ echo "--- Database ---"
 echo "The database name is the project identity. Two projects sharing"
 echo "the same database name intentionally share the same user base."
 echo ""
-read -rp "Database Name [lastsaas-dev]: " DATABASE_NAME
-DATABASE_NAME="${DATABASE_NAME:-lastsaas-dev}"
+read -rp "Database Name [mcplens-dev]: " DATABASE_NAME
+DATABASE_NAME="${DATABASE_NAME:-mcplens-dev}"
 echo ""
 read -rp "MongoDB URI [mongodb://localhost:27017]: " MONGODB_URI
 MONGODB_URI="${MONGODB_URI:-mongodb://localhost:27017}"
@@ -59,8 +59,8 @@ read -rp "Resend API Key: " RESEND_API_KEY
 
 echo ""
 echo "--- App Settings ---"
-read -rp "App Name [LastSaaS]: " APP_NAME
-APP_NAME="${APP_NAME:-LastSaaS}"
+read -rp "App Name [MCPLens]: " APP_NAME
+APP_NAME="${APP_NAME:-MCPLens}"
 read -rp "From Email [noreply@yourdomain.com]: " FROM_EMAIL
 FROM_EMAIL="${FROM_EMAIL:-noreply@yourdomain.com}"
 

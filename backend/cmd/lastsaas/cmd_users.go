@@ -18,7 +18,7 @@ import (
 
 func cmdUsers() {
 	if len(os.Args) < 3 {
-		fmt.Fprintln(os.Stderr, `Usage: lastsaas users <subcommand>
+		fmt.Fprintln(os.Stderr, `Usage: mcplens users <subcommand>
 
 Subcommands:
   list                          List all users
@@ -152,7 +152,7 @@ func cmdUsersGet() {
 	fs.Parse(os.Args[3:])
 
 	if *email == "" {
-		fmt.Fprintln(os.Stderr, "Usage: lastsaas users get --email <email>")
+		fmt.Fprintln(os.Stderr, "Usage: mcplens users get --email <email>")
 		os.Exit(1)
 	}
 
@@ -263,7 +263,7 @@ func cmdUsersSetActive(active bool) {
 	fs.Parse(os.Args[3:])
 
 	if *email == "" {
-		fmt.Fprintf(os.Stderr, "Usage: lastsaas users %s --email <email>\n", verb)
+		fmt.Fprintf(os.Stderr, "Usage: mcplens users %s --email <email>\n", verb)
 		os.Exit(1)
 	}
 
@@ -313,7 +313,7 @@ func cmdUsersRevokeSessions() {
 	fs.Parse(os.Args[3:])
 
 	if *email == "" {
-		fmt.Fprintln(os.Stderr, "Usage: lastsaas users revoke-sessions --email <email>")
+		fmt.Fprintln(os.Stderr, "Usage: mcplens users revoke-sessions --email <email>")
 		os.Exit(1)
 	}
 

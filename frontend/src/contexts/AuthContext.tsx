@@ -28,8 +28,8 @@ const AuthContext = createContext<AuthContextType | null>(null);
 // multi-tab support and API key-style auth headers. The app mitigates XSS risk through
 // React's built-in escaping, strict CSP headers, and validated/sanitized user inputs.
 // httpOnly cookies would require CSRF protection and complicate the SPA architecture.
-const ACCESS_TOKEN_KEY = 'lastsaas_access_token';
-const REFRESH_TOKEN_KEY = 'lastsaas_refresh_token';
+const ACCESS_TOKEN_KEY = 'mcplens_access_token';
+const REFRESH_TOKEN_KEY = 'mcplens_refresh_token';
 
 function isMfaRequired(data: AuthResponse | MFARequiredResponse): data is MFARequiredResponse {
   return 'mfaRequired' in data && data.mfaRequired === true;
@@ -48,7 +48,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setMemberships([]);
     localStorage.removeItem(ACCESS_TOKEN_KEY);
     localStorage.removeItem(REFRESH_TOKEN_KEY);
-    localStorage.removeItem('lastsaas_impersonating');
+    localStorage.removeItem('mcplens_impersonating');
     setAuthToken(null);
   }, []);
 

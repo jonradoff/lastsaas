@@ -92,8 +92,8 @@ export default function LoginPage() {
       const credential = await navigator.credentials.get({ publicKey: options });
       if (!credential) throw new Error('No credential returned');
       const data = await authApi.passkeyLoginFinish(credential);
-      localStorage.setItem('lastsaas_access_token', data.accessToken);
-      localStorage.setItem('lastsaas_refresh_token', data.refreshToken);
+      localStorage.setItem('mcplens_access_token', data.accessToken);
+      localStorage.setItem('mcplens_refresh_token', data.refreshToken);
       navigate('/dashboard');
     } catch (err: unknown) {
       const msg = (err as { response?: { data?: { error?: string } } })?.response?.data?.error

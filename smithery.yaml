@@ -1,4 +1,4 @@
-# Smithery configuration for LastSaaS MCP server
+# Smithery configuration for MCPLens MCP server
 # https://smithery.ai/docs/build
 
 runtime: go
@@ -7,21 +7,21 @@ startCommand:
   configSchema:
     type: object
     properties:
-      lastsaasUrl:
+      mcplensUrl:
         type: string
-        description: "Base URL of your LastSaaS instance (e.g., https://your-app.fly.dev)"
+        description: "Base URL of your MCPLens instance (e.g., https://your-app.fly.dev)"
       apiKey:
         type: string
-        description: "Root-tenant API key with admin authority (starts with lsk_)"
+        description: "Root-tenant API key with admin authority"
     required:
-      - lastsaasUrl
+      - mcplensUrl
       - apiKey
   commandFunction: |
     (config) => ({
-      command: "./lastsaas",
+      command: "./mcplens",
       args: ["mcp"],
       env: {
-        LASTSAAS_URL: config.lastsaasUrl,
-        LASTSAAS_API_KEY: config.apiKey
+        MCPLENS_URL: config.mcplensUrl,
+        MCPLENS_API_KEY: config.apiKey
       }
     })

@@ -1,30 +1,30 @@
 {
   "manifest_version": "0.3",
-  "name": "lastsaas",
-  "display_name": "LastSaaS Admin",
+  "name": "mcplens",
+  "display_name": "MCPLens Admin",
   "version": "1.0.0",
-  "description": "Read-only admin MCP server for LastSaaS — 26 tools for monitoring dashboards, users, tenants, financials, logs, health, and system configuration.",
-  "long_description": "LastSaaS is a complete, open-source SaaS platform foundation with multi-tenant auth, Stripe billing, white-label branding, API keys, webhooks, and a full admin interface. The MCP server provides read-only access to all admin data: query dashboards, search users and tenants, analyze financial metrics (revenue, ARR, DAU, MAU), search system logs, monitor health across nodes, audit API keys and webhooks, and inspect plans and configuration — all authenticated via a root-tenant API key over the LastSaaS HTTP API.",
+  "description": "Read-only admin MCP server for MCPLens — 26 tools for monitoring dashboards, users, tenants, financials, logs, health, and system configuration.",
+  "long_description": "MCPLens is a complete, open-source SaaS platform foundation with multi-tenant auth, Stripe billing, white-label branding, API keys, webhooks, and a full admin interface. The MCP server provides read-only access to all admin data: query dashboards, search users and tenants, analyze financial metrics (revenue, ARR, DAU, MAU), search system logs, monitor health across nodes, audit API keys and webhooks, and inspect plans and configuration — all authenticated via a root-tenant API key over the MCPLens HTTP API.",
   "author": {
     "name": "Jon Radoff",
     "url": "https://metavert.io"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/jonradoff/lastsaas.git"
+    "url": "https://github.com/jonradoff/mcplens.git"
   },
-  "homepage": "https://metavert.io/lastsaas",
-  "documentation": "https://github.com/jonradoff/lastsaas/blob/master/README.md",
-  "support": "https://github.com/jonradoff/lastsaas/issues",
+  "homepage": "https://metavert.io/mcplens",
+  "documentation": "https://github.com/jonradoff/mcplens/blob/master/README.md",
+  "support": "https://github.com/jonradoff/mcplens/issues",
   "server": {
     "type": "binary",
-    "entry_point": "bin/lastsaas",
+    "entry_point": "bin/mcplens",
     "mcp_config": {
-      "command": "${__dirname}/bin/lastsaas",
+      "command": "${__dirname}/bin/mcplens",
       "args": ["mcp"],
       "env": {
-        "LASTSAAS_URL": "${user_config.server_url}",
-        "LASTSAAS_API_KEY": "${user_config.api_key}"
+        "MCPLENS_URL": "${user_config.server_url}",
+        "MCPLENS_API_KEY": "${user_config.api_key}"
       }
     }
   },
@@ -59,15 +59,15 @@
   ],
   "keywords": ["saas", "admin", "multi-tenant", "billing", "stripe", "monitoring", "health", "dashboard", "mcp", "ai-native", "go", "open-source"],
   "license": "MIT",
-  "privacy_policies": ["https://www.metavert.io/lastsaas-privacy-policy"],
+  "privacy_policies": ["https://www.metavert.io/mcplens-privacy-policy"],
   "compatibility": {
     "platforms": ["darwin", "linux"]
   },
   "user_config": {
     "server_url": {
       "type": "string",
-      "title": "LastSaaS Server URL",
-      "description": "The URL of your LastSaaS instance (e.g., https://your-app.fly.dev or http://localhost:4290)",
+      "title": "MCPLens Server URL",
+      "description": "The URL of your MCPLens instance (e.g., https://your-app.fly.dev or http://localhost:4290)",
       "required": true,
       "default": "http://localhost:4290"
     },

@@ -23,10 +23,10 @@ oauth:
 email:
   resend_api_key: ${RESEND_API_KEY}
   from_email: ${FROM_EMAIL:noreply@yourdomain.com}
-  from_name: ${FROM_NAME:LastSaaS}
+  from_name: ${FROM_NAME:MCPLens}
 
 app:
-  name: ${APP_NAME:LastSaaS}
+  name: ${APP_NAME:MCPLens}
 
 stripe:
   secret_key: ${STRIPE_SECRET_KEY}

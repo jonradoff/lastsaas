@@ -18,7 +18,7 @@ import (
 )
 
 // ---------------------------------------------------------------------------
-// HTTP client for proxying read-only requests to the LastSaaS API
+// HTTP client for proxying read-only requests to the MCPLens API
 // ---------------------------------------------------------------------------
 
 type mcpClient struct {
@@ -91,22 +91,22 @@ func buildQuery(params map[string]string) string {
 // ---------------------------------------------------------------------------
 
 func cmdMCP() {
-	baseURL := os.Getenv("LASTSAAS_URL")
-	apiKey := os.Getenv("LASTSAAS_API_KEY")
+	baseURL := os.Getenv("MCPLENS_URL")
+	apiKey := os.Getenv("MCPLENS_API_KEY")
 
 	if baseURL == "" {
-		fmt.Fprintln(os.Stderr, "LASTSAAS_URL environment variable is required (e.g. http://localhost:3000)")
+		fmt.Fprintln(os.Stderr, "MCPLENS_URL environment variable is required (e.g. http://localhost:3000)")
 		os.Exit(1)
 	}
 	if apiKey == "" {
-		fmt.Fprintln(os.Stderr, "LASTSAAS_API_KEY environment variable is required (e.g. lsk_xxxxx)")
+		fmt.Fprintln(os.Stderr, "MCPLENS_API_KEY environment variable is required (e.g. lsk_xxxxx)")
 		os.Exit(1)
 	}
 
 	client := newMCPClient(baseURL, apiKey)
 
 	s := server.NewMCPServer(
-		"lastsaas-admin",
+		"mcplens-admin",
 		version.Current,
 		server.WithToolCapabilities(false),
 		server.WithResourceCapabilities(false, false),
@@ -848,12 +848,12 @@ func registerPMTools(s *server.MCPServer, client *mcpClient) {
 // ---------------------------------------------------------------------------
 
 func registerResources(s *server.MCPServer, client *mcpClient) {
-	// lastsaas://dashboard
+	// mcplens://dashboard
 	s.AddResource(
 		mcp.NewResource(
-			"lastsaas://dashboard",
+			"mcplens://dashboard",
 			"Dashboard Summary",
-			mcp.WithResourceDescription("LastSaaS admin dashboard: user count, tenant count, and system health status with issues"),
+			mcp.WithResourceDescription("MCPLens admin dashboard: user count, tenant count, and system health status with issues"),
 			mcp.WithMIMEType("application/json"),
 		),
 		func(ctx context.Context, request mcp.ReadResourceRequest) ([]mcp.ResourceContents, error) {
@@ -871,10 +871,10 @@ func registerResources(s *server.MCPServer, client *mcpClient) {
 		},
 	)
 
-	// lastsaas://health
+	// mcplens://health
 	s.AddResource(
 		mcp.NewResource(
-			"lastsaas://health",
+			"mcplens://health",
 			"System Health",
 			mcp.WithResourceDescription("Current system health: CPU, memory, disk, HTTP stats, MongoDB connections, and node status"),
 			mcp.WithMIMEType("application/json"),

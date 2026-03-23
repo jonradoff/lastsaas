@@ -48,8 +48,8 @@
 /* Base */
 html { scroll-behavior: smooth; }
 body {
-  background-color: var(--color-dark-950);
-  color: var(--color-dark-100);
+  background-color: var(--color-dark-900);
+  color: var(--color-dark-200);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

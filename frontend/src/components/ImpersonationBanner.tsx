@@ -6,14 +6,14 @@ import { setAuthToken } from '../api/client';
 export default function ImpersonationBanner() {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
-  const isImpersonating = localStorage.getItem('lastsaas_impersonating') === 'true';
+  const isImpersonating = localStorage.getItem('mcplens_impersonating') === 'true';
 
   if (!isImpersonating || !user) return null;
 
   const endImpersonation = async () => {
-    localStorage.removeItem('lastsaas_impersonating');
-    localStorage.removeItem('lastsaas_access_token');
-    localStorage.removeItem('lastsaas_refresh_token');
+    localStorage.removeItem('mcplens_impersonating');
+    localStorage.removeItem('mcplens_access_token');
+    localStorage.removeItem('mcplens_refresh_token');
     setAuthToken(null);
     await logout();
     navigate('/login');

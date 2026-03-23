@@ -52,9 +52,9 @@ api.interceptors.response.use(
       return Promise.reject(error);
     }
 
-    const refreshToken = localStorage.getItem('lastsaas_refresh_token');
+    const refreshToken = localStorage.getItem('mcplens_refresh_token');
     if (!refreshToken) {
-      localStorage.removeItem('lastsaas_access_token');
+      localStorage.removeItem('mcplens_access_token');
       delete api.defaults.headers.common['Authorization'];
       window.location.href = '/login';
       return Promise.reject(error);
@@ -76,16 +76,16 @@ api.interceptors.response.use(
 
     try {
       const { data } = await api.post<AuthResponse>('/auth/refresh', { refreshToken });
-      localStorage.setItem('lastsaas_access_token', data.accessToken);
-      localStorage.setItem('lastsaas_refresh_token', data.refreshToken);
+      localStorage.setItem('mcplens_access_token', data.accessToken);
+      localStorage.setItem('mcplens_refresh_token', data.refreshToken);
       setAuthToken(data.accessToken);
       onRefreshComplete(data.accessToken);
       originalRequest.headers['Authorization'] = `Bearer ${data.accessToken}`;
       return api(originalRequest);
     } catch {
       onRefreshFailed();
-      localStorage.removeItem('lastsaas_access_token');
-      localStorage.removeItem('lastsaas_refresh_token');
+      localStorage.removeItem('mcplens_access_token');
+      localStorage.removeItem('mcplens_refresh_token');
       delete api.defaults.headers.common['Authorization'];
       window.location.href = '/login';
       return Promise.reject(error);

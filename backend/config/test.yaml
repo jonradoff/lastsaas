@@ -4,7 +4,7 @@ server:
 
 database:
   uri: ${MONGODB_URI}
-  name: ${DATABASE_NAME:lastsaas-test}
+  name: ${DATABASE_NAME:mcplens-test}
 
 frontend:
   url: ${FRONTEND_URL:http://localhost:5173}
@@ -16,4 +16,4 @@ jwt:
   refresh_ttl_days: 7
 
 app:
-  name: ${APP_NAME:LastSaaS-Test}
+  name: ${APP_NAME:MCPLens-Test}

@@ -12,7 +12,7 @@ import (
 
 func cmdDB() {
 	if len(os.Args) < 3 {
-		fmt.Fprintln(os.Stderr, `Usage: lastsaas db <subcommand>
+		fmt.Fprintln(os.Stderr, `Usage: mcplens db <subcommand>
 
 Subcommands:
   stats       Show collection document counts and sizes`)

@@ -80,8 +80,8 @@ func sendUpgradeMessage(ctx context.Context, database *db.MongoDB, newVersion st
 	msg := models.Message{
 		ID:        primitive.NewObjectID(),
 		UserID:    membership.UserID,
-		Subject:   "Welcome to LastSaaS v" + newVersion,
-		Body:      "Your system has been upgraded to version " + newVersion + ". Thank you for using LastSaaS!",
+		Subject:   "Welcome to MCPLens v" + newVersion,
+		Body:      "Your system has been upgraded to version " + newVersion + ". Thank you for using MCPLens!",
 		IsSystem:  true,
 		Read:      false,
 		CreatedAt: time.Now(),
