@@ -366,6 +366,8 @@ func main() {
 	scannerHandler := handlers.NewScannerHandler(scannerSvc)
 	scannerHandler.SetDB(database)
 	ogHandler := handlers.NewOGHandler(scannerSvc)
+	apiV1Handler := handlers.NewAPIV1Handler(scannerSvc)
+	agencyBrandingHandler := handlers.NewAgencyBrandingHandler(database, scannerSvc)
 	brandingHandler.SetAuthProviders(map[string]bool{
 		"google":    googleOAuth != nil,
 		"github":    githubOAuth != nil,
@@ -635,6 +637,23 @@ func main() {
 		},
 		telemetryHandler.TrackBatch,
 	)).Methods("POST")
+
+	// --- Public API v1 routes (API key auth via Bearer lsk_...) ---
+	v1API := guarded.PathPrefix("/v1").Subrouter()
+	v1API.Use(authMiddleware.RequireAuth)
+	v1API.HandleFunc("/scan", apiV1Handler.TriggerScan).Methods("POST")
+	v1API.HandleFunc("/scan/{id}", apiV1Handler.GetScan).Methods("GET")
+	v1API.HandleFunc("/stores/{domain}/latest", apiV1Handler.GetLatestStoreScan).Methods("GET")
+
+	// --- Agency branding routes (auth + tenant required) ---
+	agencyBrandingAPI := guarded.PathPrefix("/branding/agency").Subrouter()
+	agencyBrandingAPI.Use(authMiddleware.RequireAuth)
+	agencyBrandingAPI.Use(tenantMiddleware.RequireTenant)
+	agencyBrandingAPI.HandleFunc("", agencyBrandingHandler.GetAgencyBranding).Methods("GET")
+	agencyBrandingAPI.HandleFunc("", agencyBrandingHandler.UpdateAgencyBranding).Methods("PUT")
+
+	// Scan report download (public; branding applied when ?branding=true + tenant auth)
+	api.HandleFunc("/scan/{id}/report", agencyBrandingHandler.GetScanReport).Methods("GET")
 
 	// --- Scanner routes ---
 	// POST /api/scan — public, rate-limited (5/hour unauthenticated)

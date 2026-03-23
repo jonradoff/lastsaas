@@ -481,3 +481,7 @@ func (m *MongoDB) TelemetryEvents() *mongo.Collection {
 func (m *MongoDB) EventDefinitions() *mongo.Collection {
 	return m.Database.Collection("event_definitions")
 }
+
+func (m *MongoDB) AgencyBrandings() *mongo.Collection {
+	return m.Database.Collection("agency_brandings")
+}
