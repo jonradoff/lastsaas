@@ -14,15 +14,74 @@ const SCAN_MESSAGES = [
   'Generating report...',
 ];
 
-const CATEGORIES = [
-  { label: 'Data Quality', score: 100, color: '#059669' },
-  { label: 'Product Discovery', score: 95, color: '#059669' },
-  { label: 'Checkout Flow', score: 92, color: '#059669' },
-  { label: 'Protocol', score: 100, color: '#059669' },
+// Each demo store has different scores and a contextual finding
+const DEMO_STORES = [
+  {
+    domain: 'gymshark.com',
+    score: 97,
+    badge: 'Excellent',
+    badgeColor: 'bg-emerald-50 text-emerald-700',
+    categories: [
+      { label: 'Data Quality', score: 100, color: '#059669' },
+      { label: 'Product Discovery', score: 95, color: '#059669' },
+      { label: 'Checkout Flow', score: 92, color: '#059669' },
+      { label: 'Protocol', score: 100, color: '#059669' },
+    ],
+    finding: { type: 'pass', icon: '✓', color: 'bg-emerald-50 border-emerald-200 text-emerald-600', text: 'All products have complete price data and structured attributes — agents can compare effectively.' },
+  },
+  {
+    domain: 'colourpop.com',
+    score: 11,
+    badge: 'Critical',
+    badgeColor: 'bg-red-50 text-red-700',
+    categories: [
+      { label: 'Data Quality', score: 8, color: '#dc2626' },
+      { label: 'Product Discovery', score: 15, color: '#dc2626' },
+      { label: 'Checkout Flow', score: 0, color: '#dc2626' },
+      { label: 'Protocol', score: 22, color: '#dc2626' },
+    ],
+    finding: { type: 'fail', icon: '⚠', color: 'bg-red-50 border-red-200 text-red-600', text: 'Fix: Add price_range to search results — agents skip products they can\'t price-compare.' },
+  },
+  {
+    domain: 'allbirds.com',
+    score: 100,
+    badge: 'Perfect',
+    badgeColor: 'bg-emerald-50 text-emerald-700',
+    categories: [
+      { label: 'Data Quality', score: 100, color: '#059669' },
+      { label: 'Product Discovery', score: 100, color: '#059669' },
+      { label: 'Checkout Flow', score: 100, color: '#059669' },
+      { label: 'Protocol', score: 100, color: '#059669' },
+    ],
+    finding: { type: 'pass', icon: '✓', color: 'bg-emerald-50 border-emerald-200 text-emerald-600', text: 'Perfect score — every product has rich descriptions, variants, and structured attributes.' },
+  },
+  {
+    domain: 'ridgewallet.com',
+    score: 36,
+    badge: 'Needs Work',
+    badgeColor: 'bg-amber-50 text-amber-700',
+    categories: [
+      { label: 'Data Quality', score: 42, color: '#d97706' },
+      { label: 'Product Discovery', score: 28, color: '#dc2626' },
+      { label: 'Checkout Flow', score: 35, color: '#dc2626' },
+      { label: 'Protocol', score: 40, color: '#d97706' },
+    ],
+    finding: { type: 'fail', icon: '⚠', color: 'bg-amber-50 border-amber-200 text-amber-600', text: 'Fix: 38% of products have descriptions under 50 chars — agents can\'t differentiate them.' },
+  },
+  {
+    domain: 'tentree.com',
+    score: 86,
+    badge: 'Good',
+    badgeColor: 'bg-emerald-50 text-emerald-700',
+    categories: [
+      { label: 'Data Quality', score: 90, color: '#059669' },
+      { label: 'Product Discovery', score: 82, color: '#059669' },
+      { label: 'Checkout Flow', score: 80, color: '#059669' },
+      { label: 'Protocol', score: 95, color: '#059669' },
+    ],
+    finding: { type: 'pass', icon: '✓', color: 'bg-emerald-50 border-emerald-200 text-emerald-600', text: 'Strong agent readiness — consider adding structured size/material attributes to reach 95+.' },
+  },
 ];
-
-const DOMAIN = 'gymshark.com';
-const FINAL_SCORE = 97;
 
 /* ── Typewriter ── */
 function Typewriter({ text, onDone }: { text: string; onDone?: () => void }) {
@@ -106,7 +165,7 @@ function DemoScoreCircle({ score, animate }: { score: number; animate: boolean }
 }
 
 /* ── Phase: Input ── */
-function PhaseInput({ onTyped }: { onTyped: () => void }) {
+function PhaseInput({ domain, onTyped }: { domain: string; onTyped: () => void }) {
   const [typed, setTyped] = useState(false);
 
   function handleDone() {
@@ -116,7 +175,7 @@ function PhaseInput({ onTyped }: { onTyped: () => void }) {
 
   return (
     <motion.div
-      key="input"
+      key={`input-${domain}`}
       initial={prefersReducedMotion ? false : { opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -128,7 +187,7 @@ function PhaseInput({ onTyped }: { onTyped: () => void }) {
       </div>
       <div className="flex gap-2 items-center">
         <div className="flex-1 px-3 py-2.5 bg-white border border-slate-300 rounded-lg text-slate-900 text-sm font-mono min-h-[40px]">
-          <Typewriter text={DOMAIN} onDone={handleDone} />
+          <Typewriter text={domain} onDone={handleDone} />
           {!typed && (
             <span className="inline-block w-0.5 h-4 bg-slate-500 ml-0.5 animate-pulse align-middle" />
           )}
@@ -219,7 +278,7 @@ function PhaseScanning({ onDone }: { onDone: () => void }) {
 }
 
 /* ── Phase: Results ── */
-function PhaseResults() {
+function PhaseResults({ store }: { store: typeof DEMO_STORES[number] }) {
   const [scoreAnimate, setScoreAnimate] = useState(false);
 
   useEffect(() => {
@@ -231,7 +290,7 @@ function PhaseResults() {
 
   return (
     <motion.div
-      key="results"
+      key={`results-${store.domain}`}
       initial={prefersReducedMotion ? false : { opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -244,15 +303,15 @@ function PhaseResults() {
           <div className="text-xs font-mono text-slate-400 uppercase tracking-widest mb-0.5">
             Agent Readiness Report
           </div>
-          <div className="font-semibold text-slate-900 text-sm">{DOMAIN}</div>
+          <div className="font-semibold text-slate-900 text-sm">{store.domain}</div>
         </div>
-        <span className="px-2 py-0.5 text-xs rounded-full bg-emerald-50 text-emerald-700 font-medium">
-          Excellent
+        <span className={`px-2 py-0.5 text-xs rounded-full font-medium ${store.badgeColor}`}>
+          {store.badge}
         </span>
       </div>
 
       {/* Score circle */}
-      <DemoScoreCircle score={FINAL_SCORE} animate={scoreAnimate} />
+      <DemoScoreCircle score={store.score} animate={scoreAnimate} />
 
       {/* Category scores */}
       <motion.div
@@ -264,7 +323,7 @@ function PhaseResults() {
           visible: { transition: { staggerChildren: stagger, delayChildren: 0.5 } },
         }}
       >
-        {CATEGORIES.map(({ label, score, color }) => (
+        {store.categories.map(({ label, score, color }) => (
           <motion.div
             key={label}
             variants={{
@@ -281,15 +340,15 @@ function PhaseResults() {
         ))}
       </motion.div>
 
-      {/* Finding */}
+      {/* Contextual finding — pass or fail with specific detail */}
       <motion.div
         initial={prefersReducedMotion ? false : { opacity: 0, x: -8 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.4, delay: 0.9 }}
-        className="mt-3 flex items-start gap-2 bg-emerald-50 border border-emerald-200 rounded-lg px-3 py-2.5"
+        className={`mt-3 flex items-start gap-2 border rounded-lg px-3 py-2.5 ${store.finding.color}`}
       >
-        <span className="text-emerald-600 font-bold text-sm">✓</span>
-        <span className="text-xs text-slate-700">All products have valid price data</span>
+        <span className="font-bold text-sm flex-shrink-0">{store.finding.icon}</span>
+        <span className="text-xs text-slate-700">{store.finding.text}</span>
       </motion.div>
     </motion.div>
   );
@@ -298,20 +357,19 @@ function PhaseResults() {
 /* ── Main ScanDemo ── */
 export default function ScanDemo() {
   const [phase, setPhase] = useState<Phase>('input');
+  const [storeIdx, setStoreIdx] = useState(0);
+  const currentStore = DEMO_STORES[storeIdx];
 
   useEffect(() => {
-    // Phase timings (ms from phase start):
-    // input → scanning: triggered by typewriter done + 700ms (inside PhaseInput)
-    // scanning → results: triggered by scanning messages done (~1.95s)
-    // results → fade: after 3.5s
-    // fade → input: after 1s
-
     if (phase === 'results') {
       const id = setTimeout(() => setPhase('fade'), 3500);
       return () => clearTimeout(id);
     }
     if (phase === 'fade') {
-      const id = setTimeout(() => setPhase('input'), 900);
+      const id = setTimeout(() => {
+        setStoreIdx((prev) => (prev + 1) % DEMO_STORES.length);
+        setPhase('input');
+      }, 900);
       return () => clearTimeout(id);
     }
   }, [phase]);
@@ -325,28 +383,40 @@ export default function ScanDemo() {
           <div className="w-2.5 h-2.5 rounded-full bg-amber-400" />
           <div className="w-2.5 h-2.5 rounded-full bg-emerald-400" />
           <div className="flex-1 mx-3 h-5 bg-white border border-slate-200 rounded text-[10px] text-slate-400 flex items-center px-2">
-            mcplens.io
+            mcplens.dev
           </div>
         </div>
 
-        <div className="min-h-[260px] relative">
+        <div className="min-h-[300px] relative">
           <AnimatePresence mode="wait">
             {phase === 'input' && (
-              <PhaseInput onTyped={() => setPhase('scanning')} />
+              <PhaseInput domain={currentStore.domain} onTyped={() => setPhase('scanning')} />
             )}
             {phase === 'scanning' && (
               <PhaseScanning onDone={() => setPhase('results')} />
             )}
             {(phase === 'results' || phase === 'fade') && (
               <motion.div
-                key="results-wrap"
+                key={`results-wrap-${currentStore.domain}`}
                 animate={phase === 'fade' ? { opacity: 0 } : { opacity: 1 }}
                 transition={{ duration: 0.6 }}
               >
-                <PhaseResults />
+                <PhaseResults store={currentStore} />
               </motion.div>
             )}
           </AnimatePresence>
+        </div>
+
+        {/* Store indicator dots */}
+        <div className="flex justify-center gap-1.5 pb-3">
+          {DEMO_STORES.map((_, i) => (
+            <div
+              key={i}
+              className={`w-1.5 h-1.5 rounded-full transition-colors duration-300 ${
+                i === storeIdx ? 'bg-blue-500' : 'bg-slate-200'
+              }`}
+            />
+          ))}
         </div>
       </div>
 
