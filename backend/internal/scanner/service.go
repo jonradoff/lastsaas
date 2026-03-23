@@ -18,8 +18,9 @@ import (
 
 // Service orchestrates running the Node.js scanner CLI and persisting results.
 type Service struct {
-	store       *Store
-	scannerPath string // path to the scanner dist directory (containing cli.js)
+	store        *Store
+	trackedStore *TrackedStoreStore
+	scannerPath  string // path to the scanner dist directory (containing cli.js)
 }
 
 // NewService creates a new scanner Service.
@@ -29,9 +30,15 @@ func NewService(database *mongo.Database) *Service {
 	scannerPath := resolveScanner()
 	slog.Info("Scanner service initialised", "scannerPath", scannerPath)
 	return &Service{
-		store:       NewStore(database),
-		scannerPath: scannerPath,
+		store:        NewStore(database),
+		trackedStore: NewTrackedStoreStore(database),
+		scannerPath:  scannerPath,
 	}
+}
+
+// TrackedStores returns the TrackedStoreStore for use by handlers.
+func (s *Service) TrackedStores() *TrackedStoreStore {
+	return s.trackedStore
 }
 
 // resolveScanner resolves the path to scanner/dist relative to the binary,

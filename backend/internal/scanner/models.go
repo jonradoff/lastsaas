@@ -57,3 +57,15 @@ type StoredScan struct {
 	TenantID  *primitive.ObjectID `json:"tenantId,omitempty" bson:"tenantId,omitempty"`
 	ScanResult
 }
+
+// TrackedStore is a store domain that a tenant has pinned for ongoing monitoring.
+type TrackedStore struct {
+	ID            primitive.ObjectID  `json:"id" bson:"_id,omitempty"`
+	Domain        string              `json:"domain" bson:"domain"`
+	TenantID      primitive.ObjectID  `json:"tenantId" bson:"tenantId"`
+	AddedAt       time.Time           `json:"addedAt" bson:"addedAt"`
+	LastScannedAt *time.Time          `json:"lastScannedAt,omitempty" bson:"lastScannedAt,omitempty"`
+	CurrentScore  int                 `json:"currentScore" bson:"currentScore"`
+	PreviousScore int                 `json:"previousScore" bson:"previousScore"`
+	Trend         string              `json:"trend" bson:"trend"` // "up", "down", "stable"
+}

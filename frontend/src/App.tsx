@@ -27,6 +27,7 @@ import BootstrapPage from './pages/BootstrapPage';
 
 // App pages (eager — core experience)
 import DashboardPage from './pages/app/DashboardPage';
+import StoreDetailPage from './pages/app/StoreDetailPage';
 import TeamPage from './pages/app/TeamPage';
 import SettingsPage from './pages/app/SettingsPage';
 import PlanPage from './pages/app/PlanPage';
@@ -159,6 +160,7 @@ export default function App() {
 
                       <Route element={<Layout />}>
                         <Route path="/dashboard" element={<DashboardPage />} />
+                        <Route path="/dashboard/store/:id" element={<StoreDetailPage />} />
                         <Route path="/team" element={<TeamPage />} />
                         <Route path="/plan" element={<PlanPage />} />
                         <Route path="/buy-credits" element={<BuyCreditsPage />} />

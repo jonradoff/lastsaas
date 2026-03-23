@@ -500,6 +500,43 @@ export const pmApi = {
     api.get<SankeyData>('/admin/pm/event-definitions/sankey', { params }).then(r => r.data),
 };
 
+// --- Tracked Stores ---
+export interface TrackedStore {
+  id: string;
+  domain: string;
+  tenantId: string;
+  addedAt: string;
+  lastScannedAt?: string;
+  currentScore: number;
+  previousScore: number;
+  trend: 'up' | 'down' | 'stable';
+}
+
+export interface StoredScanEntry {
+  id: string;
+  domain: string;
+  createdAt: string;
+  compositeScore: number;
+  categories: ScanCategoryResult[];
+  durationMs: number;
+  partialResults: boolean;
+  partialReason?: string;
+  version: string;
+  scenarioCount: number;
+  testedCategories: string[];
+}
+
+export const trackedStoresApi = {
+  list: () =>
+    api.get<{ stores: TrackedStore[]; total: number; maxStores: number }>('/tracked-stores').then(r => r.data),
+  add: (domain: string) =>
+    api.post<TrackedStore>('/tracked-stores', { domain }).then(r => r.data),
+  remove: (id: string) =>
+    api.delete(`/tracked-stores/${id}`).then(r => r.data),
+  history: (id: string, limit?: number) =>
+    api.get<{ store: TrackedStore; history: StoredScanEntry[] }>(`/tracked-stores/${id}/history`, { params: limit ? { limit } : undefined }).then(r => r.data),
+};
+
 // --- Scanner (public, no auth) ---
 export interface ScanCategoryResult {
   category: string;

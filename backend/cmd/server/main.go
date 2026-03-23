@@ -364,6 +364,7 @@ func main() {
 	usageHandler := handlers.NewUsageHandler(database)
 	scannerSvc := scanner.NewService(database.Database)
 	scannerHandler := handlers.NewScannerHandler(scannerSvc)
+	scannerHandler.SetDB(database)
 	brandingHandler.SetAuthProviders(map[string]bool{
 		"google":    googleOAuth != nil,
 		"github":    githubOAuth != nil,
@@ -655,6 +656,15 @@ func main() {
 	scansAPI.Use(authMiddleware.RequireAuth)
 	scansAPI.Use(tenantMiddleware.RequireTenant)
 	scansAPI.HandleFunc("", scannerHandler.ListScans).Methods("GET")
+
+	// Tracked stores — requires auth + tenant (paid feature, entitlement-gated)
+	trackedStoresAPI := guarded.PathPrefix("/tracked-stores").Subrouter()
+	trackedStoresAPI.Use(authMiddleware.RequireAuth)
+	trackedStoresAPI.Use(tenantMiddleware.RequireTenant)
+	trackedStoresAPI.HandleFunc("", scannerHandler.ListTrackedStores).Methods("GET")
+	trackedStoresAPI.HandleFunc("", scannerHandler.AddTrackedStore).Methods("POST")
+	trackedStoresAPI.HandleFunc("/{id}", scannerHandler.RemoveTrackedStore).Methods("DELETE")
+	trackedStoresAPI.HandleFunc("/{id}/history", scannerHandler.GetTrackedStoreHistory).Methods("GET")
 
 	// Webhook route (no auth — uses Stripe signature verification)
 	api.HandleFunc("/billing/webhook", webhookHandler.HandleWebhook).Methods("POST")
