@@ -365,6 +365,7 @@ func main() {
 	scannerSvc := scanner.NewService(database.Database)
 	scannerHandler := handlers.NewScannerHandler(scannerSvc)
 	scannerHandler.SetDB(database)
+	ogHandler := handlers.NewOGHandler(scannerSvc)
 	brandingHandler.SetAuthProviders(map[string]bool{
 		"google":    googleOAuth != nil,
 		"github":    githubOAuth != nil,
@@ -650,6 +651,12 @@ func main() {
 
 	// GET /api/scan/{id} — public
 	api.HandleFunc("/scan/{id}", scannerHandler.GetScan).Methods("GET")
+
+	// GET /api/og/{domain} — public, returns SVG OG image
+	api.HandleFunc("/og/{domain}", ogHandler.OGImage).Methods("GET")
+
+	// GET /api/badge/{domain} — public, returns shields.io-compatible JSON
+	api.HandleFunc("/badge/{domain}", ogHandler.Badge).Methods("GET")
 
 	// GET /api/scans — requires auth + tenant (paid feature)
 	scansAPI := guarded.PathPrefix("/scans").Subrouter()

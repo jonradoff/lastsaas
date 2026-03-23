@@ -2,6 +2,22 @@ import { useState, useEffect, type FormEvent } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { scanApi, type ScanResult, type ScanCategoryResult } from '../../api/client';
 
+function setMetaTag(property: string, content: string) {
+  const selector = `meta[property="${property}"], meta[name="${property}"]`;
+  let el = document.querySelector<HTMLMetaElement>(selector);
+  if (!el) {
+    el = document.createElement('meta');
+    // og: and twitter: properties use the "property" attribute; others use "name"
+    if (property.startsWith('og:') || property.startsWith('fb:')) {
+      el.setAttribute('property', property);
+    } else {
+      el.setAttribute('name', property);
+    }
+    document.head.appendChild(el);
+  }
+  el.setAttribute('content', content);
+}
+
 const CATEGORY_LABELS: Record<string, string> = {
   'data-quality': 'Data Quality',
   'product-discovery': 'Product Discovery',
@@ -146,6 +162,7 @@ export default function ScanResultPage() {
   const [loadingMsgIdx, setLoadingMsgIdx] = useState(0);
   const [newDomain, setNewDomain] = useState('');
   const [copied, setCopied] = useState(false);
+  const [badgeCopied, setBadgeCopied] = useState(false);
 
   useEffect(() => {
     if (!domain) return;
@@ -197,6 +214,32 @@ export default function ScanResultPage() {
     };
   }, [domain]);
 
+  // Update document title and OG meta tags when results arrive
+  useEffect(() => {
+    if (!domain) return;
+    if (result) {
+      const score = result.compositeScore;
+      const apiBase = window.location.origin + '/api';
+      const catSummary = result.categories
+        .filter(c => c.tested)
+        .map(c => `${CATEGORY_LABELS[c.category] ?? c.category}: ${Math.round(c.cappedScore)}`)
+        .join(' | ');
+
+      document.title = `${domain} — Agent Readiness: ${score}/100 | MCPLens`;
+      setMetaTag('og:title', `${domain} — Agent Readiness: ${score}/100`);
+      setMetaTag('og:description', catSummary || `AI agent readiness score for ${domain}`);
+      setMetaTag('og:image', `${apiBase}/og/${domain}`);
+      setMetaTag('og:url', window.location.href);
+      setMetaTag('og:type', 'website');
+      setMetaTag('twitter:card', 'summary_large_image');
+      setMetaTag('twitter:title', `${domain} — Agent Readiness: ${score}/100`);
+      setMetaTag('twitter:description', catSummary || `AI agent readiness score for ${domain}`);
+      setMetaTag('twitter:image', `${apiBase}/og/${domain}`);
+    } else {
+      document.title = `${domain} — MCPLens`;
+    }
+  }, [result, domain]);
+
   function handleScanAnother(e: FormEvent) {
     e.preventDefault();
     const trimmed = newDomain.trim().replace(/^https?:\/\//, '').replace(/\/$/, '');
@@ -208,6 +251,15 @@ export default function ScanResultPage() {
     navigator.clipboard.writeText(window.location.href).then(() => {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
+    });
+  }
+
+  function handleCopyBadge() {
+    const apiBase = window.location.origin + '/api';
+    const badgeMarkdown = `![Agent Readiness](https://img.shields.io/endpoint?url=${apiBase}/badge/${domain})`;
+    navigator.clipboard.writeText(badgeMarkdown).then(() => {
+      setBadgeCopied(true);
+      setTimeout(() => setBadgeCopied(false), 2000);
     });
   }
 
@@ -330,6 +382,34 @@ export default function ScanResultPage() {
               >
                 {copied ? 'Copied!' : 'Copy URL'}
               </button>
+            </div>
+
+            {/* Badge section */}
+            <div className="bg-[#1e293b] border border-slate-700/50 rounded-2xl p-6 flex flex-col gap-4">
+              <div>
+                <div className="text-sm font-semibold text-white mb-1">README Badge</div>
+                <div className="text-xs text-slate-400 mb-3">
+                  Add this badge to your README to display the agent readiness score.
+                </div>
+                <div className="flex items-center gap-3">
+                  <img
+                    src={`https://img.shields.io/endpoint?url=${window.location.origin}/api/badge/${domain}`}
+                    alt="Agent Readiness Badge"
+                    className="h-5"
+                  />
+                </div>
+              </div>
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+                <code className="flex-1 text-xs text-slate-300 bg-[#0f172a] border border-slate-700 rounded-lg px-3 py-2 font-mono break-all">
+                  {`![Agent Readiness](https://img.shields.io/endpoint?url=${window.location.origin}/api/badge/${domain})`}
+                </code>
+                <button
+                  onClick={handleCopyBadge}
+                  className="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white text-sm font-medium rounded-lg transition-colors shrink-0"
+                >
+                  {badgeCopied ? 'Copied!' : 'Copy Markdown'}
+                </button>
+              </div>
             </div>
 
             {/* Scan Another Store */}
