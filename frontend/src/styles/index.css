@@ -12,17 +12,17 @@
   --color-primary-800: #075985;
   --color-primary-900: #0c4a6e;
 
-  --color-dark-50: #f8fafc;
-  --color-dark-100: #f1f5f9;
-  --color-dark-200: #e2e8f0;
-  --color-dark-300: #cbd5e1;
-  --color-dark-400: #94a3b8;
+  --color-dark-50: #020617;
+  --color-dark-100: #0f172a;
+  --color-dark-200: #1e293b;
+  --color-dark-300: #334155;
+  --color-dark-400: #475569;
   --color-dark-500: #64748b;
-  --color-dark-600: #475569;
-  --color-dark-700: #334155;
-  --color-dark-800: #1e293b;
-  --color-dark-900: #0f172a;
-  --color-dark-950: #020617;
+  --color-dark-600: #94a3b8;
+  --color-dark-700: #cbd5e1;
+  --color-dark-800: #e2e8f0;
+  --color-dark-900: #f1f5f9;
+  --color-dark-950: #f8fafc;
 
   --color-accent-purple: #a855f7;
   --color-accent-pink: #ec4899;
@@ -45,11 +45,11 @@
   }
 }
 
-/* Base */
+/* Base — light by default */
 html { scroll-behavior: smooth; }
 body {
-  background-color: var(--color-dark-900);
-  color: var(--color-dark-200);
+  background-color: var(--color-dark-950);
+  color: var(--color-dark-100);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -59,27 +59,27 @@ body {
   color: white;
 }
 
-/* Light mode overrides — inverts the dark palette */
-[data-theme="light"] {
-  --color-dark-50: #020617;
-  --color-dark-100: #0f172a;
-  --color-dark-200: #1e293b;
-  --color-dark-300: #334155;
-  --color-dark-400: #475569;
+/* Dark mode overrides — inverts the light palette back to dark */
+[data-theme="dark"] {
+  --color-dark-50: #f8fafc;
+  --color-dark-100: #f1f5f9;
+  --color-dark-200: #e2e8f0;
+  --color-dark-300: #cbd5e1;
+  --color-dark-400: #94a3b8;
   --color-dark-500: #64748b;
-  --color-dark-600: #94a3b8;
-  --color-dark-700: #cbd5e1;
-  --color-dark-800: #e2e8f0;
-  --color-dark-900: #f1f5f9;
-  --color-dark-950: #ffffff;
+  --color-dark-600: #475569;
+  --color-dark-700: #334155;
+  --color-dark-800: #1e293b;
+  --color-dark-900: #0f172a;
+  --color-dark-950: #020617;
 }
-[data-theme="light"] body {
-  background-color: var(--color-dark-950);
-  color: var(--color-dark-100);
+[data-theme="dark"] body {
+  background-color: var(--color-dark-900);
+  color: var(--color-dark-200);
 }
 
 /* Scrollbar */
 ::-webkit-scrollbar { width: 8px; height: 8px; }
-::-webkit-scrollbar-track { background: var(--color-dark-900); }
+::-webkit-scrollbar-track { background: var(--color-dark-950); }
 ::-webkit-scrollbar-thumb { background: var(--color-dark-700); border-radius: 9999px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--color-dark-600); }

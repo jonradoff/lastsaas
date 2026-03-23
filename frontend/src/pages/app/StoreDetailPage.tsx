@@ -71,14 +71,14 @@ function ScoreTimelineChart({ scans }: { scans: StoredScanEntry[] }) {
               x2={PADDING.left + chartW}
               y1={toY(label)}
               y2={toY(label)}
-              stroke="rgba(255,255,255,0.05)"
+              stroke="rgba(0,0,0,0.08)"
               strokeWidth="1"
             />
             <text
               x={PADDING.left - 6}
               y={toY(label) + 4}
               textAnchor="end"
-              fill="rgba(255,255,255,0.35)"
+              fill="rgba(0,0,0,0.4)"
               fontSize="10"
             >
               {label}
@@ -89,7 +89,7 @@ function ScoreTimelineChart({ scans }: { scans: StoredScanEntry[] }) {
         {/* Area fill */}
         <polygon
           points={areaPoints}
-          fill="rgba(99,102,241,0.12)"
+          fill="rgba(99,102,241,0.1)"
         />
 
         {/* Line */}
@@ -110,7 +110,7 @@ function ScoreTimelineChart({ scans }: { scans: StoredScanEntry[] }) {
             cy={toY(s)}
             r="3.5"
             fill="#6366f1"
-            stroke="#1e1e2e"
+            stroke="#ffffff"
             strokeWidth="1.5"
           />
         ))}
@@ -127,7 +127,7 @@ function ScoreTimelineChart({ scans }: { scans: StoredScanEntry[] }) {
               x={toX(origIndex)}
               y={HEIGHT - 6}
               textAnchor="middle"
-              fill="rgba(255,255,255,0.3)"
+              fill="rgba(0,0,0,0.35)"
               fontSize="9"
             >
               {new Date(scan.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
@@ -167,7 +167,7 @@ function CategoryBreakdown({ scan }: { scan: StoredScanEntry }) {
               <span className="text-sm text-dark-300">
                 {CATEGORY_LABELS[cat.category] || cat.category}
               </span>
-              <span className="text-sm font-semibold text-white">{displayScore}</span>
+              <span className="text-sm font-semibold text-dark-100">{displayScore}</span>
             </div>
             <div className="h-1.5 bg-dark-700 rounded-full overflow-hidden">
               <div
@@ -254,12 +254,12 @@ export default function StoreDetailPage() {
       <div className="flex items-center gap-4 mb-6">
         <button
           onClick={() => navigate('/dashboard')}
-          className="p-2 rounded-lg text-dark-400 hover:text-white hover:bg-dark-800 transition-colors"
+          className="p-2 rounded-lg text-dark-400 hover:text-dark-100 hover:bg-dark-800 transition-colors"
         >
           <ArrowLeft className="w-5 h-5" />
         </button>
         <div className="flex-1 min-w-0">
-          <h1 className="text-2xl font-bold text-white truncate">{store.domain}</h1>
+          <h1 className="text-2xl font-bold text-dark-100 truncate">{store.domain}</h1>
           <p className="text-dark-400 text-sm mt-0.5">
             Added {new Date(store.addedAt).toLocaleDateString()}
             {store.lastScannedAt && (
@@ -299,14 +299,14 @@ export default function StoreDetailPage() {
         </div>
         <div className="bg-dark-900/50 border border-dark-800 rounded-2xl p-4">
           <p className="text-xs text-dark-400 uppercase tracking-wider mb-1">Total Scans</p>
-          <p className="text-4xl font-bold text-white">{history.length}</p>
+          <p className="text-4xl font-bold text-dark-100">{history.length}</p>
         </div>
       </div>
 
       {/* Score Timeline */}
       {history.length > 1 && (
         <div className="bg-dark-900/50 border border-dark-800 rounded-2xl p-5 mb-6">
-          <h2 className="text-base font-semibold text-white mb-4">Score Over Time</h2>
+          <h2 className="text-base font-semibold text-dark-100 mb-4">Score Over Time</h2>
           <ScoreTimelineChart scans={history} />
         </div>
       )}
@@ -315,7 +315,7 @@ export default function StoreDetailPage() {
       {latestScan && (
         <div className="bg-dark-900/50 border border-dark-800 rounded-2xl p-5 mb-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-base font-semibold text-white">Latest Scan Breakdown</h2>
+            <h2 className="text-base font-semibold text-dark-100">Latest Scan Breakdown</h2>
             <div className="flex items-center gap-2 text-sm text-dark-400">
               <Calendar className="w-4 h-4" />
               {new Date(latestScan.createdAt).toLocaleString()}
@@ -330,7 +330,7 @@ export default function StoreDetailPage() {
       {/* Scan History List */}
       <div className="bg-dark-900/50 border border-dark-800 rounded-2xl overflow-hidden">
         <div className="px-5 py-4 border-b border-dark-800">
-          <h2 className="text-base font-semibold text-white">Scan History</h2>
+          <h2 className="text-base font-semibold text-dark-100">Scan History</h2>
           <p className="text-sm text-dark-400 mt-0.5">Most recent {history.length} scans</p>
         </div>
         {history.length === 0 ? (
@@ -347,7 +347,7 @@ export default function StoreDetailPage() {
                   <div className="flex items-center gap-3">
                     <ScoreBadge score={scan.compositeScore} />
                     <div>
-                      <p className="text-sm text-white">
+                      <p className="text-sm text-dark-100">
                         {new Date(scan.createdAt).toLocaleString()}
                       </p>
                       <p className="text-xs text-dark-500">

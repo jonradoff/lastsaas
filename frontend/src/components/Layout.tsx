@@ -132,7 +132,7 @@ export default function Layout() {
                   </div>
                 )}
                 {(logoMode === 'text' || logoMode === 'both') && (
-                  <span className="font-semibold text-white hidden sm:block">{appName}</span>
+                  <span className="font-semibold text-dark-100 hidden sm:block">{appName}</span>
                 )}
               </Link>
 
@@ -145,7 +145,7 @@ export default function Layout() {
                       className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors ${
                         isActive(item.path)
                           ? 'bg-primary-500/20 text-primary-400'
-                          : 'text-dark-400 hover:text-white hover:bg-dark-800/50'
+                          : 'text-dark-400 hover:text-dark-100 hover:bg-dark-800/50'
                       }`}
                     >
                       <item.icon className="w-4 h-4" />
@@ -158,7 +158,7 @@ export default function Layout() {
                       className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors ${
                         location.pathname.startsWith('/last')
                           ? 'bg-accent-purple/20 text-accent-purple'
-                          : 'text-dark-400 hover:text-white hover:bg-dark-800/50'
+                          : 'text-dark-400 hover:text-dark-100 hover:bg-dark-800/50'
                       }`}
                     >
                       <Shield className="w-4 h-4" />
@@ -177,7 +177,7 @@ export default function Layout() {
                   <div className="relative" ref={menuRef}>
                     <button
                       onClick={() => setShowTenantMenu(!showTenantMenu)}
-                      className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-dark-800 border border-dark-700 text-sm text-dark-300 hover:text-white transition-colors"
+                      className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-dark-800 border border-dark-700 text-sm text-dark-300 hover:text-dark-100 transition-colors"
                     >
                       <span className="max-w-[120px] truncate">{activeTenant?.tenantName}</span>
                       <ChevronDown className="w-3.5 h-3.5" />
@@ -194,7 +194,7 @@ export default function Layout() {
                             className={`w-full text-left px-4 py-2.5 text-sm transition-colors ${
                               m.tenantId === activeTenant?.tenantId
                                 ? 'bg-primary-500/10 text-primary-400'
-                                : 'text-dark-300 hover:bg-dark-700 hover:text-white'
+                                : 'text-dark-300 hover:bg-dark-700 hover:text-dark-100'
                             }`}
                           >
                             <div className="flex items-center justify-between">
@@ -212,7 +212,7 @@ export default function Layout() {
                 {showCredits && (
                   <button
                     onClick={() => navigate(hasBundles ? '/buy-credits' : '/plan')}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-dark-800 border border-dark-700 text-sm text-dark-300 hover:text-white hover:border-primary-500/30 transition-colors"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-dark-800 border border-dark-700 text-sm text-dark-300 hover:text-dark-100 hover:border-primary-500/30 transition-colors"
                     title="Usage credits"
                   >
                     <Zap className="w-4 h-4 text-primary-400" />
@@ -223,7 +223,7 @@ export default function Layout() {
                 {/* Theme toggle */}
                 <button
                   onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
-                  className="text-dark-400 hover:text-white transition-colors"
+                  className="text-dark-400 hover:text-dark-100 transition-colors"
                   title={`Switch to ${resolvedTheme === 'dark' ? 'light' : 'dark'} mode`}
                   aria-label="Toggle theme"
                 >
@@ -233,7 +233,7 @@ export default function Layout() {
                 {/* Messages */}
                 <Link
                   to="/messages"
-                  className="relative text-dark-400 hover:text-white transition-colors"
+                  className="relative text-dark-400 hover:text-dark-100 transition-colors"
                   aria-label="Messages"
                 >
                   <Bell className="w-5 h-5" />
@@ -248,7 +248,7 @@ export default function Layout() {
                 <span className="text-sm text-dark-400 hidden sm:block">{user?.displayName}</span>
                 <button
                   onClick={handleLogout}
-                  className="flex items-center gap-2 text-dark-400 hover:text-white transition-colors"
+                  className="flex items-center gap-2 text-dark-400 hover:text-dark-100 transition-colors"
                   aria-label="Sign out"
                 >
                   <LogOut className="w-4 h-4" />
@@ -272,7 +272,7 @@ export default function Layout() {
                 setDismissedAnnouncement(latestAnnouncement.id);
                 localStorage.setItem('dismissed_announcement', latestAnnouncement.id);
               }}
-              className="text-xs text-dark-400 hover:text-white transition-colors ml-4"
+              className="text-xs text-dark-400 hover:text-dark-100 transition-colors ml-4"
             >
               Dismiss
             </button>

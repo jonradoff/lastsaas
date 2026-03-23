@@ -22,7 +22,7 @@ function ScoreRing({ score }: { score: number }) {
 
   return (
     <svg className="w-14 h-14 -rotate-90" viewBox="0 0 52 52">
-      <circle cx="26" cy="26" r={r} fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="4" />
+      <circle cx="26" cy="26" r={r} fill="none" stroke="rgba(0,0,0,0.08)" strokeWidth="4" />
       <circle
         cx="26" cy="26" r={r}
         fill="none"
@@ -37,7 +37,7 @@ function ScoreRing({ score }: { score: number }) {
         x="26" y="26"
         textAnchor="middle"
         dominantBaseline="central"
-        fill="white"
+        fill="currentColor"
         fontSize="12"
         fontWeight="bold"
         style={{ transform: 'rotate(90deg)', transformOrigin: '26px 26px' }}
@@ -74,10 +74,10 @@ function AddStoreModal({ onAdd, onClose }: { onAdd: (domain: string) => Promise<
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
       <div className="bg-dark-900 border border-dark-700 rounded-2xl p-6 max-w-md w-full mx-4">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold text-white">Track a Store</h3>
+          <h3 className="text-lg font-semibold text-dark-100">Track a Store</h3>
           <button
             onClick={onClose}
-            className="p-1 rounded-lg text-dark-400 hover:text-white hover:bg-dark-800 transition-colors"
+            className="p-1 rounded-lg text-dark-400 hover:text-dark-100 hover:bg-dark-800 transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -92,13 +92,13 @@ function AddStoreModal({ onAdd, onClose }: { onAdd: (domain: string) => Promise<
             onChange={e => setDomain(e.target.value)}
             placeholder="e.g. allbirds.com"
             autoFocus
-            className="w-full px-4 py-2.5 bg-dark-800 border border-dark-700 rounded-xl text-white placeholder-dark-500 focus:outline-none focus:border-primary-500 transition-colors mb-4"
+            className="w-full px-4 py-2.5 bg-dark-800 border border-dark-700 rounded-xl text-dark-100 placeholder-dark-500 focus:outline-none focus:border-primary-500 transition-colors mb-4"
           />
           <div className="flex gap-3 justify-end">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-sm text-dark-300 hover:text-white transition-colors"
+              className="px-4 py-2 text-sm text-dark-300 hover:text-dark-100 transition-colors"
             >
               Cancel
             </button>
@@ -122,7 +122,7 @@ function UpgradePrompt({ message, onUpgrade }: { message: string; onUpgrade: () 
       <div className="w-12 h-12 rounded-xl bg-primary-500/20 flex items-center justify-center mx-auto mb-3">
         <Zap className="w-6 h-6 text-primary-400" />
       </div>
-      <h3 className="text-base font-semibold text-white mb-1">Upgrade to Track Stores</h3>
+      <h3 className="text-base font-semibold text-dark-100 mb-1">Upgrade to Track Stores</h3>
       <p className="text-sm text-dark-400 mb-4">{message}</p>
       <button
         onClick={onUpgrade}
@@ -213,7 +213,7 @@ export default function DashboardPage() {
       {/* Page header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-white flex items-center gap-2">
+          <h1 className="text-2xl font-bold text-dark-100 flex items-center gap-2">
             <Store className="w-6 h-6 text-primary-400" />
             Tracked Stores
           </h1>
@@ -257,7 +257,7 @@ export default function DashboardPage() {
           <div className="w-16 h-16 rounded-2xl bg-primary-500/10 flex items-center justify-center mx-auto mb-4">
             <Store className="w-8 h-8 text-primary-400" />
           </div>
-          <h3 className="text-lg font-semibold text-white mb-2">No stores tracked yet</h3>
+          <h3 className="text-lg font-semibold text-dark-100 mb-2">No stores tracked yet</h3>
           <p className="text-sm text-dark-400 mb-5">
             Add your first MCP store to start monitoring its score and trends.
           </p>
@@ -293,7 +293,7 @@ export default function DashboardPage() {
               >
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex-1 min-w-0">
-                    <h3 className="text-sm font-semibold text-white truncate">{store.domain}</h3>
+                    <h3 className="text-sm font-semibold text-dark-100 truncate">{store.domain}</h3>
                     <p className="text-xs text-dark-500 mt-0.5">
                       {store.lastScannedAt
                         ? `Last scanned ${new Date(store.lastScannedAt).toLocaleDateString()}`
