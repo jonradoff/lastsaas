@@ -81,19 +81,21 @@ jobs:
 
 ## Pricing
 
-MCPLens is **open source and free** for scanning. Paid tiers add tracking and team features:
+MCPLens is **open source and free** for scanning. Paid tiers add fix instructions, CI/CD, tracking, and agency features:
 
-| | Free | Starter ($19/mo) | Agency ($49/mo) |
+| | Free | Pro ($99/mo) | Agency ($199/mo) |
 |---|---|---|---|
 | Unlimited scans | ✅ | ✅ | ✅ |
 | HTML reports | ✅ | ✅ | ✅ |
-| CLI + CI/CD | ✅ | ✅ | ✅ |
-| Store tracking | — | 5 stores | 25 stores |
-| Score history | — | 30 days | 1 year |
+| CLI access | ✅ | ✅ | ✅ |
+| Fix instructions | — | ✅ | ✅ |
+| CI/CD integration | — | ✅ | ✅ |
+| Store tracking | — | 5 stores | 50 stores |
+| Score history | — | 90 days | 1 year |
 | Scheduled scans | — | Weekly | Daily |
-| Email alerts | — | ✅ | ✅ |
 | White-label reports | — | — | ✅ |
 | API access | — | — | ✅ |
+| Agency bonuses | — | — | ✅ |
 
 ## Why MCPLens?
 

@@ -368,6 +368,7 @@ func main() {
 	ogHandler := handlers.NewOGHandler(scannerSvc)
 	apiV1Handler := handlers.NewAPIV1Handler(scannerSvc)
 	agencyBrandingHandler := handlers.NewAgencyBrandingHandler(database, scannerSvc)
+	leadsHandler := handlers.NewLeadsHandler(database)
 	brandingHandler.SetAuthProviders(map[string]bool{
 		"google":    googleOAuth != nil,
 		"github":    githubOAuth != nil,
@@ -676,6 +677,14 @@ func main() {
 
 	// GET /api/badge/{domain} — public, returns shields.io-compatible JSON
 	api.HandleFunc("/badge/{domain}", ogHandler.Badge).Methods("GET")
+
+	// --- Lead capture routes (public, rate-limited) ---
+	api.HandleFunc("/leads", rateLimiter.RateLimitHandler(
+		middleware.ScanPublicLimit,
+		func(r *http.Request) string { return "leads:" + middleware.GetClientIP(r) },
+		leadsHandler.CaptureLead,
+	)).Methods("POST")
+	api.HandleFunc("/leads/verify", leadsHandler.VerifyToken).Methods("GET")
 
 	// GET /api/scans — requires auth + tenant (paid feature)
 	scansAPI := guarded.PathPrefix("/scans").Subrouter()

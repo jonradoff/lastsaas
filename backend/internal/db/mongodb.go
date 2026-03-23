@@ -485,3 +485,7 @@ func (m *MongoDB) EventDefinitions() *mongo.Collection {
 func (m *MongoDB) AgencyBrandings() *mongo.Collection {
 	return m.Database.Collection("agency_brandings")
 }
+
+func (m *MongoDB) Leads() *mongo.Collection {
+	return m.Database.Collection("leads")
+}

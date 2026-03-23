@@ -583,6 +583,27 @@ export const scanApi = {
   },
 };
 
+// --- Lead Capture ---
+export const leadsApi = {
+  capture: async (email: string, domain: string, score: number): Promise<{ token: string }> => {
+    const response = await fetch('/api/leads', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, domain, score }),
+    });
+    if (!response.ok) {
+      const text = await response.text();
+      throw new Error(text || 'Failed to capture lead');
+    }
+    return response.json();
+  },
+  verify: async (token: string): Promise<{ valid: boolean; email: string }> => {
+    const response = await fetch(`/api/leads/verify?token=${encodeURIComponent(token)}`);
+    if (!response.ok) return { valid: false, email: '' };
+    return response.json();
+  },
+};
+
 // --- Telemetry ---
 export const telemetryApi = {
   trackAnonymous: (data: { sessionId: string; event: string; properties?: Record<string, unknown> }) =>

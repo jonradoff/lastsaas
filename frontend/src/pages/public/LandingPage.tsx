@@ -432,7 +432,7 @@ export default function LandingPage() {
               Simple, transparent pricing
             </h2>
             <p className="text-center text-slate-500 mb-12">
-              Start free. Upgrade when you need history and tracking.
+              See the problems free. Pay for the solutions.
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 items-start">
               {[
@@ -442,40 +442,42 @@ export default function LandingPage() {
                   period: 'forever',
                   cta: 'Get Started',
                   highlight: false,
-                  bestFor: 'Best for: quick checks',
+                  bestFor: 'Best for: seeing what is broken',
                   features: [
                     'Unlimited scans',
-                    'HTML reports',
+                    'Score + category breakdown',
+                    'Issue detection',
                     'CLI access',
-                    'CI/CD integration',
                   ],
                 },
                 {
-                  name: 'Starter',
-                  price: '$19',
+                  name: 'Pro',
+                  price: '$99',
                   period: 'per month',
-                  cta: 'Start Trial',
+                  cta: 'Start Pro',
                   highlight: true,
-                  bestFor: 'Best for: store owners tracking their score',
+                  bestFor: 'Best for: store owners fixing their score',
                   features: [
+                    'Fix instructions for every issue',
+                    'CI/CD integration',
                     '5 tracked stores',
-                    'Score history',
-                    'Weekly scheduled scans',
-                    'Email alerts',
+                    '90-day score history',
+                    'Weekly automated scans',
                   ],
                 },
                 {
                   name: 'Agency',
-                  price: '$49',
+                  price: '$199',
                   period: 'per month',
-                  cta: 'Start Trial',
+                  cta: 'Start Agency',
                   highlight: false,
-                  bestFor: 'Best for: agencies auditing client stores',
+                  bestFor: 'Best for: agencies landing clients with data',
                   features: [
-                    '25 tracked stores',
+                    '50 tracked stores',
                     'Daily scans',
                     'White-label reports',
                     'API access',
+                    'Pitch deck + email swipes',
                   ],
                 },
               ].map(({ name, price, period, cta, highlight, bestFor, features }) => (

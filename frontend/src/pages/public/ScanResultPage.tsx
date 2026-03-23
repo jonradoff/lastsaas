@@ -1,6 +1,6 @@
 import { useState, useEffect, type FormEvent } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { scanApi, type ScanResult, type ScanCategoryResult } from '../../api/client';
+import { scanApi, leadsApi, type ScanResult, type ScanCategoryResult } from '../../api/client';
 
 function setMetaTag(property: string, content: string) {
   const selector = `meta[property="${property}"], meta[name="${property}"]`;
@@ -153,6 +153,198 @@ function ScoreKillerAlert({ cat }: { cat: ScanCategoryResult }) {
   );
 }
 
+// --- Finding generation from category data ---
+
+interface Finding {
+  title: string;
+  severity: 'high' | 'medium' | 'low';
+  category: string;
+  impact: string;
+  fix: string;
+}
+
+function severityColor(severity: string): string {
+  if (severity === 'high') return '#dc2626';
+  if (severity === 'medium') return '#d97706';
+  return '#2563eb';
+}
+
+function severityBg(severity: string): string {
+  if (severity === 'high') return 'bg-red-50 border-red-200';
+  if (severity === 'medium') return 'bg-amber-50 border-amber-200';
+  return 'bg-blue-50 border-blue-200';
+}
+
+function generateFindings(result: ScanResult): Finding[] {
+  const findings: Finding[] = [];
+
+  for (const cat of result.categories) {
+    if (!cat.tested) continue;
+    const label = CATEGORY_LABELS[cat.category] ?? cat.category;
+
+    // Generate findings from score killers
+    if (cat.scoreKillers) {
+      for (const sk of cat.scoreKillers) {
+        findings.push({
+          title: `Score Capped: ${sk.condition}`,
+          severity: 'high',
+          category: label,
+          impact: `Your ${label} score is capped at ${sk.cap}/100 because of this issue. This directly limits your overall readiness score.`,
+          fix: `Address the "${sk.condition}" issue in your MCP server configuration. This is the highest-impact fix you can make for ${label}.`,
+        });
+      }
+    }
+
+    // Generate findings from low category scores
+    if (cat.cappedScore < 50 && !cat.scoreKillers?.length) {
+      const categoryFindings: Record<string, Finding> = {
+        'data-quality': {
+          title: 'Poor Data Quality',
+          severity: 'high',
+          category: label,
+          impact: 'Products with missing prices, short descriptions, or invalid images are invisible to AI buyer agents.',
+          fix: 'Ensure every product has a valid price, 50+ character description, and working image URLs. Add structured attributes for key specs.',
+        },
+        'product-discovery': {
+          title: 'Weak Product Discovery',
+          severity: 'high',
+          category: label,
+          impact: 'If agents cannot search and find products reliably, your store is skipped entirely.',
+          fix: 'Verify your search returns results for common queries. Ensure product names, descriptions, and categories are indexed.',
+        },
+        'checkout-flow': {
+          title: 'Broken Checkout Flow',
+          severity: 'high',
+          category: label,
+          impact: 'Agents that cannot add items to cart or initiate checkout will abandon your store.',
+          fix: 'Test cart operations (add, update, remove) and checkout initiation. Ensure all required fields are documented.',
+        },
+        'protocol-compliance': {
+          title: 'Protocol Compliance Issues',
+          severity: 'medium',
+          category: label,
+          impact: 'Non-compliant MCP responses may cause agent errors or fallback behavior.',
+          fix: 'Review the MCP specification and ensure your server returns properly formatted responses with correct error codes.',
+        },
+      };
+      const f = categoryFindings[cat.category];
+      if (f) findings.push(f);
+    } else if (cat.cappedScore < 80 && cat.cappedScore >= 50 && !cat.scoreKillers?.length) {
+      findings.push({
+        title: `${label} Needs Improvement`,
+        severity: 'medium',
+        category: label,
+        impact: `Your ${label} score of ${Math.round(cat.cappedScore)} means agents can partially use your store but may encounter issues.`,
+        fix: `Review the ${label.toLowerCase()} section of your MCP server. Common issues include incomplete data fields, slow responses, or missing edge case handling.`,
+      });
+    }
+  }
+
+  // Sort by severity
+  const order = { high: 0, medium: 1, low: 2 };
+  findings.sort((a, b) => order[a.severity] - order[b.severity]);
+  return findings;
+}
+
+// --- Email Capture Component ---
+
+function EmailGate({ domain, score, onUnlocked }: { domain: string; score: number; onUnlocked: (token: string) => void }) {
+  const [email, setEmail] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState('');
+
+  async function handleSubmit(e: FormEvent) {
+    e.preventDefault();
+    const trimmed = email.trim();
+    if (!trimmed || !trimmed.includes('@')) {
+      setError('Please enter a valid email address');
+      return;
+    }
+    setSubmitting(true);
+    setError('');
+    try {
+      const { token } = await leadsApi.capture(trimmed, domain, score);
+      // Store in sessionStorage so it persists across page navigations
+      sessionStorage.setItem('mcplens_fix_token', token);
+      onUnlocked(token);
+    } catch {
+      setError('Something went wrong. Please try again.');
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  return (
+    <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-6">
+      <div className="flex items-start gap-3 mb-3">
+        <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center shrink-0 mt-0.5">
+          <svg className="w-4 h-4 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+          </svg>
+        </div>
+        <div>
+          <p className="font-semibold text-slate-900 text-base">Want to know how to fix these issues?</p>
+          <p className="text-sm text-slate-600 mt-1">
+            Enter your email to unlock detailed fix instructions for all findings. No spam -- just your fixes.
+          </p>
+        </div>
+      </div>
+      <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-2 mt-4">
+        <input
+          type="email"
+          value={email}
+          onChange={e => setEmail(e.target.value)}
+          placeholder="you@company.com"
+          className="flex-1 px-4 py-2.5 bg-white border border-slate-300 rounded-lg text-slate-900 text-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+        />
+        <button
+          type="submit"
+          disabled={submitting || !email.trim()}
+          className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold rounded-lg transition-colors text-sm shrink-0"
+        >
+          {submitting ? 'Unlocking...' : 'Unlock Fixes'}
+        </button>
+      </form>
+      {error && <p className="text-red-600 text-xs mt-2">{error}</p>}
+    </div>
+  );
+}
+
+// --- Finding Card ---
+
+function FindingCard({ finding, fixUnlocked }: { finding: Finding; fixUnlocked: boolean }) {
+  return (
+    <div className={`border rounded-xl p-4 ${severityBg(finding.severity)}`}>
+      <div className="flex items-start gap-3">
+        <span
+          className="px-2 py-0.5 text-xs font-semibold rounded-full text-white shrink-0 mt-0.5"
+          style={{ backgroundColor: severityColor(finding.severity) }}
+        >
+          {finding.severity.toUpperCase()}
+        </span>
+        <div className="flex-1 min-w-0">
+          <h4 className="font-semibold text-slate-900 text-sm">{finding.title}</h4>
+          <p className="text-xs text-slate-500 mt-0.5">{finding.category}</p>
+          <p className="text-sm text-slate-700 mt-2">{finding.impact}</p>
+          {fixUnlocked ? (
+            <div className="mt-3 bg-white/70 border border-slate-200 rounded-lg p-3">
+              <div className="text-xs font-semibold text-emerald-700 uppercase tracking-wider mb-1">How to fix</div>
+              <p className="text-sm text-slate-700">{finding.fix}</p>
+            </div>
+          ) : (
+            <div className="mt-3 bg-slate-100/80 border border-slate-200 rounded-lg p-3 flex items-center gap-2">
+              <svg className="w-4 h-4 text-slate-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              </svg>
+              <span className="text-sm text-slate-500 italic">Enter your email above to unlock fix instructions</span>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function ScanResultPage() {
   const { domain } = useParams<{ domain: string }>();
   const navigate = useNavigate();
@@ -163,6 +355,21 @@ export default function ScanResultPage() {
   const [newDomain, setNewDomain] = useState('');
   const [copied, setCopied] = useState(false);
   const [badgeCopied, setBadgeCopied] = useState(false);
+  const [fixToken, setFixToken] = useState<string | null>(() => sessionStorage.getItem('mcplens_fix_token'));
+  const [fixUnlocked, setFixUnlocked] = useState(false);
+
+  // Check if existing token is valid on mount
+  useEffect(() => {
+    if (fixToken) {
+      leadsApi.verify(fixToken).then(res => {
+        if (res.valid) setFixUnlocked(true);
+        else {
+          sessionStorage.removeItem('mcplens_fix_token');
+          setFixToken(null);
+        }
+      });
+    }
+  }, [fixToken]);
 
   useEffect(() => {
     if (!domain) return;
@@ -361,6 +568,49 @@ export default function ScanResultPage() {
                 ))}
               </div>
             </div>
+
+            {/* Findings with email-gated fixes */}
+            {(() => {
+              const findings = generateFindings(result);
+              if (findings.length === 0) return null;
+              return (
+                <div>
+                  <h2 className="text-sm font-semibold text-slate-400 uppercase tracking-widest mb-4">
+                    Issues Found ({findings.length})
+                  </h2>
+                  {!fixUnlocked && (
+                    <div className="mb-4">
+                      <EmailGate
+                        domain={domain!}
+                        score={result.compositeScore}
+                        onUnlocked={(token) => {
+                          setFixToken(token);
+                          setFixUnlocked(true);
+                        }}
+                      />
+                    </div>
+                  )}
+                  <div className="flex flex-col gap-3">
+                    {findings.map((f, i) => (
+                      <FindingCard key={i} finding={f} fixUnlocked={fixUnlocked} />
+                    ))}
+                  </div>
+                  {fixUnlocked && (
+                    <div className="mt-4 bg-emerald-50 border border-emerald-200 rounded-xl p-4 text-center">
+                      <p className="text-sm text-emerald-800 font-medium">
+                        Want automated scans, CI/CD integration, and store tracking?
+                      </p>
+                      <Link
+                        to="/scan"
+                        className="inline-block mt-2 px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-lg transition-colors text-sm"
+                      >
+                        View Pro Plans
+                      </Link>
+                    </div>
+                  )}
+                </div>
+              );
+            })()}
 
             {/* Partial scan notice */}
             {result.partialResults && result.partialReason && (
