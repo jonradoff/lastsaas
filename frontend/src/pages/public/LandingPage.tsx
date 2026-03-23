@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { useBranding } from '../../contexts/BrandingContext';
 import { useAuth } from '../../contexts/AuthContext';
 import ScanDemo from '../../components/ScanDemo';
+import Logo from '../../components/Logo';
 
 // ── Reduced motion ──────────────────────────────────────────────────────────
 const prefersReducedMotion =
@@ -113,12 +114,7 @@ export default function LandingPage() {
       {/* ── Nav ── */}
       <header className="border-b border-slate-200 px-6 py-4 sticky top-0 z-50 bg-white/80 backdrop-blur-lg">
         <div className="max-w-5xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center">
-              <span className="text-white font-bold text-sm">ML</span>
-            </div>
-            <span className="font-semibold text-slate-900 text-lg">MCPLens</span>
-          </div>
+          <Logo size="small" />
           <nav className="flex items-center gap-6">
             <a href="#pricing" className="text-sm text-slate-500 hover:text-slate-900 transition-colors hidden sm:block">
               Pricing
@@ -743,12 +739,7 @@ export default function LandingPage() {
       {/* ── Footer ── */}
       <footer className="border-t border-slate-200 px-6 py-10 bg-white">
         <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6">
-          <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center">
-              <span className="text-white font-bold text-xs">ML</span>
-            </div>
-            <span className="font-semibold text-slate-900">MCPLens</span>
-          </div>
+          <Logo size="small" />
 
           <nav className="flex flex-wrap items-center justify-center gap-5 text-sm text-slate-500">
             <Link to="/scan" className="hover:text-slate-900 transition-colors">

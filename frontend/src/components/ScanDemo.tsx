@@ -14,7 +14,14 @@ const SCAN_MESSAGES = [
   'Generating report...',
 ];
 
-// Each demo store has different scores and a contextual finding
+// Score-to-color helper
+function scoreColor(s: number) {
+  if (s >= 80) return '#059669';
+  if (s >= 50) return '#d97706';
+  return '#dc2626';
+}
+
+// Real scan data from mcplens.dev (March 2026)
 const DEMO_STORES = [
   {
     domain: 'gymshark.com',
@@ -22,12 +29,12 @@ const DEMO_STORES = [
     badge: 'Excellent',
     badgeColor: 'bg-emerald-50 text-emerald-700',
     categories: [
-      { label: 'Data Quality', score: 100, color: '#059669' },
-      { label: 'Product Discovery', score: 95, color: '#059669' },
-      { label: 'Checkout Flow', score: 92, color: '#059669' },
-      { label: 'Protocol', score: 100, color: '#059669' },
+      { label: 'Data Quality', score: 100 },
+      { label: 'Discovery', score: 89 },
+      { label: 'Checkout', score: 100 },
+      { label: 'Protocol', score: 100 },
     ],
-    finding: { type: 'pass', icon: '✓', color: 'bg-emerald-50 border-emerald-200 text-emerald-600', text: 'All products have complete price data and structured attributes — agents can compare effectively.' },
+    finding: { icon: '✓', color: 'bg-emerald-50 border-emerald-200 text-emerald-600', text: 'All categories passing — complete price data, rich descriptions, and working checkout flow.' },
   },
   {
     domain: 'colourpop.com',
@@ -35,12 +42,12 @@ const DEMO_STORES = [
     badge: 'Critical',
     badgeColor: 'bg-red-50 text-red-700',
     categories: [
-      { label: 'Data Quality', score: 8, color: '#dc2626' },
-      { label: 'Product Discovery', score: 15, color: '#dc2626' },
-      { label: 'Checkout Flow', score: 0, color: '#dc2626' },
-      { label: 'Protocol', score: 22, color: '#dc2626' },
+      { label: 'Data Quality', score: 0 },
+      { label: 'Discovery', score: 21 },
+      { label: 'Checkout', score: 0 },
+      { label: 'Protocol', score: 50 },
     ],
-    finding: { type: 'fail', icon: '⚠', color: 'bg-red-50 border-red-200 text-red-600', text: 'Fix: Add price_range to search results — agents skip products they can\'t price-compare.' },
+    finding: { icon: '⚠', color: 'bg-red-50 border-red-200 text-red-600', text: 'Fix: Data quality score is 0 — product search responses are missing price and variant data agents need.' },
   },
   {
     domain: 'allbirds.com',
@@ -48,12 +55,12 @@ const DEMO_STORES = [
     badge: 'Perfect',
     badgeColor: 'bg-emerald-50 text-emerald-700',
     categories: [
-      { label: 'Data Quality', score: 100, color: '#059669' },
-      { label: 'Product Discovery', score: 100, color: '#059669' },
-      { label: 'Checkout Flow', score: 100, color: '#059669' },
-      { label: 'Protocol', score: 100, color: '#059669' },
+      { label: 'Data Quality', score: 100 },
+      { label: 'Discovery', score: 100 },
+      { label: 'Checkout', score: 100 },
+      { label: 'Protocol', score: 100 },
     ],
-    finding: { type: 'pass', icon: '✓', color: 'bg-emerald-50 border-emerald-200 text-emerald-600', text: 'Perfect score — every product has rich descriptions, variants, and structured attributes.' },
+    finding: { icon: '✓', color: 'bg-emerald-50 border-emerald-200 text-emerald-600', text: 'Perfect 100 — every product fully discoverable with structured attributes, pricing, and variants.' },
   },
   {
     domain: 'ridgewallet.com',
@@ -61,12 +68,12 @@ const DEMO_STORES = [
     badge: 'Needs Work',
     badgeColor: 'bg-amber-50 text-amber-700',
     categories: [
-      { label: 'Data Quality', score: 42, color: '#d97706' },
-      { label: 'Product Discovery', score: 28, color: '#dc2626' },
-      { label: 'Checkout Flow', score: 35, color: '#dc2626' },
-      { label: 'Protocol', score: 40, color: '#d97706' },
+      { label: 'Data Quality', score: 25 },
+      { label: 'Discovery', score: 58 },
+      { label: 'Checkout', score: 0 },
+      { label: 'Protocol', score: 100 },
     ],
-    finding: { type: 'fail', icon: '⚠', color: 'bg-amber-50 border-amber-200 text-amber-600', text: 'Fix: 38% of products have descriptions under 50 chars — agents can\'t differentiate them.' },
+    finding: { icon: '⚠', color: 'bg-amber-50 border-amber-200 text-amber-600', text: 'Fix: Data quality capped at 25 — product descriptions and image data are incomplete for agent comparison.' },
   },
   {
     domain: 'tentree.com',
@@ -74,12 +81,12 @@ const DEMO_STORES = [
     badge: 'Good',
     badgeColor: 'bg-emerald-50 text-emerald-700',
     categories: [
-      { label: 'Data Quality', score: 90, color: '#059669' },
-      { label: 'Product Discovery', score: 82, color: '#059669' },
-      { label: 'Checkout Flow', score: 80, color: '#059669' },
-      { label: 'Protocol', score: 95, color: '#059669' },
+      { label: 'Data Quality', score: 100 },
+      { label: 'Discovery', score: 52 },
+      { label: 'Checkout', score: 100 },
+      { label: 'Protocol', score: 100 },
     ],
-    finding: { type: 'pass', icon: '✓', color: 'bg-emerald-50 border-emerald-200 text-emerald-600', text: 'Strong agent readiness — consider adding structured size/material attributes to reach 95+.' },
+    finding: { icon: '✓', color: 'bg-emerald-50 border-emerald-200 text-emerald-600', text: 'Strong readiness — discovery score of 52 is the gap. Improving search result completeness would push past 90.' },
   },
 ];
 
@@ -119,7 +126,7 @@ function Typewriter({ text, onDone }: { text: string; onDone?: () => void }) {
 }
 
 /* ── Animated score circle ── */
-function DemoScoreCircle({ score, animate }: { score: number; animate: boolean }) {
+function DemoScoreCircle({ score, animate }: { score: number; animate: boolean; }) {
   const [current, setCurrent] = useState(0);
   const radius = 40;
   const circumference = 2 * Math.PI * radius;
@@ -148,7 +155,7 @@ function DemoScoreCircle({ score, animate }: { score: number; animate: boolean }
           cx="48"
           cy="48"
           r={radius}
-          stroke="#059669"
+          stroke={scoreColor(score)}
           strokeWidth="9"
           fill="none"
           strokeDasharray={circumference}
@@ -323,7 +330,7 @@ function PhaseResults({ store }: { store: typeof DEMO_STORES[number] }) {
           visible: { transition: { staggerChildren: stagger, delayChildren: 0.5 } },
         }}
       >
-        {store.categories.map(({ label, score, color }) => (
+        {store.categories.map(({ label, score }) => (
           <motion.div
             key={label}
             variants={{
@@ -333,7 +340,7 @@ function PhaseResults({ store }: { store: typeof DEMO_STORES[number] }) {
             className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-2"
           >
             <div className="text-[11px] text-slate-500 mb-0.5">{label}</div>
-            <div className="text-lg font-bold" style={{ color }}>
+            <div className="text-lg font-bold" style={{ color: scoreColor(score) }}>
               {score}
             </div>
           </motion.div>
@@ -387,7 +394,7 @@ export default function ScanDemo() {
           </div>
         </div>
 
-        <div className="min-h-[300px] relative">
+        <div className="h-[380px] relative overflow-hidden">
           <AnimatePresence mode="wait">
             {phase === 'input' && (
               <PhaseInput domain={currentStore.domain} onTyped={() => setPhase('scanning')} />
