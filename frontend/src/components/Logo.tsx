@@ -4,9 +4,9 @@
  */
 export default function Logo({ size = 'default' }: { size?: 'small' | 'default' | 'large' }) {
   const scales = {
-    small: { box: 'w-7 h-7', boxText: 'text-[10px]', lens: 'text-base', gap: 'gap-1.5' },
-    default: { box: 'w-9 h-9', boxText: 'text-xs', lens: 'text-xl', gap: 'gap-2' },
-    large: { box: 'w-12 h-12', boxText: 'text-sm', lens: 'text-3xl', gap: 'gap-2.5' },
+    small: { box: 'w-9 h-9', boxText: 'text-xs', lens: 'text-xl', gap: 'gap-2', radius: 'rounded-lg' },
+    default: { box: 'w-11 h-11', boxText: 'text-sm', lens: 'text-2xl', gap: 'gap-2.5', radius: 'rounded-lg' },
+    large: { box: 'w-14 h-14', boxText: 'text-base', lens: 'text-4xl', gap: 'gap-3', radius: 'rounded-xl' },
   };
   const s = scales[size];
 
@@ -14,7 +14,7 @@ export default function Logo({ size = 'default' }: { size?: 'small' | 'default' 
     <div className={`flex items-center ${s.gap}`}>
       {/* MCP — 3D blue box */}
       <div
-        className={`${s.box} rounded-xl flex items-center justify-center relative`}
+        className={`${s.box} ${s.radius} flex items-center justify-center relative`}
         style={{
           background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 50%, #1d4ed8 100%)',
           boxShadow: '0 4px 12px rgba(37, 99, 235, 0.4), 0 2px 4px rgba(37, 99, 235, 0.2), inset 0 1px 0 rgba(255,255,255,0.2)',

@@ -116,7 +116,7 @@ function Typewriter({ text, onDone }: { text: string; onDone?: () => void }) {
           onDone?.();
         }
       }
-    }, 55);
+    }, 82);
 
     return () => clearInterval(id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -177,7 +177,7 @@ function PhaseInput({ domain, onTyped }: { domain: string; onTyped: () => void }
 
   function handleDone() {
     setTyped(true);
-    setTimeout(onTyped, 700);
+    setTimeout(onTyped, 1050);
   }
 
   return (
@@ -228,7 +228,7 @@ function PhaseScanning({ onDone }: { onDone: () => void }) {
         clearInterval(id);
         onDone();
       }
-    }, 650);
+    }, 975);
     return () => clearInterval(id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -369,14 +369,14 @@ export default function ScanDemo() {
 
   useEffect(() => {
     if (phase === 'results') {
-      const id = setTimeout(() => setPhase('fade'), 3500);
+      const id = setTimeout(() => setPhase('fade'), 5250);
       return () => clearTimeout(id);
     }
     if (phase === 'fade') {
       const id = setTimeout(() => {
         setStoreIdx((prev) => (prev + 1) % DEMO_STORES.length);
         setPhase('input');
-      }, 900);
+      }, 1350);
       return () => clearTimeout(id);
     }
   }, [phase]);
@@ -394,7 +394,7 @@ export default function ScanDemo() {
           </div>
         </div>
 
-        <div className="h-[380px] relative overflow-hidden">
+        <div className="h-[440px] relative overflow-hidden">
           <AnimatePresence mode="wait">
             {phase === 'input' && (
               <PhaseInput domain={currentStore.domain} onTyped={() => setPhase('scanning')} />
@@ -414,17 +414,6 @@ export default function ScanDemo() {
           </AnimatePresence>
         </div>
 
-        {/* Store indicator dots */}
-        <div className="flex justify-center gap-1.5 pb-3">
-          {DEMO_STORES.map((_, i) => (
-            <div
-              key={i}
-              className={`w-1.5 h-1.5 rounded-full transition-colors duration-300 ${
-                i === storeIdx ? 'bg-blue-500' : 'bg-slate-200'
-              }`}
-            />
-          ))}
-        </div>
       </div>
 
       {/* Shimmer & bounce keyframes via inline style */}
