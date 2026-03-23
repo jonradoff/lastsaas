@@ -3,6 +3,7 @@ import { Navigate, Link, useNavigate } from 'react-router-dom';
 import DOMPurify from 'dompurify';
 import { useBranding } from '../../contexts/BrandingContext';
 import { useAuth } from '../../contexts/AuthContext';
+import RevenueCalculator from '../../components/RevenueCalculator';
 
 export default function LandingPage() {
   const { branding, loaded } = useBranding();
@@ -377,6 +378,9 @@ export default function LandingPage() {
           </div>
         </section>
 
+        {/* ── Revenue Impact Calculator ── */}
+        <RevenueCalculator />
+
         {/* ── Before / After ── */}
         <section className="px-6 py-16 border-t border-slate-200">
           <div className="max-w-3xl mx-auto">
@@ -427,113 +431,208 @@ export default function LandingPage() {
 
         {/* ── Pricing ── */}
         <section id="pricing" className="px-6 py-16 border-t border-slate-200">
-          <div className="max-w-5xl mx-auto">
-            <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 text-center tracking-tight mb-4">
-              Simple, transparent pricing
+          <div className="max-w-6xl mx-auto">
+            <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 text-center tracking-tight mb-3">
+              Pick your plan
             </h2>
             <p className="text-center text-slate-500 mb-12">
-              See the problems free. Pay for the solutions.
+              Start free. Upgrade when you need tracking, fixes, or clients.
             </p>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 items-start">
-              {[
-                {
-                  name: 'Free',
-                  price: '$0',
-                  period: 'forever',
-                  cta: 'Get Started',
-                  highlight: false,
-                  bestFor: 'Best for: seeing what is broken',
-                  features: [
-                    'Unlimited scans',
-                    'Score + category breakdown',
-                    'Issue detection',
-                    'CLI access',
-                  ],
-                },
-                {
-                  name: 'Pro',
-                  price: '$99',
-                  period: 'per month',
-                  cta: 'Start Pro',
-                  highlight: true,
-                  bestFor: 'Best for: store owners fixing their score',
-                  features: [
-                    'Fix instructions for every issue',
-                    'CI/CD integration',
-                    '5 tracked stores',
-                    '90-day score history',
-                    'Weekly automated scans',
-                  ],
-                },
-                {
-                  name: 'Agency',
-                  price: '$199',
-                  period: 'per month',
-                  cta: 'Start Agency',
-                  highlight: false,
-                  bestFor: 'Best for: agencies landing clients with data',
-                  features: [
-                    '50 tracked stores',
-                    'Daily scans',
-                    'White-label reports',
-                    'API access',
-                    'Pitch deck + email swipes',
-                  ],
-                },
-              ].map(({ name, price, period, cta, highlight, bestFor, features }) => (
-                <div
-                  key={name}
-                  className={`rounded-xl p-7 border flex flex-col gap-6 ${
-                    highlight
-                      ? 'bg-blue-50 border-blue-300 ring-1 ring-blue-300'
-                      : 'bg-white border-slate-200 shadow-sm'
-                  }`}
-                >
-                  {highlight && (
-                    <div className="text-xs font-semibold text-blue-600 uppercase tracking-widest -mb-2">
-                      Most popular
-                    </div>
-                  )}
-                  <div>
-                    <div className="text-lg font-bold text-slate-900 mb-1">{name}</div>
-                    <div className="text-xs text-slate-500 mb-3">{bestFor}</div>
-                    <div className="flex items-end gap-1">
-                      <span className="text-4xl font-bold text-slate-900">{price}</span>
-                      <span className="text-slate-500 mb-1 text-sm">/ {period}</span>
-                    </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6 items-start">
+
+              {/* Card 1: Done-For-You (Anchor) */}
+              <div className="rounded-xl p-7 border flex flex-col gap-5 bg-slate-900 border-slate-800 shadow-lg text-white">
+                <div>
+                  <div className="text-xs font-semibold uppercase tracking-widest text-slate-400 mb-2">
+                    Done-For-You
                   </div>
-                  <ul className="flex flex-col gap-2">
-                    {features.map((f) => (
-                      <li key={f} className="flex items-start gap-2 text-sm text-slate-600">
-                        <svg
-                          className="w-4 h-4 mt-0.5 text-blue-500 shrink-0"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth={2}
-                          viewBox="0 0 24 24"
-                        >
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                        </svg>
-                        {f}
-                      </li>
-                    ))}
-                  </ul>
-                  <Link
-                    to="/scan"
-                    className={`mt-auto inline-flex items-center justify-center px-5 py-2.5 rounded-full font-semibold text-sm transition-colors ${
-                      highlight
-                        ? 'bg-blue-500 hover:bg-blue-600 text-white'
-                        : 'bg-white text-slate-700 border border-slate-300 hover:bg-slate-50'
-                    }`}
-                  >
-                    {cta}
-                  </Link>
+                  <h3 className="text-lg font-bold text-white mb-1">
+                    We Guarantee a Perfect Score
+                  </h3>
+                  <p className="text-xs text-slate-400 italic mb-4">
+                    Best for: Enterprise brands who want it done right
+                  </p>
+                  <div className="flex items-end gap-1">
+                    <span className="text-4xl font-bold text-white">$2,500</span>
+                    <span className="text-slate-400 mb-1 text-sm">one-time</span>
+                  </div>
                 </div>
-              ))}
+                <ul className="flex flex-col gap-2">
+                  {[
+                    'Our team audits and fixes every issue',
+                    'Guaranteed 100/100 agent readiness',
+                    'Priority support for 90 days',
+                    'Custom implementation roadmap',
+                  ].map((f) => (
+                    <li key={f} className="flex items-start gap-2 text-sm text-slate-300">
+                      <svg className="w-4 h-4 mt-0.5 text-blue-400 shrink-0" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                      </svg>
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+                <a
+                  href="mailto:hello@mcplens.com"
+                  className="mt-auto inline-flex items-center justify-center px-5 py-2.5 rounded-full font-semibold text-sm transition-colors bg-white text-slate-900 hover:bg-slate-100"
+                >
+                  Book a Call &rarr;
+                </a>
+              </div>
+
+              {/* Card 2: Agency — MOST POPULAR */}
+              <div className="rounded-xl p-7 border flex flex-col gap-5 bg-white border-blue-500 shadow-lg ring-2 ring-blue-500 relative">
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                  <span className="inline-block bg-blue-500 text-white text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full shadow">
+                    Most Popular
+                  </span>
+                </div>
+                <div className="pt-2">
+                  <div className="text-xs font-semibold uppercase tracking-widest text-blue-500 mb-2">
+                    Agency
+                  </div>
+                  <h3 className="text-lg font-bold text-slate-900 mb-1">
+                    The Client Acquisition Engine
+                  </h3>
+                  <p className="text-xs text-slate-500 italic mb-4">
+                    Best for: Agencies selling AI readiness services
+                  </p>
+                  <div className="flex items-end gap-1">
+                    <span className="text-4xl font-bold text-slate-900">$199</span>
+                    <span className="text-slate-500 mb-1 text-sm">/ month</span>
+                  </div>
+                </div>
+                <ul className="flex flex-col gap-2">
+                  {[
+                    'White-label audits for unlimited prospects',
+                    '50 tracked stores with daily monitoring',
+                    'API access for custom integrations',
+                    'Full fix instructions with code snippets',
+                  ].map((f) => (
+                    <li key={f} className="flex items-start gap-2 text-sm text-slate-600">
+                      <svg className="w-4 h-4 mt-0.5 text-blue-500 shrink-0" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                      </svg>
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+                {/* Bonus value stack */}
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 flex flex-col gap-2">
+                  <p className="text-xs font-semibold text-blue-700 uppercase tracking-wider mb-1">
+                    Bonuses included
+                  </p>
+                  {[
+                    { label: 'Agency Pitch Deck', value: '$2,000' },
+                    { label: 'Cold Email Swipe File', value: '$500' },
+                  ].map(({ label, value }) => (
+                    <div key={label} className="flex items-center gap-2 text-sm text-slate-700">
+                      <span className="text-blue-500">✦</span>
+                      <span>{label}</span>
+                      <span className="text-slate-400 line-through text-xs">({value})</span>
+                      <span className="text-blue-600 text-xs font-semibold ml-auto">included</span>
+                    </div>
+                  ))}
+                  <p className="text-xs text-slate-500 mt-1 border-t border-blue-200 pt-2">
+                    Client-Closing Guarantee: land 1 client in 30 days or your money back.
+                  </p>
+                </div>
+                <Link
+                  to="/scan"
+                  className="mt-auto inline-flex items-center justify-center px-5 py-2.5 rounded-full font-semibold text-sm transition-colors bg-blue-500 hover:bg-blue-600 text-white"
+                >
+                  Start Landing Clients &rarr;
+                </Link>
+              </div>
+
+              {/* Card 3: Pro */}
+              <div className="rounded-xl p-7 border flex flex-col gap-5 bg-white border-slate-200 shadow-sm" style={{ background: 'linear-gradient(135deg, #ffffff 0%, #eff6ff 100%)' }}>
+                <div>
+                  <div className="text-xs font-semibold uppercase tracking-widest text-slate-400 mb-2">
+                    Pro
+                  </div>
+                  <h3 className="text-lg font-bold text-slate-900 mb-1">
+                    Stop Losing Sales You Can't See
+                  </h3>
+                  <p className="text-xs text-slate-500 italic mb-4">
+                    Best for: Store owners tracking their score
+                  </p>
+                  <div className="flex items-end gap-1">
+                    <span className="text-4xl font-bold text-slate-900">$99</span>
+                    <span className="text-slate-500 mb-1 text-sm">/ month</span>
+                  </div>
+                </div>
+                <ul className="flex flex-col gap-2">
+                  {[
+                    'Full fix instructions with code',
+                    '5 tracked stores, weekly monitoring',
+                    'CI/CD integration (--fail-under)',
+                    'Email alerts on score drops',
+                  ].map((f) => (
+                    <li key={f} className="flex items-start gap-2 text-sm text-slate-600">
+                      <svg className="w-4 h-4 mt-0.5 text-blue-500 shrink-0" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                      </svg>
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+                <Link
+                  to="/scan"
+                  className="mt-auto inline-flex items-center justify-center px-5 py-2.5 rounded-full font-semibold text-sm transition-colors bg-white text-slate-700 border border-slate-300 hover:bg-slate-50"
+                >
+                  Start Free Trial &rarr;
+                </Link>
+              </div>
+
+              {/* Card 4: Free */}
+              <div className="rounded-xl p-7 border flex flex-col gap-5 bg-white border-slate-200 shadow-sm">
+                <div>
+                  <div className="text-xs font-semibold uppercase tracking-widest text-slate-400 mb-2">
+                    Free
+                  </div>
+                  <h3 className="text-lg font-bold text-slate-900 mb-1">
+                    See What AI Agents See
+                  </h3>
+                  <p className="text-xs text-slate-500 italic mb-4">
+                    Best for: Quick readiness checks
+                  </p>
+                  <div className="flex items-end gap-1">
+                    <span className="text-4xl font-bold text-slate-900">$0</span>
+                    <span className="text-slate-500 mb-1 text-sm">forever</span>
+                  </div>
+                </div>
+                <ul className="flex flex-col gap-2">
+                  {[
+                    'Unlimited scans',
+                    'Score + what\'s failing',
+                    'Shareable report URL',
+                    'No signup required',
+                  ].map((f) => (
+                    <li key={f} className="flex items-start gap-2 text-sm text-slate-600">
+                      <svg className="w-4 h-4 mt-0.5 text-blue-500 shrink-0" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                      </svg>
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+                <Link
+                  to="/scan"
+                  className="mt-auto inline-flex items-center justify-center px-5 py-2.5 rounded-full font-semibold text-sm transition-colors bg-white text-slate-700 border border-slate-300 hover:bg-slate-50"
+                >
+                  Scan Your Store &rarr;
+                </Link>
+              </div>
+
             </div>
-            <p className="text-center text-sm text-slate-400 mt-6">
-              Cancel anytime. No lock-in. Start with Free &mdash; upgrade when you want to
-              track scores over time.
+
+            <p className="text-center text-sm text-slate-400 mt-8">
+              Cancel anytime. No lock-in. Switch plans whenever.
+            </p>
+            <p className="text-center text-sm text-slate-500 mt-2">
+              Which plan is right for me? Start free, upgrade when you need tracking.
             </p>
           </div>
         </section>
