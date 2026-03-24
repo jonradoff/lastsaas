@@ -47,4 +47,4 @@ This file is the coordination protocol between three Claude Code instances:
 | ID | Finding | Severity | Status | Owner | Updated |
 |----|---------|----------|--------|-------|---------|
 | 001 | Resend email API returning 401 — all transactional emails broken | high | regression | scout | 2026-03-24 |
-| 002 | Command injection vulnerability in scanner CLI exec() calls | critical | new | scout | 2026-03-24 |
+| 002 | Command injection vulnerability in scanner CLI exec() calls | critical | implementing | builder | 2026-03-24 |

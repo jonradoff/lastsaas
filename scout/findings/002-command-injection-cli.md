@@ -2,7 +2,7 @@
 id: 002
 type: security
 severity: critical
-status: new
+status: implementing
 found: 2026-03-24
 phase: audit
 ---
