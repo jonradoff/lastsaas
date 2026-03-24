@@ -48,12 +48,27 @@ fly deploy -c fly.saas.toml
 
 **Full instructions:** See `deploy.md` at the repo root.
 
-## Scout ↔ Builder Coordination
+## Multi-Instance Coordination
 
-MCPLens uses an autonomous scout system that monitors the live site, audits source code, and researches improvements. Findings are stored in `scout/findings/` and coordinated through `scout/HANDOFF.md`.
+MCPLens uses three Claude Code instances that coordinate through git:
 
-**If you are building/implementing:** Run `/builder-check` before starting work to see if the scout has found issues worth addressing. When you finish a fix, update the finding status to `done` in `scout/HANDOFF.md` and push.
+- **Scout** — monitors the live site, audits source code, researches improvements (runs on a 20-min loop)
+- **Builder** — implements fixes for scout findings
+- **Master** — builds features, reviews/merges all PRs, deploys
 
-**If you are scouting:** Run `/scout` (typically via `/loop 20m /scout`). Create one finding per cycle, push to master.
+Coordination happens through `scout/HANDOFF.md`. See that file for the full protocol.
 
-See `.claude/commands/scout.md` and `.claude/commands/builder-check.md` for full protocols.
+### Branch Rules (CRITICAL)
+
+- **Nobody pushes code directly to `master`** except the scout (which only touches `scout/` files)
+- **Builder** creates `fix/{id}-{slug}` branches and opens PRs for scout findings
+- **Master** creates feature branches and opens PRs. Master is the ONLY instance that merges PRs and deploys.
+- Always deploy with `fly deploy -c fly.saas.toml` (never bare `fly deploy`)
+
+### Quick Reference
+
+- **If you are the scout:** Run the scout protocol. Push findings to `master` (only `scout/` files). Never modify code.
+- **If you are the builder:** Run `/builder-check` to see new findings. Work on `fix/` branches. Open PRs. Never merge or deploy.
+- **If you are the master:** Build features on feature branches. Review and merge PRs from the builder. Deploy after merging.
+
+See `.claude/commands/scout.md` and `.claude/commands/builder-check.md` for detailed protocols.
