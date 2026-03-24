@@ -17,7 +17,19 @@ This file is the coordination protocol between three Claude Code instances:
 
 - **Scout** pushes directly to `master` but ONLY modifies files in `scout/`
 - **Builder** NEVER pushes to `master` — always creates `fix/{id}-{slug}` branches and opens PRs
-- **Master** NEVER pushes to `master` — always creates feature branches and opens PRs. Master is the only instance that merges PRs.
+- **Master** pushes features directly to `master` and is the only instance that merges PRs and deploys
+
+## Builder Rules (Critical)
+
+1. **Keep PRs small and fast.** One finding = one PR. Fix only what the finding describes — do not refactor surrounding code, add features, or "improve" things you notice along the way.
+2. **Rebase before opening a PR.** Master pushes feature commits to `master` frequently. Before you open your PR, always run:
+   ```bash
+   git fetch origin master && git rebase origin/master
+   ```
+   If there are conflicts, resolve them on your branch. Never ask Master to resolve your conflicts.
+3. **Touch minimal files.** The fewer files your PR changes, the lower the conflict risk. If a fix requires changes across 5+ files, break it into smaller PRs or coordinate with the user first.
+4. **Don't modify `scout/` files beyond status updates.** You may update the status field in finding files and HANDOFF.md. Do not create new findings — that's the scout's job.
+5. **Test before opening PR.** Run `cd backend && go build ./cmd/server/... && go build ./internal/...` and `cd frontend && npx tsc --noEmit`. If either fails, fix it before opening the PR.
 
 ## Status Values
 
