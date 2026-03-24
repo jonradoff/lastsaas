@@ -51,7 +51,7 @@ export default function MFASetupModal({ onClose, onComplete }: MFASetupModalProp
       <div className="bg-dark-900 border border-dark-700 rounded-2xl p-6 max-w-md mx-4 w-full" onClick={e => e.stopPropagation()}>
         {step === 'qr' && (
           <>
-            <h3 className="text-lg font-semibold text-white mb-4">Set Up Two-Factor Authentication</h3>
+            <h3 className="text-lg font-semibold text-dark-50 mb-4">Set Up Two-Factor Authentication</h3>
             <p className="text-sm text-dark-400 mb-4">Scan this QR code with your authenticator app (Google Authenticator, Authy, etc.)</p>
             {qrCodeUrl ? (
               <div className="flex justify-center mb-4">
@@ -74,7 +74,7 @@ export default function MFASetupModal({ onClose, onComplete }: MFASetupModalProp
 
         {step === 'verify' && (
           <>
-            <h3 className="text-lg font-semibold text-white mb-4">Verify Code</h3>
+            <h3 className="text-lg font-semibold text-dark-50 mb-4">Verify Code</h3>
             <p className="text-sm text-dark-400 mb-4">Enter the 6-digit code from your authenticator app</p>
             {error && <div className="mb-4 bg-red-500/10 border border-red-500/20 rounded-lg p-3 text-sm text-red-400">{error}</div>}
             <form onSubmit={handleVerify} className="space-y-4">
@@ -86,7 +86,7 @@ export default function MFASetupModal({ onClose, onComplete }: MFASetupModalProp
                 inputMode="numeric"
                 value={code}
                 onChange={(e) => setCode(e.target.value)}
-                className="w-full px-4 py-2.5 bg-dark-800 border border-dark-700 rounded-lg text-white text-center text-lg tracking-widest focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-colors"
+                className="w-full px-4 py-2.5 bg-dark-800 border border-dark-700 rounded-lg text-dark-50 text-center text-lg tracking-widest focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-colors"
                 placeholder="000000"
                 maxLength={6}
               />
@@ -99,7 +99,7 @@ export default function MFASetupModal({ onClose, onComplete }: MFASetupModalProp
 
         {step === 'codes' && (
           <>
-            <h3 className="text-lg font-semibold text-white mb-2">Recovery Codes</h3>
+            <h3 className="text-lg font-semibold text-dark-50 mb-2">Recovery Codes</h3>
             <p className="text-sm text-dark-400 mb-4">Save these codes in a safe place. Each code can only be used once.</p>
             <div className="bg-dark-800 rounded-lg p-4 mb-4 grid grid-cols-2 gap-2">
               {recoveryCodes.map((c, i) => (
@@ -107,7 +107,7 @@ export default function MFASetupModal({ onClose, onComplete }: MFASetupModalProp
               ))}
             </div>
             <div className="flex gap-2">
-              <button onClick={copyRecoveryCodes} className="flex-1 py-2.5 px-4 bg-dark-800 border border-dark-700 text-white font-medium rounded-lg hover:bg-dark-700 transition-all text-sm flex items-center justify-center gap-2">
+              <button onClick={copyRecoveryCodes} className="flex-1 py-2.5 px-4 bg-dark-800 border border-dark-700 text-dark-50 font-medium rounded-lg hover:bg-dark-700 transition-all text-sm flex items-center justify-center gap-2">
                 <Copy className="w-4 h-4" /> Copy
               </button>
               <button onClick={() => { onComplete(); onClose(); }} className="flex-1 py-2.5 px-4 bg-gradient-to-r from-primary-600 to-primary-500 text-white font-medium rounded-lg hover:from-primary-500 hover:to-primary-400 transition-all text-sm">

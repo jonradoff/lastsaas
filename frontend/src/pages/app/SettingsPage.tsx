@@ -27,7 +27,7 @@ export default function SettingsPage() {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-white flex items-center gap-3">
+        <h1 className="text-2xl font-bold text-dark-50 flex items-center gap-3">
           <Settings className="w-7 h-7 text-primary-400" />
           Settings
         </h1>
@@ -43,7 +43,7 @@ export default function SettingsPage() {
             role="tab"
             aria-selected={tab === t.key}
             className={`flex-1 px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
-              tab === t.key ? 'bg-dark-700 text-white' : 'text-dark-400 hover:text-dark-300'
+              tab === t.key ? 'bg-dark-700 text-dark-50' : 'text-dark-400 hover:text-dark-300'
             }`}
           >
             {t.label}

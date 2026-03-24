@@ -37,7 +37,7 @@ function RangeSelector({ value, onChange }: { value: Range; onChange: (r: Range)
           key={r}
           onClick={() => handleClick(r)}
           className={`px-3 py-1 text-xs font-medium rounded-md transition-colors ${
-            visual === r ? 'bg-dark-700 text-white' : 'text-dark-400 hover:text-dark-300'
+            visual === r ? 'bg-dark-700 text-dark-50' : 'text-dark-400 hover:text-dark-300'
           }`}
         >
           {r === 'today' ? 'Today' : r}
@@ -105,7 +105,7 @@ function FunnelTab() {
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-lg font-semibold text-white">Conversion Funnel</h2>
+        <h2 className="text-lg font-semibold text-dark-50">Conversion Funnel</h2>
         <RangeSelector value={range} onChange={setRange} />
       </div>
 
@@ -116,7 +116,7 @@ function FunnelTab() {
               <div className="flex items-center justify-between mb-1">
                 <span className="text-sm text-dark-300">{step.name}</span>
                 <div className="flex items-center gap-3">
-                  <span className="text-sm font-medium text-white">{formatNum(step.count)}</span>
+                  <span className="text-sm font-medium text-dark-50">{formatNum(step.count)}</span>
                   {i > 0 && (
                     <span className={`text-xs px-2 py-0.5 rounded-full ${
                       step.conversion >= 50 ? 'bg-accent-emerald/20 text-accent-emerald' :
@@ -162,7 +162,7 @@ function KPICard({ icon: Icon, label, value, color }: {
         </div>
         <div>
           <p className="text-sm text-dark-400">{label}</p>
-          <p className="text-2xl font-bold text-white">{value}</p>
+          <p className="text-2xl font-bold text-dark-50">{value}</p>
         </div>
       </div>
     </Card>
@@ -181,7 +181,7 @@ function KPIsTab() {
 
   return (
     <div className="space-y-6">
-      <h2 className="text-lg font-semibold text-white">Key Performance Indicators</h2>
+      <h2 className="text-lg font-semibold text-dark-50">Key Performance Indicators</h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <KPICard icon={DollarSign} label="MRR" value={formatCents(kpi.mrr)} color="#10b981" />
@@ -231,7 +231,7 @@ function KPIsTab() {
               <div key={p.planName}>
                 <div className="flex justify-between text-sm mb-1">
                   <span className="text-dark-300">{p.planName}</span>
-                  <span className="text-white">{p.subscribers} ({formatPct(p.percentage)}) &middot; {formatCents(p.mrr)}/mo</span>
+                  <span className="text-dark-50">{p.subscribers} ({formatPct(p.percentage)}) &middot; {formatCents(p.mrr)}/mo</span>
                 </div>
                 <div className="h-2 bg-dark-800 rounded-full overflow-hidden">
                   <div className="h-full bg-primary-500 rounded-full" style={{ width: `${p.percentage}%` }} />
@@ -270,14 +270,14 @@ function RetentionTab() {
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-lg font-semibold text-white">Cohort Retention</h2>
+        <h2 className="text-lg font-semibold text-dark-50">Cohort Retention</h2>
         <div className="flex gap-1 bg-dark-900/50 border border-dark-800 rounded-lg p-1">
           {(['weekly', 'monthly'] as const).map(g => (
             <button
               key={g}
               onClick={() => setGranularity(g)}
               className={`px-3 py-1 text-xs font-medium rounded-md transition-colors ${
-                granularity === g ? 'bg-dark-700 text-white' : 'text-dark-400 hover:text-dark-300'
+                granularity === g ? 'bg-dark-700 text-dark-50' : 'text-dark-400 hover:text-dark-300'
               }`}
             >
               {g}
@@ -339,7 +339,7 @@ function EngagementTab() {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h2 className="text-lg font-semibold text-white">Engagement (Paying Subscribers)</h2>
+        <h2 className="text-lg font-semibold text-dark-50">Engagement (Paying Subscribers)</h2>
         <RangeSelector value={range} onChange={setRange} />
       </div>
 
@@ -350,7 +350,7 @@ function EngagementTab() {
           </div>
           <div>
             <p className="text-sm text-dark-400">Avg Sessions / User / Week</p>
-            <p className="text-2xl font-bold text-white">{eng.avgSessions.toFixed(2)}</p>
+            <p className="text-2xl font-bold text-dark-50">{eng.avgSessions.toFixed(2)}</p>
           </div>
         </div>
       </Card>
@@ -457,7 +457,7 @@ function GraphSubTab({ range }: { range: Range }) {
         <select
           value={selectedEvent}
           onChange={e => setSelectedEvent(e.target.value)}
-          className="bg-dark-800 border border-dark-700 text-white rounded-lg px-3 py-2 text-sm focus:ring-primary-500 focus:border-primary-500"
+          className="bg-dark-800 border border-dark-700 text-dark-50 rounded-lg px-3 py-2 text-sm focus:ring-primary-500 focus:border-primary-500"
         >
           <option value="">All Events</option>
           {eventTypes.map(et => (
@@ -477,7 +477,7 @@ function GraphSubTab({ range }: { range: Range }) {
               </div>
               <div>
                 <p className="text-sm text-dark-400">Total Events</p>
-                <p className="text-2xl font-bold text-white">{formatNum(eventData.totalCount)}</p>
+                <p className="text-2xl font-bold text-dark-50">{formatNum(eventData.totalCount)}</p>
               </div>
             </div>
           </Card>
@@ -521,7 +521,7 @@ function GraphSubTab({ range }: { range: Range }) {
             <tbody>
               {eventTypes.map(et => (
                 <tr key={et.eventName} className="border-t border-dark-800">
-                  <td className="py-2 text-white">{et.eventName}</td>
+                  <td className="py-2 text-dark-50">{et.eventName}</td>
                   <td className="py-2">
                     <span className={`text-xs px-2 py-0.5 rounded-full ${
                       et.category === 'funnel' ? 'bg-primary-500/20 text-primary-400' :
@@ -632,13 +632,13 @@ function FlowSubTab({ range, definitions, onEdit, onDelete }: {
             <tbody>
               {definitions.map(def => (
                 <tr key={def.id} className="border-t border-dark-800">
-                  <td className="py-2 text-white font-medium">{def.name}</td>
+                  <td className="py-2 text-dark-50 font-medium">{def.name}</td>
                   <td className="py-2 text-dark-300">{def.description || <span className="text-dark-600">&mdash;</span>}</td>
                   <td className="py-2 text-dark-400">{getParentName(def) || <span className="text-dark-600">&mdash;</span>}</td>
                   <td className="py-2 text-right text-dark-300">{formatNum(def.count ?? 0)}</td>
                   <td className="py-2 text-right">
                     <div className="flex justify-end gap-1">
-                      <button onClick={() => onEdit(def)} className="p-1 text-dark-500 hover:text-white transition-colors" title="Edit">
+                      <button onClick={() => onEdit(def)} className="p-1 text-dark-500 hover:text-dark-50 transition-colors" title="Edit">
                         <Pencil className="w-3.5 h-3.5" />
                       </button>
                       <button onClick={() => onDelete(def)} className="p-1 text-dark-500 hover:text-red-400 transition-colors" title="Delete">
@@ -723,14 +723,14 @@ function EventsTab() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-4">
-          <h2 className="text-lg font-semibold text-white">Events</h2>
+          <h2 className="text-lg font-semibold text-dark-50">Events</h2>
           <div className="flex gap-1 bg-dark-900/50 border border-dark-800 rounded-lg p-1">
             {([{ key: 'flow' as const, label: 'Flow' }, { key: 'graph' as const, label: 'Graph' }]).map(t => (
               <button
                 key={t.key}
                 onClick={() => setSubTab(t.key)}
                 className={`px-3 py-1 text-xs font-medium rounded-md transition-colors ${
-                  subTab === t.key ? 'bg-dark-700 text-white' : 'text-dark-400 hover:text-dark-300'
+                  subTab === t.key ? 'bg-dark-700 text-dark-50' : 'text-dark-400 hover:text-dark-300'
                 }`}
               >
                 {t.label}
@@ -800,7 +800,7 @@ export default function PMPage() {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-white">Product Analytics</h1>
+        <h1 className="text-2xl font-bold text-dark-50">Product Analytics</h1>
         <p className="text-dark-400 mt-1">Customer journey, KPIs, retention, and engagement</p>
       </div>
 
@@ -812,7 +812,7 @@ export default function PMPage() {
             onClick={() => setActiveTab(tab.key)}
             className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
               activeTab === tab.key
-                ? 'bg-dark-700 text-white'
+                ? 'bg-dark-700 text-dark-50'
                 : 'text-dark-400 hover:text-dark-300'
             }`}
           >

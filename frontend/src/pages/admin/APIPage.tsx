@@ -101,8 +101,8 @@ function CreateKeyModal({ onClose, onCreated }: {
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
       <div className="bg-dark-900 border border-dark-700 rounded-2xl w-full max-w-lg">
         <div className="flex items-center justify-between p-6 border-b border-dark-800">
-          <h3 className="text-lg font-semibold text-white">Create API Key</h3>
-          <button onClick={onClose} className="text-dark-400 hover:text-white transition-colors">
+          <h3 className="text-lg font-semibold text-dark-50">Create API Key</h3>
+          <button onClick={onClose} className="text-dark-400 hover:text-dark-50 transition-colors">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -113,7 +113,7 @@ function CreateKeyModal({ onClose, onCreated }: {
               value={name}
               onChange={e => setName(e.target.value)}
               placeholder="e.g., CI/CD Pipeline"
-              className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-white placeholder-dark-400 text-sm focus:outline-none focus:border-primary-500"
+              className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-dark-50 placeholder-dark-400 text-sm focus:outline-none focus:border-primary-500"
             />
           </div>
           <div>
@@ -121,7 +121,7 @@ function CreateKeyModal({ onClose, onCreated }: {
             <select
               value={authority}
               onChange={e => setAuthority(e.target.value as 'admin' | 'user')}
-              className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-white text-sm focus:outline-none focus:border-primary-500"
+              className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-dark-50 text-sm focus:outline-none focus:border-primary-500"
             >
               <option value="user">User</option>
               <option value="admin">Admin</option>
@@ -137,7 +137,7 @@ function CreateKeyModal({ onClose, onCreated }: {
           )}
         </div>
         <div className="flex justify-end gap-3 p-6 pt-0">
-          <button onClick={onClose} className="px-4 py-2 text-sm text-dark-300 hover:text-white transition-colors">Cancel</button>
+          <button onClick={onClose} className="px-4 py-2 text-sm text-dark-300 hover:text-dark-50 transition-colors">Cancel</button>
           <button
             onClick={handleCreate}
             disabled={saving || !name.trim()}
@@ -172,15 +172,15 @@ function RevealKeyModal({ rawKey, apiKey, onClose }: {
             <div className="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center">
               <Check className="w-5 h-5 text-emerald-400" />
             </div>
-            <h3 className="text-lg font-semibold text-white">API Key Created</h3>
+            <h3 className="text-lg font-semibold text-dark-50">API Key Created</h3>
           </div>
-          <button onClick={onClose} className="text-dark-400 hover:text-white transition-colors">
+          <button onClick={onClose} className="text-dark-400 hover:text-dark-50 transition-colors">
             <X className="w-5 h-5" />
           </button>
         </div>
         <div className="p-6 space-y-4">
           <p className="text-sm text-dark-300">
-            Your API key <span className="font-medium text-white">{apiKey.name}</span> has been created.
+            Your API key <span className="font-medium text-dark-50">{apiKey.name}</span> has been created.
           </p>
           <div className="relative">
             <code className="block w-full p-3 bg-dark-800 border border-dark-700 rounded-lg text-sm text-emerald-400 font-mono break-all pr-12">
@@ -314,7 +314,7 @@ function APIKeysSection({ canWrite }: { canWrite: boolean }) {
             <tbody>
               {keys.map(k => (
                 <tr key={k.id} className="border-b border-dark-800/50 hover:bg-dark-800/30 transition-colors">
-                  <td className="px-5 py-3 text-sm text-white font-medium">{k.name}</td>
+                  <td className="px-5 py-3 text-sm text-dark-50 font-medium">{k.name}</td>
                   <td className="px-5 py-3">
                     <span className={`inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full ${
                       k.authority === 'admin'
@@ -372,10 +372,10 @@ function APIKeysSection({ canWrite }: { canWrite: boolean }) {
               <div className="w-10 h-10 rounded-full bg-red-500/20 flex items-center justify-center">
                 <AlertTriangle className="w-5 h-5 text-red-400" />
               </div>
-              <h3 className="text-lg font-semibold text-white">Delete API Key?</h3>
+              <h3 className="text-lg font-semibold text-dark-50">Delete API Key?</h3>
             </div>
             <p className="text-dark-300 text-sm mb-2">
-              Are you sure you want to delete <span className="font-medium text-white">{deleteTarget.name}</span>?
+              Are you sure you want to delete <span className="font-medium text-dark-50">{deleteTarget.name}</span>?
             </p>
             <p className="text-dark-400 text-xs mb-6">
               This action is irreversible. Any applications or scripts using this key will immediately lose access.
@@ -384,7 +384,7 @@ function APIKeysSection({ canWrite }: { canWrite: boolean }) {
               <div className="mb-4 p-3 bg-red-500/10 border border-red-500/30 rounded-lg text-sm text-red-400">{deleteError}</div>
             )}
             <div className="flex justify-end gap-3">
-              <button onClick={() => { setDeleteTarget(null); setDeleteError(''); }} className="px-4 py-2 text-sm text-dark-300 hover:text-white transition-colors">Cancel</button>
+              <button onClick={() => { setDeleteTarget(null); setDeleteError(''); }} className="px-4 py-2 text-sm text-dark-300 hover:text-dark-50 transition-colors">Cancel</button>
               <button
                 onClick={confirmDelete}
                 disabled={deleting}
@@ -423,15 +423,15 @@ function RevealSecretModal({ secret, webhookName, onClose }: {
             <div className="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center">
               <Check className="w-5 h-5 text-emerald-400" />
             </div>
-            <h3 className="text-lg font-semibold text-white">Webhook Created</h3>
+            <h3 className="text-lg font-semibold text-dark-50">Webhook Created</h3>
           </div>
-          <button onClick={onClose} className="text-dark-400 hover:text-white transition-colors">
+          <button onClick={onClose} className="text-dark-400 hover:text-dark-50 transition-colors">
             <X className="w-5 h-5" />
           </button>
         </div>
         <div className="p-6 space-y-4">
           <p className="text-sm text-dark-300">
-            Signing secret for <span className="font-medium text-white">{webhookName}</span>:
+            Signing secret for <span className="font-medium text-dark-50">{webhookName}</span>:
           </p>
           <div className="relative">
             <code className="block w-full p-3 bg-dark-800 border border-dark-700 rounded-lg text-sm text-emerald-400 font-mono break-all pr-12">
@@ -543,8 +543,8 @@ function WebhookFormModal({ webhook, onClose, onSaved }: {
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
       <div className="bg-dark-900 border border-dark-700 rounded-2xl w-full max-w-lg max-h-[85vh] overflow-y-auto">
         <div className="flex items-center justify-between p-6 border-b border-dark-800">
-          <h3 className="text-lg font-semibold text-white">{webhook ? 'Edit Webhook' : 'Create Webhook'}</h3>
-          <button onClick={onClose} className="text-dark-400 hover:text-white transition-colors">
+          <h3 className="text-lg font-semibold text-dark-50">{webhook ? 'Edit Webhook' : 'Create Webhook'}</h3>
+          <button onClick={onClose} className="text-dark-400 hover:text-dark-50 transition-colors">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -555,7 +555,7 @@ function WebhookFormModal({ webhook, onClose, onSaved }: {
               value={name}
               onChange={e => setName(e.target.value)}
               placeholder="e.g., Provisioning Service"
-              className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-white placeholder-dark-400 text-sm focus:outline-none focus:border-primary-500"
+              className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-dark-50 placeholder-dark-400 text-sm focus:outline-none focus:border-primary-500"
             />
           </div>
           <div>
@@ -564,7 +564,7 @@ function WebhookFormModal({ webhook, onClose, onSaved }: {
               value={description}
               onChange={e => setDescription(e.target.value)}
               placeholder="What this webhook does"
-              className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-white placeholder-dark-400 text-sm focus:outline-none focus:border-primary-500"
+              className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-dark-50 placeholder-dark-400 text-sm focus:outline-none focus:border-primary-500"
             />
           </div>
           <div>
@@ -573,7 +573,7 @@ function WebhookFormModal({ webhook, onClose, onSaved }: {
               value={url}
               onChange={e => setUrl(e.target.value)}
               placeholder="https://your-service.com/webhook"
-              className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-white placeholder-dark-400 text-sm focus:outline-none focus:border-primary-500"
+              className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-dark-50 placeholder-dark-400 text-sm focus:outline-none focus:border-primary-500"
             />
           </div>
           {!webhook && (
@@ -609,7 +609,7 @@ function WebhookFormModal({ webhook, onClose, onSaved }: {
                         className="rounded border-dark-600 bg-dark-700 text-primary-500 focus:ring-primary-500"
                       />
                       <div className="flex-1 min-w-0">
-                        <span className="text-sm font-medium text-white">{category}</span>
+                        <span className="text-sm font-medium text-dark-50">{category}</span>
                         <span className="text-xs text-dark-500 ml-2">{selectedCount}/{catTypes.length}</span>
                       </div>
                       {expanded ? <ChevronUp className="w-4 h-4 text-dark-400" /> : <ChevronDown className="w-4 h-4 text-dark-400" />}
@@ -628,7 +628,7 @@ function WebhookFormModal({ webhook, onClose, onSaved }: {
                               className="mt-0.5 rounded border-dark-600 bg-dark-700 text-primary-500 focus:ring-primary-500"
                             />
                             <div className="min-w-0">
-                              <span className="text-sm text-white font-mono">{et.type}</span>
+                              <span className="text-sm text-dark-50 font-mono">{et.type}</span>
                               <p className="text-xs text-dark-400 mt-0.5">{et.description}</p>
                             </div>
                           </label>
@@ -645,7 +645,7 @@ function WebhookFormModal({ webhook, onClose, onSaved }: {
           )}
         </div>
         <div className="flex justify-end gap-3 p-6 pt-0">
-          <button onClick={onClose} className="px-4 py-2 text-sm text-dark-300 hover:text-white transition-colors">Cancel</button>
+          <button onClick={onClose} className="px-4 py-2 text-sm text-dark-300 hover:text-dark-50 transition-colors">Cancel</button>
           <button
             onClick={handleSave}
             disabled={saving || !name.trim() || !url.trim() || events.length === 0}
@@ -769,10 +769,10 @@ function WebhookDetailModal({ webhookId, onClose, onRefresh, canWrite }: {
       <div className="bg-dark-900 border border-dark-700 rounded-2xl w-full max-w-2xl max-h-[85vh] overflow-y-auto">
         <div className="flex items-center justify-between p-6 border-b border-dark-800">
           <div>
-            <h3 className="text-lg font-semibold text-white">{hook.name}</h3>
+            <h3 className="text-lg font-semibold text-dark-50">{hook.name}</h3>
             {hook.description && <p className="text-sm text-dark-400 mt-0.5">{hook.description}</p>}
           </div>
-          <button onClick={onClose} className="text-dark-400 hover:text-white transition-colors">
+          <button onClick={onClose} className="text-dark-400 hover:text-dark-50 transition-colors">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -1034,7 +1034,7 @@ function WebhooksSection({ canWrite }: { canWrite: boolean }) {
                   onClick={() => setDetailId(h.id)}
                 >
                   <td className="px-5 py-3">
-                    <span className="text-sm text-white font-medium">{h.name}</span>
+                    <span className="text-sm text-dark-50 font-medium">{h.name}</span>
                     {h.description && <p className="text-xs text-dark-500 mt-0.5">{h.description}</p>}
                   </td>
                   <td className="px-5 py-3">
@@ -1048,7 +1048,7 @@ function WebhooksSection({ canWrite }: { canWrite: boolean }) {
                     </div>
                   </td>
                   <td className="px-5 py-3">
-                    <div className="text-sm text-white tabular-nums">{h.deliveries24h ?? 0} <span className="text-dark-500 text-xs">deliveries</span></div>
+                    <div className="text-sm text-dark-50 tabular-nums">{h.deliveries24h ?? 0} <span className="text-dark-500 text-xs">deliveries</span></div>
                     <div className="text-xs text-dark-500 mt-0.5">
                       {h.lastDelivery ? <>Last: {timeAgo(h.lastDelivery)}</> : 'No deliveries yet'}
                     </div>
@@ -1105,10 +1105,10 @@ function WebhooksSection({ canWrite }: { canWrite: boolean }) {
               <div className="w-10 h-10 rounded-full bg-red-500/20 flex items-center justify-center">
                 <AlertTriangle className="w-5 h-5 text-red-400" />
               </div>
-              <h3 className="text-lg font-semibold text-white">Delete Webhook?</h3>
+              <h3 className="text-lg font-semibold text-dark-50">Delete Webhook?</h3>
             </div>
             <p className="text-dark-300 text-sm mb-2">
-              Are you sure you want to delete <span className="font-medium text-white">{deleteTarget.name}</span>?
+              Are you sure you want to delete <span className="font-medium text-dark-50">{deleteTarget.name}</span>?
             </p>
             <p className="text-dark-400 text-xs mb-6">
               This webhook will stop receiving event notifications immediately.
@@ -1117,7 +1117,7 @@ function WebhooksSection({ canWrite }: { canWrite: boolean }) {
               <div className="mb-4 p-3 bg-red-500/10 border border-red-500/30 rounded-lg text-sm text-red-400">{deleteError}</div>
             )}
             <div className="flex justify-end gap-3">
-              <button onClick={() => { setDeleteTarget(null); setDeleteError(''); }} className="px-4 py-2 text-sm text-dark-300 hover:text-white transition-colors">Cancel</button>
+              <button onClick={() => { setDeleteTarget(null); setDeleteError(''); }} className="px-4 py-2 text-sm text-dark-300 hover:text-dark-50 transition-colors">Cancel</button>
               <button
                 onClick={confirmDelete}
                 disabled={deleting}
@@ -1142,7 +1142,7 @@ export default function APIPage() {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-white flex items-center gap-3">
+        <h1 className="text-2xl font-bold text-dark-50 flex items-center gap-3">
           <Code2 className="w-7 h-7 text-primary-400" />
           API
         </h1>

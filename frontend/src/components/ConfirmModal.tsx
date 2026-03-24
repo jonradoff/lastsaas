@@ -65,7 +65,7 @@ export default function ConfirmModal({
           <div className={`w-10 h-10 rounded-full flex items-center justify-center ${isDanger ? 'bg-red-500/20' : 'bg-primary-500/20'}`}>
             <Icon className={`w-5 h-5 ${isDanger ? 'text-red-400' : 'text-primary-400'}`} />
           </div>
-          <h3 id="confirm-modal-title" className="text-lg font-semibold text-white">{title}</h3>
+          <h3 id="confirm-modal-title" className="text-lg font-semibold text-dark-50">{title}</h3>
         </div>
         <p className="text-dark-300 mb-6 text-sm">{message}</p>
         <div className="flex justify-end gap-3">
@@ -73,7 +73,7 @@ export default function ConfirmModal({
             ref={cancelRef}
             onClick={onClose}
             disabled={loading}
-            className="px-4 py-2 text-sm font-medium text-dark-300 hover:text-white transition-colors"
+            className="px-4 py-2 text-sm font-medium text-dark-300 hover:text-dark-50 transition-colors"
           >
             Cancel
           </button>
@@ -81,7 +81,7 @@ export default function ConfirmModal({
             ref={confirmRef}
             onClick={onConfirm}
             disabled={loading}
-            className={`px-4 py-2 text-sm font-medium text-white rounded-lg transition-colors disabled:opacity-60 ${
+            className={`px-4 py-2 text-sm font-medium text-dark-50 rounded-lg transition-colors disabled:opacity-60 ${
               isDanger
                 ? 'bg-red-500 hover:bg-red-600'
                 : 'bg-primary-500 hover:bg-primary-600'

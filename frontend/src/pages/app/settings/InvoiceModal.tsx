@@ -34,27 +34,27 @@ export default function InvoiceModal({ tx, tenantName, onClose }: InvoiceModalPr
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm" onClick={onClose}>
       <div className="bg-dark-900 border border-dark-700 rounded-2xl p-6 max-w-lg mx-4 w-full" onClick={e => e.stopPropagation()}>
         <div className="flex items-center justify-between mb-6">
-          <h3 className="text-lg font-semibold text-white">Invoice</h3>
-          <button onClick={onClose} className="text-dark-400 hover:text-white" aria-label="Close">&times;</button>
+          <h3 className="text-lg font-semibold text-dark-50">Invoice</h3>
+          <button onClick={onClose} className="text-dark-400 hover:text-dark-50" aria-label="Close">&times;</button>
         </div>
 
         <div className="space-y-4 mb-6">
           <div className="flex justify-between">
             <span className="text-dark-400 text-sm">Invoice Number</span>
-            <span className="text-white text-sm font-mono">{tx.invoiceNumber}</span>
+            <span className="text-dark-50 text-sm font-mono">{tx.invoiceNumber}</span>
           </div>
           <div className="flex justify-between">
             <span className="text-dark-400 text-sm">Date</span>
-            <span className="text-white text-sm">{new Date(tx.createdAt).toLocaleDateString()}</span>
+            <span className="text-dark-50 text-sm">{new Date(tx.createdAt).toLocaleDateString()}</span>
           </div>
           <div className="flex justify-between">
             <span className="text-dark-400 text-sm">Bill To</span>
-            <span className="text-white text-sm">{tenantName}</span>
+            <span className="text-dark-50 text-sm">{tenantName}</span>
           </div>
           <hr className="border-dark-800" />
           <div className="flex justify-between">
             <span className="text-dark-300 text-sm">{tx.description}</span>
-            <span className="text-white text-sm font-medium">
+            <span className="text-dark-50 text-sm font-medium">
               ${((tx.taxAmountCents > 0 ? (tx.subtotalCents || tx.amountCents) : tx.amountCents) / 100).toFixed(2)}
             </span>
           </div>
@@ -72,8 +72,8 @@ export default function InvoiceModal({ tx, tenantName, onClose }: InvoiceModalPr
           )}
           <hr className="border-dark-800" />
           <div className="flex justify-between">
-            <span className="text-white font-semibold">Total</span>
-            <span className="text-white font-semibold">${(tx.amountCents / 100).toFixed(2)} {tx.currency.toUpperCase()}</span>
+            <span className="text-dark-50 font-semibold">Total</span>
+            <span className="text-dark-50 font-semibold">${(tx.amountCents / 100).toFixed(2)} {tx.currency.toUpperCase()}</span>
           </div>
         </div>
 

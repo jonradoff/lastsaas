@@ -172,7 +172,7 @@ export default function PlanPage() {
     <div>
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-white flex items-center gap-3">
+        <h1 className="text-2xl font-bold text-dark-50 flex items-center gap-3">
           <CreditCard className="w-7 h-7 text-primary-400" />
           Your Plan
         </h1>
@@ -237,7 +237,7 @@ export default function PlanPage() {
                   </span>
                 )}
               </div>
-              <h2 className="text-2xl font-bold text-white">{currentPlan.name}</h2>
+              <h2 className="text-2xl font-bold text-dark-50">{currentPlan.name}</h2>
               {currentPlan.description && (
                 <p className="text-dark-300 mt-1">{currentPlan.description}</p>
               )}
@@ -259,7 +259,7 @@ export default function PlanPage() {
                   <div className="flex items-center gap-2">
                     <Zap className="w-4 h-4 text-primary-400" />
                     <span className="text-sm text-dark-300">
-                      <span className="text-white font-semibold">{(subscriptionCredits + purchasedCredits).toLocaleString()}</span>
+                      <span className="text-dark-50 font-semibold">{(subscriptionCredits + purchasedCredits).toLocaleString()}</span>
                       {' '}credits total
                     </span>
                   </div>
@@ -271,7 +271,7 @@ export default function PlanPage() {
               )}
             </div>
             <div className="text-right">
-              <div className="text-3xl font-bold text-white">
+              <div className="text-3xl font-bold text-dark-50">
                 {formatPrice(currentPlan.monthlyPriceCents, currency)}
               </div>
               {currentPlan.monthlyPriceCents > 0 && (
@@ -345,7 +345,7 @@ export default function PlanPage() {
               )}
 
               <div className="mb-4 pt-2">
-                <h3 className="text-lg font-bold text-white">{plan.name}</h3>
+                <h3 className="text-lg font-bold text-dark-50">{plan.name}</h3>
                 {plan.description && (
                   <p className="text-dark-400 text-sm mt-1">{plan.description}</p>
                 )}
@@ -355,7 +355,7 @@ export default function PlanPage() {
                 {selectedInterval === 'year' && plan.annualDiscountPct > 0 ? (
                   <>
                     <div className="flex items-baseline gap-1">
-                      <span className="text-3xl font-bold text-white">{annualPrice(plan.monthlyPriceCents, plan.annualDiscountPct, currency)}</span>
+                      <span className="text-3xl font-bold text-dark-50">{annualPrice(plan.monthlyPriceCents, plan.annualDiscountPct, currency)}</span>
                       <span className="text-dark-400 text-sm">/mo</span>
                     </div>
                     <p className="text-sm text-accent-emerald mt-1">
@@ -365,7 +365,7 @@ export default function PlanPage() {
                 ) : (
                   <>
                     <div className="flex items-baseline gap-1">
-                      <span className="text-3xl font-bold text-white">{formatPrice(plan.monthlyPriceCents, currency)}</span>
+                      <span className="text-3xl font-bold text-dark-50">{formatPrice(plan.monthlyPriceCents, currency)}</span>
                       {plan.monthlyPriceCents > 0 && <span className="text-dark-400 text-sm">/mo</span>}
                     </div>
                     {plan.annualDiscountPct > 0 && (
@@ -451,7 +451,7 @@ export default function PlanPage() {
       {/* Comparison Table */}
       <div className="bg-dark-900/50 rounded-2xl border border-dark-800 overflow-hidden">
         <div className="px-6 py-4 border-b border-dark-800">
-          <h3 className="text-lg font-semibold text-white">Plan Comparison</h3>
+          <h3 className="text-lg font-semibold text-dark-50">Plan Comparison</h3>
         </div>
 
         <div className="overflow-x-auto">
@@ -476,7 +476,7 @@ export default function PlanPage() {
               <tr className="hover:bg-dark-800/20">
                 <td className="px-6 py-3 text-sm text-dark-300">Monthly Price</td>
                 {sortedPlans.map(plan => (
-                  <td key={plan.id} className={`px-6 py-3 text-sm text-center ${plan.id === currentPlanId ? 'text-white font-medium' : 'text-dark-300'}`}>
+                  <td key={plan.id} className={`px-6 py-3 text-sm text-center ${plan.id === currentPlanId ? 'text-dark-50 font-medium' : 'text-dark-300'}`}>
                     {formatPrice(plan.monthlyPriceCents, currency)}{plan.monthlyPriceCents > 0 ? '/mo' : ''}
                   </td>
                 ))}
@@ -487,7 +487,7 @@ export default function PlanPage() {
                 <tr className="hover:bg-dark-800/20">
                   <td className="px-6 py-3 text-sm text-dark-300">Annual Price</td>
                   {sortedPlans.map(plan => (
-                    <td key={plan.id} className={`px-6 py-3 text-sm text-center ${plan.id === currentPlanId ? 'text-white font-medium' : 'text-dark-300'}`}>
+                    <td key={plan.id} className={`px-6 py-3 text-sm text-center ${plan.id === currentPlanId ? 'text-dark-50 font-medium' : 'text-dark-300'}`}>
                       {plan.annualDiscountPct > 0 ? (
                         <span>{annualPrice(plan.monthlyPriceCents, plan.annualDiscountPct, currency)}/mo <span className="text-accent-emerald text-xs">({plan.annualDiscountPct}% off)</span></span>
                       ) : (
@@ -503,7 +503,7 @@ export default function PlanPage() {
                 <tr className="hover:bg-dark-800/20">
                   <td className="px-6 py-3 text-sm text-dark-300">Users</td>
                   {sortedPlans.map(plan => (
-                    <td key={plan.id} className={`px-6 py-3 text-sm text-center ${plan.id === currentPlanId ? 'text-white font-medium' : 'text-dark-300'}`}>
+                    <td key={plan.id} className={`px-6 py-3 text-sm text-center ${plan.id === currentPlanId ? 'text-dark-50 font-medium' : 'text-dark-300'}`}>
                       {plan.userLimit === 0 ? 'Unlimited' : plan.userLimit}
                     </td>
                   ))}
@@ -515,7 +515,7 @@ export default function PlanPage() {
                 <tr className="hover:bg-dark-800/20">
                   <td className="px-6 py-3 text-sm text-dark-300">Usage Credits / Month</td>
                   {sortedPlans.map(plan => (
-                    <td key={plan.id} className={`px-6 py-3 text-sm text-center ${plan.id === currentPlanId ? 'text-white font-medium' : 'text-dark-300'}`}>
+                    <td key={plan.id} className={`px-6 py-3 text-sm text-center ${plan.id === currentPlanId ? 'text-dark-50 font-medium' : 'text-dark-300'}`}>
                       {plan.usageCreditsPerMonth > 0 ? plan.usageCreditsPerMonth.toLocaleString() : <span className="text-dark-500">—</span>}
                     </td>
                   ))}
@@ -527,7 +527,7 @@ export default function PlanPage() {
                 <tr className="hover:bg-dark-800/20">
                   <td className="px-6 py-3 text-sm text-dark-300">Bonus Credits (one-time)</td>
                   {sortedPlans.map(plan => (
-                    <td key={plan.id} className={`px-6 py-3 text-sm text-center ${plan.id === currentPlanId ? 'text-white font-medium' : 'text-dark-300'}`}>
+                    <td key={plan.id} className={`px-6 py-3 text-sm text-center ${plan.id === currentPlanId ? 'text-dark-50 font-medium' : 'text-dark-300'}`}>
                       {plan.bonusCredits > 0 ? plan.bonusCredits.toLocaleString() : <span className="text-dark-500">—</span>}
                     </td>
                   ))}
@@ -541,7 +541,7 @@ export default function PlanPage() {
                   {sortedPlans.map(plan => {
                     const ent: EntitlementValue | undefined = plan.entitlements?.[key];
                     return (
-                      <td key={plan.id} className={`px-6 py-3 text-center ${plan.id === currentPlanId ? 'text-white' : 'text-dark-300'}`}>
+                      <td key={plan.id} className={`px-6 py-3 text-center ${plan.id === currentPlanId ? 'text-dark-50' : 'text-dark-300'}`}>
                         {!ent ? (
                           <Minus className="w-4 h-4 text-dark-600 mx-auto" />
                         ) : ent.type === 'bool' ? (
@@ -569,10 +569,10 @@ export default function PlanPage() {
           <div className="bg-dark-900 border border-dark-700 rounded-2xl p-6 max-w-md mx-4 w-full">
             <div className="flex items-center gap-3 mb-4">
               <AlertTriangle className="w-6 h-6 text-yellow-400" />
-              <h3 className="text-lg font-semibold text-white">Billing Waiver Active</h3>
+              <h3 className="text-lg font-semibold text-dark-50">Billing Waiver Active</h3>
             </div>
             <p className="text-dark-300 mb-2">
-              Your account currently has billing waived. Switching to <span className="text-white font-medium">{pendingWaiverPlan.name}</span> will start a paid subscription.
+              Your account currently has billing waived. Switching to <span className="text-dark-50 font-medium">{pendingWaiverPlan.name}</span> will start a paid subscription.
             </p>
             <p className="text-dark-400 text-sm mb-6">
               Your billing waiver will be removed and you'll be redirected to complete payment.
@@ -580,7 +580,7 @@ export default function PlanPage() {
             <div className="flex gap-3 justify-end">
               <button
                 onClick={() => { setShowWaiverModal(false); setPendingWaiverPlan(null); }}
-                className="px-4 py-2 text-sm text-dark-300 hover:text-white transition-colors"
+                className="px-4 py-2 text-sm text-dark-300 hover:text-dark-50 transition-colors"
               >
                 Cancel
               </button>
@@ -601,21 +601,21 @@ export default function PlanPage() {
           <div className="bg-dark-900 border border-dark-700 rounded-2xl p-6 max-w-md mx-4 w-full">
             <div className="flex items-center gap-3 mb-4">
               <XCircle className="w-6 h-6 text-red-400" />
-              <h3 className="text-lg font-semibold text-white">Cancel Subscription</h3>
+              <h3 className="text-lg font-semibold text-dark-50">Cancel Subscription</h3>
             </div>
             <p className="text-dark-300 mb-2">
               Are you sure you want to cancel your subscription?
             </p>
             {currentPeriodEnd && (
               <p className="text-dark-400 text-sm mb-6">
-                You'll keep your benefits until <span className="text-white font-medium">{new Date(currentPeriodEnd).toLocaleDateString()}</span>.
+                You'll keep your benefits until <span className="text-dark-50 font-medium">{new Date(currentPeriodEnd).toLocaleDateString()}</span>.
                 After that, you'll be downgraded to the Free plan.
               </p>
             )}
             <div className="flex gap-3 justify-end">
               <button
                 onClick={() => setShowCancelModal(false)}
-                className="px-4 py-2 text-sm text-dark-300 hover:text-white transition-colors"
+                className="px-4 py-2 text-sm text-dark-300 hover:text-dark-50 transition-colors"
               >
                 Keep Subscription
               </button>

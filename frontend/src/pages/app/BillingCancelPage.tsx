@@ -5,7 +5,7 @@ export default function BillingCancelPage() {
   return (
     <div className="flex flex-col items-center justify-center py-20">
       <XCircle className="w-16 h-16 text-dark-500 mb-6" />
-      <h1 className="text-2xl font-bold text-white mb-2">Payment Canceled</h1>
+      <h1 className="text-2xl font-bold text-dark-50 mb-2">Payment Canceled</h1>
       <p className="text-dark-400 mb-6">No charges were made.</p>
       <div className="flex gap-4">
         <Link

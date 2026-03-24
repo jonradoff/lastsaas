@@ -49,7 +49,7 @@ export default function BuyCreditsPage() {
     <div>
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-white flex items-center gap-3">
+        <h1 className="text-2xl font-bold text-dark-50 flex items-center gap-3">
           <Zap className="w-7 h-7 text-primary-400" />
           Buy Credits
         </h1>
@@ -60,7 +60,7 @@ export default function BuyCreditsPage() {
           <Zap className="w-4 h-4 text-primary-400" />
           <span className="text-sm text-dark-300">
             Current balance:{' '}
-            <span className="text-white font-semibold">
+            <span className="text-dark-50 font-semibold">
               {totalCredits.toLocaleString()}
             </span>
             {' '}credits
@@ -85,12 +85,12 @@ export default function BuyCreditsPage() {
               className="bg-dark-900/50 border border-dark-800 rounded-2xl p-6 hover:border-dark-700 transition-all"
             >
               <div className="mb-4">
-                <h3 className="text-lg font-bold text-white">{bundle.name}</h3>
+                <h3 className="text-lg font-bold text-dark-50">{bundle.name}</h3>
               </div>
 
               <div className="flex items-baseline gap-2 mb-2">
                 <Zap className="w-5 h-5 text-primary-400" />
-                <span className="text-3xl font-bold text-white">
+                <span className="text-3xl font-bold text-dark-50">
                   {bundle.credits.toLocaleString()}
                 </span>
                 <span className="text-dark-400 text-sm">credits</span>

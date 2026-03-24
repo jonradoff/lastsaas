@@ -122,7 +122,7 @@ export default function TeamPage() {
     <div>
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-white flex items-center gap-3">
+          <h1 className="text-2xl font-bold text-dark-50 flex items-center gap-3">
             <Users className="w-7 h-7 text-primary-400" />
             Team
           </h1>
@@ -157,7 +157,7 @@ export default function TeamPage() {
                 required
                 value={inviteEmail}
                 onChange={(e) => setInviteEmail(e.target.value)}
-                className="w-full px-4 py-2.5 bg-dark-800 border border-dark-700 rounded-lg text-white placeholder-dark-400 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-colors"
+                className="w-full px-4 py-2.5 bg-dark-800 border border-dark-700 rounded-lg text-dark-50 placeholder-dark-400 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-colors"
                 placeholder="teammate@example.com"
               />
             </div>
@@ -166,7 +166,7 @@ export default function TeamPage() {
               <select
                 value={inviteRole}
                 onChange={(e) => setInviteRole(e.target.value)}
-                className="w-full px-4 py-2.5 bg-dark-800 border border-dark-700 rounded-lg text-white focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-colors"
+                className="w-full px-4 py-2.5 bg-dark-800 border border-dark-700 rounded-lg text-dark-50 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-colors"
               >
                 <option value="user">User</option>
                 <option value="admin">Admin</option>
@@ -202,7 +202,7 @@ export default function TeamPage() {
                 <tr key={member.userId} className="border-b border-dark-800/50 hover:bg-dark-800/30 transition-colors">
                   <td className="px-6 py-4">
                     <div>
-                      <p className="text-sm font-medium text-white">
+                      <p className="text-sm font-medium text-dark-50">
                         {member.displayName}
                         {isMe && <span className="text-dark-500 ml-2">(you)</span>}
                       </p>
@@ -262,7 +262,7 @@ export default function TeamPage() {
             <div className="bg-dark-900 border border-dark-700 rounded-2xl p-6 max-w-md mx-4 w-full">
               <div className="flex items-center gap-3 mb-4">
                 <Zap className="w-6 h-6 text-primary-400" />
-                <h3 className="text-lg font-semibold text-white">
+                <h3 className="text-lg font-semibold text-dark-50">
                   {renderTemplate(upgradePromptTitle, templateVars)}
                 </h3>
               </div>
@@ -272,7 +272,7 @@ export default function TeamPage() {
               <div className="flex gap-3 justify-end">
                 <button
                   onClick={() => setShowUpgradeModal(false)}
-                  className="px-4 py-2 text-sm text-dark-300 hover:text-white transition-colors"
+                  className="px-4 py-2 text-sm text-dark-300 hover:text-dark-50 transition-colors"
                 >
                   Cancel
                 </button>

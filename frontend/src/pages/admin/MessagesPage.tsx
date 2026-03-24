@@ -38,7 +38,7 @@ export default function MessagesPage() {
     <div>
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-white flex items-center gap-3">
+          <h1 className="text-2xl font-bold text-dark-50 flex items-center gap-3">
             <Mail className="w-7 h-7 text-primary-400" />
             Messages
           </h1>
@@ -67,7 +67,7 @@ export default function MessagesPage() {
                 <div className="flex-1">
                   <div className="flex items-center gap-2">
                     <h3 className={`text-sm font-medium ${
-                      msg.read ? 'text-dark-300' : 'text-white'
+                      msg.read ? 'text-dark-300' : 'text-dark-50'
                     }`}>
                       {msg.subject}
                     </h3>

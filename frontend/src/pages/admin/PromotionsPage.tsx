@@ -100,7 +100,7 @@ export default function PromotionsPage() {
     <div>
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white flex items-center gap-3">
+          <h1 className="text-2xl font-bold text-dark-50 flex items-center gap-3">
             <Tag className="w-7 h-7 text-primary-400" />
             Promotions
           </h1>
@@ -146,7 +146,7 @@ export default function PromotionsPage() {
                       className={`hover:bg-dark-800/20${canWrite ? ' cursor-pointer' : ''}`}
                       onClick={canWrite ? () => setEditTarget(promo) : undefined}
                     >
-                      <td className="px-6 py-3 text-sm text-white font-mono font-medium">{promo.code}</td>
+                      <td className="px-6 py-3 text-sm text-dark-50 font-mono font-medium">{promo.code}</td>
                       <td className="px-6 py-3 text-sm text-dark-300">
                         {promo.percentOff > 0
                           ? `${promo.percentOff}% off`
@@ -292,8 +292,8 @@ function EditPromotionModal({ promo, productNames, onClose, onUpdated }: {
       <div className="fixed inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
       <div className="relative bg-dark-900 rounded-2xl border border-dark-700 p-6 w-full max-w-lg" role="dialog" aria-modal="true">
         <div className="flex items-center justify-between mb-6">
-          <h3 className="text-lg font-semibold text-white">Edit Promotion</h3>
-          <button onClick={onClose} className="p-2 text-dark-400 hover:text-white transition-colors" aria-label="Close">
+          <h3 className="text-lg font-semibold text-dark-50">Edit Promotion</h3>
+          <button onClick={onClose} className="p-2 text-dark-400 hover:text-dark-50 transition-colors" aria-label="Close">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -303,15 +303,15 @@ function EditPromotionModal({ promo, productNames, onClose, onUpdated }: {
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-xs font-medium text-dark-500 mb-1">Code</label>
-              <p className="text-white font-mono text-sm">{promo.code}</p>
+              <p className="text-dark-50 font-mono text-sm">{promo.code}</p>
             </div>
             <div>
               <label className="block text-xs font-medium text-dark-500 mb-1">Discount</label>
-              <p className="text-white text-sm">{discount}</p>
+              <p className="text-dark-50 text-sm">{discount}</p>
             </div>
             <div>
               <label className="block text-xs font-medium text-dark-500 mb-1">Redemptions</label>
-              <p className="text-white text-sm font-mono">
+              <p className="text-dark-50 text-sm font-mono">
                 {promo.timesRedeemed}
                 {promo.maxRedemptions > 0 && ` / ${promo.maxRedemptions}`}
               </p>
@@ -323,7 +323,7 @@ function EditPromotionModal({ promo, productNames, onClose, onUpdated }: {
                   ? (() => {
                       const d = new Date(promo.expiresAt * 1000);
                       const isExpired = d < new Date();
-                      return <span className={isExpired ? 'text-red-400' : 'text-white'}>{d.toLocaleDateString()}</span>;
+                      return <span className={isExpired ? 'text-red-400' : 'text-dark-50'}>{d.toLocaleDateString()}</span>;
                     })()
                   : <span className="text-dark-500">Never</span>
                 }
@@ -356,7 +356,7 @@ function EditPromotionModal({ promo, productNames, onClose, onUpdated }: {
               <input
                 value={couponName}
                 onChange={e => setCouponName(e.target.value)}
-                className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-white text-sm focus:border-primary-500 focus:outline-none"
+                className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-dark-50 text-sm focus:border-primary-500 focus:outline-none"
               />
             </div>
 
@@ -390,7 +390,7 @@ function EditPromotionModal({ promo, productNames, onClose, onUpdated }: {
         {error && <p className="text-sm text-red-400 mt-3">{error}</p>}
 
         <div className="flex justify-end gap-3 mt-6">
-          <button onClick={onClose} className="px-4 py-2 text-sm text-dark-400 hover:text-white transition-colors">
+          <button onClick={onClose} className="px-4 py-2 text-sm text-dark-400 hover:text-dark-50 transition-colors">
             Cancel
           </button>
           <button
@@ -485,8 +485,8 @@ function CreatePromotionModal({ onClose, onCreated }: { onClose: () => void; onC
       <div className="fixed inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
       <div className="relative bg-dark-900 rounded-2xl border border-dark-700 p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto" role="dialog" aria-modal="true">
         <div className="flex items-center justify-between mb-6">
-          <h3 className="text-lg font-semibold text-white">Create Promotion Code</h3>
-          <button onClick={onClose} className="p-2 text-dark-400 hover:text-white transition-colors" aria-label="Close">
+          <h3 className="text-lg font-semibold text-dark-50">Create Promotion Code</h3>
+          <button onClick={onClose} className="p-2 text-dark-400 hover:text-dark-50 transition-colors" aria-label="Close">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -498,7 +498,7 @@ function CreatePromotionModal({ onClose, onCreated }: { onClose: () => void; onC
               value={code}
               onChange={e => setCode(e.target.value.toUpperCase())}
               placeholder="e.g. SAVE20"
-              className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-white text-sm font-mono focus:border-primary-500 focus:outline-none"
+              className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-dark-50 text-sm font-mono focus:border-primary-500 focus:outline-none"
             />
           </div>
 
@@ -508,7 +508,7 @@ function CreatePromotionModal({ onClose, onCreated }: { onClose: () => void; onC
               value={name}
               onChange={e => setName(e.target.value)}
               placeholder="Display name for the coupon"
-              className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-white text-sm focus:border-primary-500 focus:outline-none"
+              className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-dark-50 text-sm focus:border-primary-500 focus:outline-none"
             />
           </div>
 
@@ -544,7 +544,7 @@ function CreatePromotionModal({ onClose, onCreated }: { onClose: () => void; onC
                 inputMode="decimal"
                 value={percentOff}
                 onChange={e => setPercentOff(e.target.value)}
-                className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-white text-sm focus:border-primary-500 focus:outline-none"
+                className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-dark-50 text-sm focus:border-primary-500 focus:outline-none"
               />
             </div>
           ) : (
@@ -555,7 +555,7 @@ function CreatePromotionModal({ onClose, onCreated }: { onClose: () => void; onC
                 inputMode="decimal"
                 value={amountOff}
                 onChange={e => setAmountOff(e.target.value)}
-                className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-white text-sm focus:border-primary-500 focus:outline-none"
+                className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-dark-50 text-sm focus:border-primary-500 focus:outline-none"
               />
             </div>
           )}
@@ -569,7 +569,7 @@ function CreatePromotionModal({ onClose, onCreated }: { onClose: () => void; onC
                 value={maxRedemptions}
                 onChange={e => setMaxRedemptions(e.target.value)}
                 placeholder="Unlimited"
-                className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-white text-sm focus:border-primary-500 focus:outline-none"
+                className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-dark-50 text-sm focus:border-primary-500 focus:outline-none"
               />
             </div>
             <div className="flex-1">
@@ -582,7 +582,7 @@ function CreatePromotionModal({ onClose, onCreated }: { onClose: () => void; onC
                 value={expiresAt}
                 onChange={e => setExpiresAt(e.target.value)}
                 min={new Date().toISOString().split('T')[0]}
-                className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-white text-sm focus:border-primary-500 focus:outline-none [color-scheme:dark]"
+                className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-dark-50 text-sm focus:border-primary-500 focus:outline-none [color-scheme:dark]"
               />
             </div>
           </div>
@@ -620,7 +620,7 @@ function CreatePromotionModal({ onClose, onCreated }: { onClose: () => void; onC
                                 onChange={() => toggleProduct(p.id)}
                                 className="w-4 h-4 rounded border-dark-600 bg-dark-800 text-primary-500 focus:ring-primary-500"
                               />
-                              <span className="text-sm text-white">{p.name}</span>
+                              <span className="text-sm text-dark-50">{p.name}</span>
                             </label>
                           ))}
                         </div>
@@ -638,7 +638,7 @@ function CreatePromotionModal({ onClose, onCreated }: { onClose: () => void; onC
                                 onChange={() => toggleProduct(b.id)}
                                 className="w-4 h-4 rounded border-dark-600 bg-dark-800 text-primary-500 focus:ring-primary-500"
                               />
-                              <span className="text-sm text-white">{b.name}</span>
+                              <span className="text-sm text-dark-50">{b.name}</span>
                             </label>
                           ))}
                         </div>
@@ -654,7 +654,7 @@ function CreatePromotionModal({ onClose, onCreated }: { onClose: () => void; onC
         {error && <p className="text-sm text-red-400 mt-3">{error}</p>}
 
         <div className="flex justify-end gap-3 mt-6">
-          <button onClick={onClose} className="px-4 py-2 text-sm text-dark-400 hover:text-white transition-colors">
+          <button onClick={onClose} className="px-4 py-2 text-sm text-dark-400 hover:text-dark-50 transition-colors">
             Cancel
           </button>
           <button

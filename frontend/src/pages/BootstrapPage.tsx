@@ -26,9 +26,9 @@ export default function BootstrapPage() {
       <div className="w-full max-w-lg">
         <div className="text-center mb-8">
           <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary-500 to-accent-purple flex items-center justify-center mx-auto mb-4">
-            <Terminal className="w-8 h-8 text-white" />
+            <Terminal className="w-8 h-8 text-dark-50" />
           </div>
-          <h1 className="text-2xl font-bold text-white">System Setup Required</h1>
+          <h1 className="text-2xl font-bold text-dark-50">System Setup Required</h1>
           <p className="text-dark-400 mt-2">
             Run the following command to create your initial admin account:
           </p>

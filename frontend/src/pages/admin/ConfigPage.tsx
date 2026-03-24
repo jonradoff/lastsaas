@@ -92,7 +92,7 @@ export default function ConfigPage() {
     <div>
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-white flex items-center gap-3">
+          <h1 className="text-2xl font-bold text-dark-50 flex items-center gap-3">
             <Settings className="w-7 h-7 text-primary-400" />
             Configuration
           </h1>
@@ -117,7 +117,7 @@ export default function ConfigPage() {
           value={filter}
           onChange={(e) => setFilter(e.target.value)}
           placeholder="Filter by name or description..."
-          className="w-full pl-10 pr-4 py-2 bg-dark-800 border border-dark-700 rounded-lg text-sm text-white placeholder-dark-400 focus:outline-none focus:border-primary-500"
+          className="w-full pl-10 pr-4 py-2 bg-dark-800 border border-dark-700 rounded-lg text-sm text-dark-50 placeholder-dark-400 focus:outline-none focus:border-primary-500"
         />
       </div>
 
@@ -148,7 +148,7 @@ export default function ConfigPage() {
                 >
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2">
-                      <span className="text-white font-medium">{v.name}</span>
+                      <span className="text-dark-50 font-medium">{v.name}</span>
                       {v.isSystem && (
                         <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-xs font-medium text-primary-400 bg-primary-500/10">
                           <Shield className="w-3 h-3" />
@@ -228,9 +228,9 @@ function DeleteConfirmModal({
             <AlertTriangle className="w-5 h-5 text-red-400" />
           </div>
           <div>
-            <h2 className="text-lg font-semibold text-white">Delete Variable</h2>
+            <h2 className="text-lg font-semibold text-dark-50">Delete Variable</h2>
             <p className="text-dark-400 text-sm mt-1">
-              Are you sure you want to delete <span className="text-white font-medium">{name}</span>?
+              Are you sure you want to delete <span className="text-dark-50 font-medium">{name}</span>?
             </p>
           </div>
         </div>
@@ -244,7 +244,7 @@ function DeleteConfirmModal({
         <div className="flex justify-end gap-3">
           <button
             onClick={onCancel}
-            className="px-4 py-2 bg-dark-800 border border-dark-700 text-dark-300 text-sm rounded-lg hover:text-white transition-colors"
+            className="px-4 py-2 bg-dark-800 border border-dark-700 text-dark-300 text-sm rounded-lg hover:text-dark-50 transition-colors"
           >
             Cancel
           </button>
@@ -292,14 +292,14 @@ function EnumOptionsEditor({
               value={opt.label}
               onChange={(e) => updateOption(i, 'label', e.target.value)}
               placeholder="Label"
-              className="flex-1 px-3 py-1.5 bg-dark-800 border border-dark-700 rounded-lg text-sm text-white placeholder-dark-400 focus:outline-none focus:border-primary-500"
+              className="flex-1 px-3 py-1.5 bg-dark-800 border border-dark-700 rounded-lg text-sm text-dark-50 placeholder-dark-400 focus:outline-none focus:border-primary-500"
             />
             <input
               type="text"
               value={opt.value}
               onChange={(e) => updateOption(i, 'value', e.target.value)}
               placeholder="Value"
-              className="flex-1 px-3 py-1.5 bg-dark-800 border border-dark-700 rounded-lg text-sm text-white font-mono placeholder-dark-400 focus:outline-none focus:border-primary-500"
+              className="flex-1 px-3 py-1.5 bg-dark-800 border border-dark-700 rounded-lg text-sm text-dark-50 font-mono placeholder-dark-400 focus:outline-none focus:border-primary-500"
             />
             <button
               onClick={() => removeOption(i)}
@@ -370,8 +370,8 @@ function EditConfigModal({
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm" onClick={onClose}>
       <div className="bg-dark-900 border border-dark-700 rounded-2xl p-6 w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-white">Edit: {configVar.name}</h2>
-          <button onClick={onClose} className="text-dark-400 hover:text-white">
+          <h2 className="text-lg font-semibold text-dark-50">Edit: {configVar.name}</h2>
+          <button onClick={onClose} className="text-dark-400 hover:text-dark-50">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -386,7 +386,7 @@ function EditConfigModal({
               onChange={(e) => setEditDescription(e.target.value)}
               placeholder="What this variable controls"
               disabled={!canWrite}
-              className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-sm text-white placeholder-dark-400 focus:outline-none focus:border-primary-500 disabled:opacity-60 disabled:cursor-not-allowed"
+              className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-sm text-dark-50 placeholder-dark-400 focus:outline-none focus:border-primary-500 disabled:opacity-60 disabled:cursor-not-allowed"
             />
           </div>
         ) : configVar.description ? (
@@ -410,7 +410,7 @@ function EditConfigModal({
               value={editValue}
               onChange={(e) => setEditValue(e.target.value)}
               disabled={!canWrite}
-              className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-sm text-white focus:outline-none focus:border-primary-500 disabled:opacity-60 disabled:cursor-not-allowed"
+              className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-sm text-dark-50 focus:outline-none focus:border-primary-500 disabled:opacity-60 disabled:cursor-not-allowed"
             >
               {displayOptions.filter(o => o.value.trim()).map((opt) => (
                 <option key={opt.value} value={opt.value}>{opt.label || opt.value}</option>
@@ -422,7 +422,7 @@ function EditConfigModal({
               onChange={(e) => setEditValue(e.target.value)}
               rows={16}
               disabled={!canWrite}
-              className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-sm text-white font-mono focus:outline-none focus:border-primary-500 resize-y disabled:opacity-60 disabled:cursor-not-allowed"
+              className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-sm text-dark-50 font-mono focus:outline-none focus:border-primary-500 resize-y disabled:opacity-60 disabled:cursor-not-allowed"
             />
           ) : configVar.type === 'numeric' ? (
             <input
@@ -431,7 +431,7 @@ function EditConfigModal({
               onChange={(e) => setEditValue(e.target.value)}
               step="any"
               disabled={!canWrite}
-              className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-sm text-white focus:outline-none focus:border-primary-500 disabled:opacity-60 disabled:cursor-not-allowed"
+              className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-sm text-dark-50 focus:outline-none focus:border-primary-500 disabled:opacity-60 disabled:cursor-not-allowed"
             />
           ) : (
             <input
@@ -439,7 +439,7 @@ function EditConfigModal({
               value={editValue}
               onChange={(e) => setEditValue(e.target.value)}
               disabled={!canWrite}
-              className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-sm text-white focus:outline-none focus:border-primary-500 disabled:opacity-60 disabled:cursor-not-allowed"
+              className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-sm text-dark-50 focus:outline-none focus:border-primary-500 disabled:opacity-60 disabled:cursor-not-allowed"
             />
           )}
         </div>
@@ -453,7 +453,7 @@ function EditConfigModal({
         <div className="flex justify-end gap-3">
           <button
             onClick={onClose}
-            className="px-4 py-2 bg-dark-800 border border-dark-700 text-dark-300 text-sm rounded-lg hover:text-white transition-colors"
+            className="px-4 py-2 bg-dark-800 border border-dark-700 text-dark-300 text-sm rounded-lg hover:text-dark-50 transition-colors"
           >
             {canWrite ? 'Cancel' : 'Close'}
           </button>
@@ -520,8 +520,8 @@ function CreateConfigModal({ onClose, onCreated }: { onClose: () => void; onCrea
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm" onClick={onClose}>
       <div className="bg-dark-900 border border-dark-700 rounded-2xl p-6 w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-white">Add Variable</h2>
-          <button onClick={onClose} className="text-dark-400 hover:text-white">
+          <h2 className="text-lg font-semibold text-dark-50">Add Variable</h2>
+          <button onClick={onClose} className="text-dark-400 hover:text-dark-50">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -534,7 +534,7 @@ function CreateConfigModal({ onClose, onCreated }: { onClose: () => void; onCrea
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g. feature.max_items"
-              className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-sm text-white placeholder-dark-400 focus:outline-none focus:border-primary-500"
+              className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-sm text-dark-50 placeholder-dark-400 focus:outline-none focus:border-primary-500"
             />
           </div>
 
@@ -545,7 +545,7 @@ function CreateConfigModal({ onClose, onCreated }: { onClose: () => void; onCrea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="What this variable controls"
-              className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-sm text-white placeholder-dark-400 focus:outline-none focus:border-primary-500"
+              className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-sm text-dark-50 placeholder-dark-400 focus:outline-none focus:border-primary-500"
             />
           </div>
 
@@ -554,7 +554,7 @@ function CreateConfigModal({ onClose, onCreated }: { onClose: () => void; onCrea
             <select
               value={type}
               onChange={(e) => setType(e.target.value as ConfigVarType)}
-              className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-sm text-white focus:outline-none focus:border-primary-500"
+              className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-sm text-dark-50 focus:outline-none focus:border-primary-500"
             >
               <option value="string">String</option>
               <option value="numeric">Numeric</option>
@@ -575,7 +575,7 @@ function CreateConfigModal({ onClose, onCreated }: { onClose: () => void; onCrea
               <select
                 value={value}
                 onChange={(e) => setValue(e.target.value)}
-                className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-sm text-white focus:outline-none focus:border-primary-500"
+                className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-sm text-dark-50 focus:outline-none focus:border-primary-500"
               >
                 <option value="">Select a value...</option>
                 {enumOptions.filter((o) => o.value.trim()).map((opt) => (
@@ -587,7 +587,7 @@ function CreateConfigModal({ onClose, onCreated }: { onClose: () => void; onCrea
                 value={value}
                 onChange={(e) => setValue(e.target.value)}
                 rows={6}
-                className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-sm text-white font-mono placeholder-dark-400 focus:outline-none focus:border-primary-500 resize-y"
+                className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-sm text-dark-50 font-mono placeholder-dark-400 focus:outline-none focus:border-primary-500 resize-y"
               />
             ) : (
               <input
@@ -595,7 +595,7 @@ function CreateConfigModal({ onClose, onCreated }: { onClose: () => void; onCrea
                 value={value}
                 onChange={(e) => setValue(e.target.value)}
                 step={type === 'numeric' ? 'any' : undefined}
-                className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-sm text-white placeholder-dark-400 focus:outline-none focus:border-primary-500"
+                className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-sm text-dark-50 placeholder-dark-400 focus:outline-none focus:border-primary-500"
               />
             )}
           </div>
@@ -610,7 +610,7 @@ function CreateConfigModal({ onClose, onCreated }: { onClose: () => void; onCrea
         <div className="flex justify-end gap-3 mt-6">
           <button
             onClick={onClose}
-            className="px-4 py-2 bg-dark-800 border border-dark-700 text-dark-300 text-sm rounded-lg hover:text-white transition-colors"
+            className="px-4 py-2 bg-dark-800 border border-dark-700 text-dark-300 text-sm rounded-lg hover:text-dark-50 transition-colors"
           >
             Cancel
           </button>

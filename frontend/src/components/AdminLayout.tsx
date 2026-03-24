@@ -68,16 +68,16 @@ export default function AdminLayout() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-4">
-              <Link to="/dashboard" className="flex items-center gap-2 text-dark-400 hover:text-white transition-colors">
+              <Link to="/dashboard" className="flex items-center gap-2 text-dark-400 hover:text-dark-50 transition-colors">
                 <ArrowLeft className="w-4 h-4" />
                 <span className="text-sm">Back to App</span>
               </Link>
               <div className="h-6 w-px bg-dark-700" />
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary-500 to-accent-purple flex items-center justify-center">
-                  <Shield className="w-4 h-4 text-white" />
+                  <Shield className="w-4 h-4 text-dark-50" />
                 </div>
-                <span className="font-semibold text-white">Admin</span>
+                <span className="font-semibold text-dark-50">Admin</span>
               </div>
             </div>
           </div>
@@ -95,7 +95,7 @@ export default function AdminLayout() {
                 className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
                   isActive(item.path)
                     ? 'bg-primary-500/20 text-primary-400'
-                    : 'text-dark-400 hover:text-white hover:bg-dark-800/50'
+                    : 'text-dark-400 hover:text-dark-50 hover:bg-dark-800/50'
                 }`}
               >
                 <item.icon className="w-5 h-5" />

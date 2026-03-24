@@ -137,8 +137,8 @@ function SetupModal({ name, setupHelp, onClose }: { name: string; setupHelp: Rec
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
       <div className="bg-dark-900 border border-dark-700 rounded-2xl w-full max-w-lg max-h-[80vh] overflow-y-auto">
         <div className="flex items-center justify-between p-6 border-b border-dark-800">
-          <h3 className="text-lg font-semibold text-white">{help.title}</h3>
-          <button onClick={onClose} className="text-dark-400 hover:text-white transition-colors">
+          <h3 className="text-lg font-semibold text-dark-50">{help.title}</h3>
+          <button onClick={onClose} className="text-dark-400 hover:text-dark-50 transition-colors">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -163,7 +163,7 @@ function SetupModal({ name, setupHelp, onClose }: { name: string; setupHelp: Rec
                     href={link.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-dark-800 hover:bg-dark-700 border border-dark-700 rounded-lg text-xs text-dark-300 hover:text-white transition-colors"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-dark-800 hover:bg-dark-700 border border-dark-700 rounded-lg text-xs text-dark-300 hover:text-dark-50 transition-colors"
                   >
                     <ExternalLink className="w-3 h-3" />
                     {link.label}
@@ -202,8 +202,8 @@ function SendTestEmailModal({ onClose }: { onClose: () => void }) {
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4" onClick={onClose}>
       <div className="bg-dark-900 border border-dark-700 rounded-2xl w-full max-w-md" onClick={e => e.stopPropagation()}>
         <div className="flex items-center justify-between p-6 border-b border-dark-800">
-          <h3 className="text-lg font-semibold text-white">Send Test Email</h3>
-          <button onClick={onClose} className="text-dark-400 hover:text-white transition-colors">
+          <h3 className="text-lg font-semibold text-dark-50">Send Test Email</h3>
+          <button onClick={onClose} className="text-dark-400 hover:text-dark-50 transition-colors">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -216,7 +216,7 @@ function SendTestEmailModal({ onClose }: { onClose: () => void }) {
               onChange={e => setEmail(e.target.value)}
               onKeyDown={e => { if (e.key === 'Enter' && !loading) handleSend(); }}
               placeholder="you@example.com"
-              className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-white text-sm placeholder-dark-400 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500"
+              className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-dark-50 text-sm placeholder-dark-400 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500"
               autoFocus
               disabled={loading}
             />
@@ -293,7 +293,7 @@ export default function IntegrationsPanel({ integrations }: { integrations: Inte
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
-                    <span className="font-medium text-white">{label}</span>
+                    <span className="font-medium text-dark-50">{label}</span>
                     <span className={`inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full ${
                       isHealthy ? 'bg-emerald-500/20 text-emerald-400' :
                       isUnhealthy ? 'bg-red-500/20 text-red-400' :

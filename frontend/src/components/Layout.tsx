@@ -1,7 +1,7 @@
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, Users, Settings, LogOut, Shield, ChevronDown, Bell, CreditCard, Zap,
-  FileText, Image, Globe, Star, Heart, BookOpen, MessageCircle, HelpCircle, Sun, Moon, Megaphone,
+  FileText, Image, Globe, Star, Heart, BookOpen, MessageCircle, HelpCircle, Megaphone,
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useTenant } from '../contexts/TenantContext';
@@ -23,7 +23,7 @@ export default function Layout() {
   const { user, isAuthenticated, logout, memberships } = useAuth();
   const { activeTenant, setActiveTenant } = useTenant();
   const { branding } = useBranding();
-  const { resolvedTheme, setTheme } = useTheme();
+  useTheme(); // keep provider active for theme CSS
   const { tierName, isLoaded: planLoaded } = usePlan();
   const [showTenantMenu, setShowTenantMenu] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
@@ -135,7 +135,7 @@ export default function Layout() {
                   <img src={logoUrl} alt={appName} className="h-8 w-8 rounded-lg object-contain" />
                 ) : (
                   <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary-500 to-accent-purple flex items-center justify-center">
-                    <span className="text-white font-bold text-sm">{appName.slice(0, 2).toUpperCase()}</span>
+                    <span className="text-dark-50 font-bold text-sm">{appName.slice(0, 2).toUpperCase()}</span>
                   </div>
                 )}
                 {(logoMode === 'text' || logoMode === 'both') && (
@@ -226,16 +226,6 @@ export default function Layout() {
                     <span className="font-medium">{tenantCredits.toLocaleString()}</span>
                   </button>
                 )}
-
-                {/* Theme toggle */}
-                <button
-                  onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
-                  className="text-dark-400 hover:text-dark-100 transition-colors"
-                  title={`Switch to ${resolvedTheme === 'dark' ? 'light' : 'dark'} mode`}
-                  aria-label="Toggle theme"
-                >
-                  {resolvedTheme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-                </button>
 
                 {/* Messages */}
                 <Link

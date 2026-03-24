@@ -61,7 +61,7 @@ export default function EventDefinitionModal({ open, onClose, onSubmit, definiti
           <input
             {...register('name')}
             placeholder="e.g. checkout.started"
-            className="w-full bg-dark-800 border border-dark-700 text-white rounded-lg px-3 py-2 text-sm focus:ring-primary-500 focus:border-primary-500"
+            className="w-full bg-dark-800 border border-dark-700 text-dark-50 rounded-lg px-3 py-2 text-sm focus:ring-primary-500 focus:border-primary-500"
           />
           {errors.name && <p className="text-red-400 text-xs mt-1">{errors.name.message}</p>}
         </div>
@@ -71,7 +71,7 @@ export default function EventDefinitionModal({ open, onClose, onSubmit, definiti
           <input
             {...register('description')}
             placeholder="Short description of this event"
-            className="w-full bg-dark-800 border border-dark-700 text-white rounded-lg px-3 py-2 text-sm focus:ring-primary-500 focus:border-primary-500"
+            className="w-full bg-dark-800 border border-dark-700 text-dark-50 rounded-lg px-3 py-2 text-sm focus:ring-primary-500 focus:border-primary-500"
           />
           {errors.description && <p className="text-red-400 text-xs mt-1">{errors.description.message}</p>}
         </div>
@@ -80,7 +80,7 @@ export default function EventDefinitionModal({ open, onClose, onSubmit, definiti
           <label className="block text-sm font-medium text-dark-300 mb-1">Parent Event</label>
           <select
             {...register('parentId')}
-            className="w-full bg-dark-800 border border-dark-700 text-white rounded-lg px-3 py-2 text-sm focus:ring-primary-500 focus:border-primary-500"
+            className="w-full bg-dark-800 border border-dark-700 text-dark-50 rounded-lg px-3 py-2 text-sm focus:ring-primary-500 focus:border-primary-500"
           >
             <option value="">None</option>
             {parentOptions.map(d => (
@@ -93,7 +93,7 @@ export default function EventDefinitionModal({ open, onClose, onSubmit, definiti
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 text-sm text-dark-400 hover:text-white transition-colors"
+            className="px-4 py-2 text-sm text-dark-400 hover:text-dark-50 transition-colors"
           >
             Cancel
           </button>

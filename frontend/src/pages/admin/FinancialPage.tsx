@@ -41,7 +41,7 @@ export default function AdminFinancialPage() {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-white flex items-center gap-3">
+        <h1 className="text-2xl font-bold text-dark-50 flex items-center gap-3">
           <DollarSign className="w-7 h-7 text-primary-400" />
           Financial
         </h1>
@@ -57,7 +57,7 @@ export default function AdminFinancialPage() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search by description, invoice #, plan..."
-            className="w-full pl-10 pr-4 py-2.5 bg-dark-800 border border-dark-700 rounded-lg text-white placeholder-dark-400 focus:outline-none focus:border-primary-500 text-sm"
+            className="w-full pl-10 pr-4 py-2.5 bg-dark-800 border border-dark-700 rounded-lg text-dark-50 placeholder-dark-400 focus:outline-none focus:border-primary-500 text-sm"
           />
         </div>
       </form>
@@ -100,8 +100,8 @@ export default function AdminFinancialPage() {
                              'Refund'}
                           </span>
                         </td>
-                        <td className="px-6 py-3 text-sm text-white">{tx.description}</td>
-                        <td className="px-6 py-3 text-sm text-white text-right font-mono">
+                        <td className="px-6 py-3 text-sm text-dark-50">{tx.description}</td>
+                        <td className="px-6 py-3 text-sm text-dark-50 text-right font-mono">
                           {new Intl.NumberFormat(undefined, { style: 'currency', currency: tx.currency || 'usd' }).format(tx.amountCents / 100)}
                           {tx.taxAmountCents > 0 && (
                             <span className="block text-xs text-dark-500">

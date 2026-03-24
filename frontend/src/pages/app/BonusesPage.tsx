@@ -79,7 +79,7 @@ export default function BonusesPage() {
     <div>
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-white flex items-center gap-3">
+        <h1 className="text-2xl font-bold text-dark-50 flex items-center gap-3">
           <Gift className="w-7 h-7 text-primary-400" />
           Agency Bonus Content
         </h1>
@@ -146,7 +146,7 @@ function BonusCard({ bonus }: { bonus: BonusItem }) {
       </div>
 
       {/* Content */}
-      <h3 className="text-base font-semibold text-white mb-1">{bonus.title}</h3>
+      <h3 className="text-base font-semibold text-dark-50 mb-1">{bonus.title}</h3>
       <p className="text-sm font-medium text-dark-300 mb-3">{bonus.description}</p>
       <p className="text-sm text-dark-400 leading-relaxed flex-1">{bonus.detail}</p>
 
@@ -199,13 +199,13 @@ function UpgradePrompt({ currentPlanName, agencyPlan, onNavigate }: UpgradePromp
         <Lock className="w-7 h-7 text-dark-400" />
       </div>
 
-      <h2 className="text-xl font-bold text-white mb-2">Agency Plan Required</h2>
+      <h2 className="text-xl font-bold text-dark-50 mb-2">Agency Plan Required</h2>
       <p className="text-dark-300 text-sm max-w-md mb-1">
         These bonus materials are exclusive to the Agency tier.
         {currentPlanName && (
           <>
             {' '}You're currently on the{' '}
-            <span className="text-white font-medium">{currentPlanName}</span> plan.
+            <span className="text-dark-50 font-medium">{currentPlanName}</span> plan.
           </>
         )}
       </p>

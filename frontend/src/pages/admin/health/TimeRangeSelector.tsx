@@ -40,7 +40,7 @@ export default function TimeRangeSelector({
             className={`px-3 py-1.5 text-sm font-medium transition-colors ${
               timeRange === r.value
                 ? 'bg-primary-500/20 text-primary-400'
-                : 'text-dark-400 hover:text-white hover:bg-dark-800'
+                : 'text-dark-400 hover:text-dark-50 hover:bg-dark-800'
             }`}
           >
             {r.label}
@@ -56,7 +56,7 @@ export default function TimeRangeSelector({
             className={`px-3 py-1.5 text-sm font-medium transition-colors ${
               filterMode === m.value
                 ? 'bg-primary-500/20 text-primary-400'
-                : 'text-dark-400 hover:text-white hover:bg-dark-800'
+                : 'text-dark-400 hover:text-dark-50 hover:bg-dark-800'
             }`}
           >
             {m.label}
@@ -68,7 +68,7 @@ export default function TimeRangeSelector({
         <select
           value={selectedNode}
           onChange={(e) => onSelectedNodeChange(e.target.value)}
-          className="bg-dark-800 border border-dark-700 rounded-lg px-3 py-1.5 text-sm text-white"
+          className="bg-dark-800 border border-dark-700 rounded-lg px-3 py-1.5 text-sm text-dark-50"
         >
           {nodes.map((n) => (
             <option key={n.machineId} value={n.machineId}>

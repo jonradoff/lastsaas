@@ -99,7 +99,7 @@ export default function SecurityTab() {
       {/* MFA Section */}
       {showMfaSection && (
       <div className="bg-dark-900/50 backdrop-blur-sm border border-dark-800 rounded-2xl p-6">
-        <h2 className="text-lg font-semibold text-white flex items-center gap-2 mb-4">
+        <h2 className="text-lg font-semibold text-dark-50 flex items-center gap-2 mb-4">
           <Shield className="w-5 h-5 text-dark-400" />
           Two-Factor Authentication
         </h2>
@@ -125,7 +125,7 @@ export default function SecurityTab() {
                     autoFocus
                     value={mfaDisableCode}
                     onChange={(e) => setMfaDisableCode(e.target.value)}
-                    className="w-full px-4 py-2.5 bg-dark-800 border border-dark-700 rounded-lg text-white focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-colors"
+                    className="w-full px-4 py-2.5 bg-dark-800 border border-dark-700 rounded-lg text-dark-50 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-colors"
                     placeholder="000000"
                   />
                 </div>
@@ -164,7 +164,7 @@ export default function SecurityTab() {
       {/* Passkeys Section */}
       {passkeysEnabled && (
       <div className="bg-dark-900/50 backdrop-blur-sm border border-dark-800 rounded-2xl p-6">
-        <h2 className="text-lg font-semibold text-white flex items-center gap-2 mb-4">
+        <h2 className="text-lg font-semibold text-dark-50 flex items-center gap-2 mb-4">
           <Fingerprint className="w-5 h-5 text-dark-400" />
           Passkeys
         </h2>
@@ -178,7 +178,7 @@ export default function SecurityTab() {
                 {passkeys.map(pk => (
                   <div key={pk.id} className="flex items-center justify-between py-2 px-3 bg-dark-800/50 rounded-lg">
                     <div>
-                      <p className="text-sm text-white">{pk.name}</p>
+                      <p className="text-sm text-dark-50">{pk.name}</p>
                       <p className="text-xs text-dark-400">
                         Added {new Date(pk.createdAt).toLocaleDateString()}
                         {pk.lastUsedAt && ` · Last used ${new Date(pk.lastUsedAt).toLocaleDateString()}`}
@@ -201,10 +201,10 @@ export default function SecurityTab() {
                 type="text"
                 value={passkeyName}
                 onChange={(e) => setPasskeyName(e.target.value)}
-                className="flex-1 px-4 py-2 bg-dark-800 border border-dark-700 rounded-lg text-white placeholder-dark-400 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-colors text-sm"
+                className="flex-1 px-4 py-2 bg-dark-800 border border-dark-700 rounded-lg text-dark-50 placeholder-dark-400 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-colors text-sm"
                 placeholder="Passkey name (e.g., MacBook)"
               />
-              <button type="submit" disabled={addingPasskey} className="py-2 px-4 bg-dark-800 border border-dark-700 text-white rounded-lg hover:bg-dark-700 text-sm disabled:opacity-60 transition-all">
+              <button type="submit" disabled={addingPasskey} className="py-2 px-4 bg-dark-800 border border-dark-700 text-dark-50 rounded-lg hover:bg-dark-700 text-sm disabled:opacity-60 transition-all">
                 {addingPasskey ? 'Adding...' : 'Add Passkey'}
               </button>
             </form>

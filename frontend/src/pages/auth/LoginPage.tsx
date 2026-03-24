@@ -117,9 +117,9 @@ export default function LoginPage() {
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
             <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary-500 to-accent-purple flex items-center justify-center mx-auto mb-4">
-              <KeyRound className="w-7 h-7 text-white" />
+              <KeyRound className="w-7 h-7 text-dark-50" />
             </div>
-            <h1 className="text-2xl font-bold text-white">Two-Factor Authentication</h1>
+            <h1 className="text-2xl font-bold text-dark-50">Two-Factor Authentication</h1>
             <p className="text-dark-400 mt-2">Enter the code from your authenticator app or a recovery code</p>
           </div>
 
@@ -140,7 +140,7 @@ export default function LoginPage() {
                 inputMode="numeric"
                 value={mfaCode}
                 onChange={(e) => setMfaCode(e.target.value)}
-                className="w-full px-4 py-2.5 bg-dark-800 border border-dark-700 rounded-lg text-white placeholder-dark-400 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-colors text-center text-lg tracking-widest"
+                className="w-full px-4 py-2.5 bg-dark-800 border border-dark-700 rounded-lg text-dark-50 placeholder-dark-400 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-colors text-center text-lg tracking-widest"
                 placeholder="000000"
                 maxLength={32}
               />
@@ -175,10 +175,10 @@ export default function LoginPage() {
           <div className="w-full max-w-md">
             <div className="bg-dark-900/50 backdrop-blur-sm border border-dark-800 rounded-2xl p-8 text-center">
               <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center mx-auto mb-4">
-                <Mail className="w-7 h-7 text-white" />
+                <Mail className="w-7 h-7 text-dark-50" />
               </div>
-              <h1 className="text-xl font-bold text-white mb-2">Check your email</h1>
-              <p className="text-dark-400 mb-6">We sent a sign-in link to <span className="text-white">{magicLinkEmail}</span></p>
+              <h1 className="text-xl font-bold text-dark-50 mb-2">Check your email</h1>
+              <p className="text-dark-400 mb-6">We sent a sign-in link to <span className="text-dark-50">{magicLinkEmail}</span></p>
               <button
                 onClick={() => { setShowMagicLink(false); setMagicLinkSent(false); }}
                 className="text-sm text-primary-400 hover:text-primary-300 transition-colors"
@@ -196,9 +196,9 @@ export default function LoginPage() {
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
             <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary-500 to-accent-purple flex items-center justify-center mx-auto mb-4">
-              <Mail className="w-7 h-7 text-white" />
+              <Mail className="w-7 h-7 text-dark-50" />
             </div>
-            <h1 className="text-2xl font-bold text-white">Sign in with email</h1>
+            <h1 className="text-2xl font-bold text-dark-50">Sign in with email</h1>
             <p className="text-dark-400 mt-2">We'll send you a sign-in link</p>
           </div>
 
@@ -217,7 +217,7 @@ export default function LoginPage() {
                 autoFocus
                 value={magicLinkEmail}
                 onChange={(e) => setMagicLinkEmail(e.target.value)}
-                className="w-full px-4 py-2.5 bg-dark-800 border border-dark-700 rounded-lg text-white placeholder-dark-400 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-colors"
+                className="w-full px-4 py-2.5 bg-dark-800 border border-dark-700 rounded-lg text-dark-50 placeholder-dark-400 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-colors"
                 placeholder="you@example.com"
               />
             </div>
@@ -252,10 +252,10 @@ export default function LoginPage() {
             <img src={logoUrl} alt={branding.appName} className="h-14 mx-auto mb-4 object-contain" />
           ) : (
             <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary-500 to-accent-purple flex items-center justify-center mx-auto mb-4">
-              <LogIn className="w-7 h-7 text-white" />
+              <LogIn className="w-7 h-7 text-dark-50" />
             </div>
           )}
-          <h1 className="text-2xl font-bold text-white">{heading}</h1>
+          <h1 className="text-2xl font-bold text-dark-50">{heading}</h1>
           <p className="text-dark-400 mt-2">{subtext}</p>
         </div>
 
@@ -273,7 +273,7 @@ export default function LoginPage() {
                 {providers?.google && (
                   <a
                     href="/api/auth/google"
-                    className="flex items-center justify-center gap-3 w-full py-2.5 px-4 bg-dark-800 border border-dark-700 text-white font-medium rounded-lg hover:bg-dark-700 transition-all"
+                    className="flex items-center justify-center gap-3 w-full py-2.5 px-4 bg-dark-800 border border-dark-700 text-dark-50 font-medium rounded-lg hover:bg-dark-700 transition-all"
                   >
                     <GoogleIcon className="w-5 h-5" />
                     Continue with Google
@@ -282,7 +282,7 @@ export default function LoginPage() {
                 {providers?.github && (
                   <a
                     href="/api/auth/github"
-                    className="flex items-center justify-center gap-3 w-full py-2.5 px-4 bg-dark-800 border border-dark-700 text-white font-medium rounded-lg hover:bg-dark-700 transition-all"
+                    className="flex items-center justify-center gap-3 w-full py-2.5 px-4 bg-dark-800 border border-dark-700 text-dark-50 font-medium rounded-lg hover:bg-dark-700 transition-all"
                   >
                     <Github className="w-5 h-5" />
                     Continue with GitHub
@@ -291,7 +291,7 @@ export default function LoginPage() {
                 {providers?.microsoft && (
                   <a
                     href="/api/auth/microsoft"
-                    className="flex items-center justify-center gap-3 w-full py-2.5 px-4 bg-dark-800 border border-dark-700 text-white font-medium rounded-lg hover:bg-dark-700 transition-all"
+                    className="flex items-center justify-center gap-3 w-full py-2.5 px-4 bg-dark-800 border border-dark-700 text-dark-50 font-medium rounded-lg hover:bg-dark-700 transition-all"
                   >
                     <MicrosoftIcon className="w-4 h-4" />
                     Continue with Microsoft
@@ -316,7 +316,7 @@ export default function LoginPage() {
               type="button"
               onClick={handlePasskeyLogin}
               disabled={loading}
-              className="flex items-center justify-center gap-3 w-full py-2.5 px-4 bg-dark-800 border border-dark-700 text-white font-medium rounded-lg hover:bg-dark-700 disabled:opacity-60 transition-all"
+              className="flex items-center justify-center gap-3 w-full py-2.5 px-4 bg-dark-800 border border-dark-700 text-dark-50 font-medium rounded-lg hover:bg-dark-700 disabled:opacity-60 transition-all"
             >
               <Fingerprint className="w-5 h-5" />
               Sign in with passkey
@@ -332,7 +332,7 @@ export default function LoginPage() {
                 required
                 value={form.email}
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
-                className="w-full px-4 py-2.5 bg-dark-800 border border-dark-700 rounded-lg text-white placeholder-dark-400 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-colors"
+                className="w-full px-4 py-2.5 bg-dark-800 border border-dark-700 rounded-lg text-dark-50 placeholder-dark-400 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-colors"
                 placeholder="you@example.com"
               />
             </div>
@@ -344,7 +344,7 @@ export default function LoginPage() {
                 required
                 value={form.password}
                 onChange={(e) => setForm({ ...form, password: e.target.value })}
-                className="w-full px-4 py-2.5 bg-dark-800 border border-dark-700 rounded-lg text-white placeholder-dark-400 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-colors"
+                className="w-full px-4 py-2.5 bg-dark-800 border border-dark-700 rounded-lg text-dark-50 placeholder-dark-400 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-colors"
                 placeholder="Your password"
               />
             </div>

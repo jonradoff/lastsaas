@@ -41,7 +41,7 @@ export default function NodeCards({ nodes }: NodeCardsProps) {
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2">
-                <span className="font-medium text-white truncate">{node.hostname}</span>
+                <span className="font-medium text-dark-50 truncate">{node.hostname}</span>
                 <span className={`inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full ${
                   node.status === 'active'
                     ? 'bg-emerald-500/20 text-emerald-400'

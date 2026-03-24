@@ -148,7 +148,7 @@ export default function UserProfilePage() {
     <div className="py-20 text-center">
       <p className="text-red-400 text-lg mb-2">Failed to load user profile</p>
       <p className="text-dark-400 text-sm font-mono">{fetchError}</p>
-      <button onClick={() => navigate('/last/users')} className="mt-4 px-4 py-2 bg-dark-800 border border-dark-700 rounded-lg text-sm text-dark-300 hover:text-white transition-colors">
+      <button onClick={() => navigate('/last/users')} className="mt-4 px-4 py-2 bg-dark-800 border border-dark-700 rounded-lg text-sm text-dark-300 hover:text-dark-50 transition-colors">
         Back to Users
       </button>
     </div>
@@ -163,7 +163,7 @@ export default function UserProfilePage() {
           <ArrowLeft className="w-5 h-5 text-dark-400" />
         </button>
         <div>
-          <h1 className="text-2xl font-bold text-white flex items-center gap-3">
+          <h1 className="text-2xl font-bold text-dark-50 flex items-center gap-3">
             <Shield className="w-7 h-7 text-primary-400" />
             User Profile
           </h1>
@@ -173,7 +173,7 @@ export default function UserProfilePage() {
 
       {/* Info / Edit Section */}
       <div className="bg-dark-900/50 border border-dark-800 rounded-2xl p-6 mb-6">
-        <h2 className="text-lg font-semibold text-white mb-4">User Information</h2>
+        <h2 className="text-lg font-semibold text-dark-50 mb-4">User Information</h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <div>
@@ -183,7 +183,7 @@ export default function UserProfilePage() {
               value={displayName}
               onChange={(e) => setDisplayName(e.target.value)}
               disabled={!canWrite}
-              className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-white focus:outline-none focus:border-primary-500 disabled:opacity-60 disabled:cursor-not-allowed"
+              className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-dark-50 focus:outline-none focus:border-primary-500 disabled:opacity-60 disabled:cursor-not-allowed"
             />
           </div>
           <div>
@@ -193,7 +193,7 @@ export default function UserProfilePage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               disabled={!canWrite}
-              className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-white focus:outline-none focus:border-primary-500 disabled:opacity-60 disabled:cursor-not-allowed"
+              className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-dark-50 focus:outline-none focus:border-primary-500 disabled:opacity-60 disabled:cursor-not-allowed"
             />
           </div>
         </div>
@@ -244,7 +244,7 @@ export default function UserProfilePage() {
 
       {/* Status Section */}
       <div className="bg-dark-900/50 border border-dark-800 rounded-2xl p-6 mb-6">
-        <h2 className="text-lg font-semibold text-white mb-4">Account Status</h2>
+        <h2 className="text-lg font-semibold text-dark-50 mb-4">Account Status</h2>
         <div className="flex items-center gap-4">
           <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
             user.isActive ? 'bg-accent-emerald/10 text-accent-emerald' : 'bg-red-500/10 text-red-400'
@@ -268,7 +268,7 @@ export default function UserProfilePage() {
 
       {/* Memberships Section */}
       <div className="bg-dark-900/50 border border-dark-800 rounded-2xl p-6 mb-6">
-        <h2 className="text-lg font-semibold text-white mb-4">Tenant Memberships</h2>
+        <h2 className="text-lg font-semibold text-dark-50 mb-4">Tenant Memberships</h2>
 
         {memberships.length === 0 ? (
           <p className="text-dark-400 text-sm">This user is not a member of any tenants.</p>
@@ -292,7 +292,7 @@ export default function UserProfilePage() {
                 >
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2">
-                      <span className="text-white hover:text-primary-400 transition-colors">{m.tenantName}</span>
+                      <span className="text-dark-50 hover:text-primary-400 transition-colors">{m.tenantName}</span>
                       <span className="text-dark-500 text-xs font-mono">({m.tenantSlug})</span>
                       {m.isRoot && (
                         <span className="px-1.5 py-0.5 bg-primary-500/10 text-primary-400 text-xs rounded">Root</span>
@@ -334,7 +334,7 @@ export default function UserProfilePage() {
       <div className="flex flex-col gap-6">
         <Link
           to={`/last/logs?userId=${userId}`}
-          className="inline-flex items-center gap-2 px-4 py-2 bg-dark-800 border border-dark-700 rounded-lg text-sm text-dark-300 hover:text-white hover:border-dark-600 transition-colors w-fit"
+          className="inline-flex items-center gap-2 px-4 py-2 bg-dark-800 border border-dark-700 rounded-lg text-sm text-dark-300 hover:text-dark-50 hover:border-dark-600 transition-colors w-fit"
         >
           <FileText className="w-4 h-4" />
           View User Logs
@@ -364,7 +364,7 @@ export default function UserProfilePage() {
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setShowDeleteModal(false)} />
           <div className="relative bg-dark-900 border border-dark-700 rounded-2xl p-6 w-full max-w-lg max-h-[80vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-white flex items-center gap-2">
+              <h3 className="text-lg font-semibold text-dark-50 flex items-center gap-2">
                 <AlertTriangle className="w-5 h-5 text-red-400" />
                 Delete User
               </h3>
@@ -380,7 +380,7 @@ export default function UserProfilePage() {
             ) : (
               <>
                 <p className="text-dark-300 text-sm mb-4">
-                  You are about to permanently delete <strong className="text-white">{user.displayName}</strong> ({user.email}).
+                  You are about to permanently delete <strong className="text-dark-50">{user.displayName}</strong> ({user.email}).
                   This will remove their account, memberships, messages, and tokens.
                 </p>
 
@@ -389,7 +389,7 @@ export default function UserProfilePage() {
                   <div className="space-y-4 mb-4">
                     {preflight.ownerships.map((own) => (
                       <div key={own.tenantId} className="p-4 bg-dark-800 border border-dark-700 rounded-lg">
-                        <p className="text-sm text-white font-medium mb-2">
+                        <p className="text-sm text-dark-50 font-medium mb-2">
                           Tenant: {own.tenantName}
                           {own.isRoot && <span className="ml-2 text-xs text-red-400">(Root — cannot delete owner)</span>}
                         </p>
@@ -404,7 +404,7 @@ export default function UserProfilePage() {
                             <select
                               value={replacementOwners[own.tenantId] || ''}
                               onChange={(e) => setReplacementOwners(prev => ({ ...prev, [own.tenantId]: e.target.value }))}
-                              className="w-full px-3 py-2 bg-dark-900 border border-dark-700 rounded-lg text-sm text-white focus:outline-none focus:border-primary-500"
+                              className="w-full px-3 py-2 bg-dark-900 border border-dark-700 rounded-lg text-sm text-dark-50 focus:outline-none focus:border-primary-500"
                             >
                               <option value="">Choose a replacement owner...</option>
                               {own.otherMembers.map((member) => (
@@ -450,7 +450,7 @@ export default function UserProfilePage() {
                 <div className="flex justify-end gap-3">
                   <button
                     onClick={() => setShowDeleteModal(false)}
-                    className="px-4 py-2 bg-dark-800 border border-dark-700 text-dark-300 text-sm rounded-lg hover:text-white transition-colors"
+                    className="px-4 py-2 bg-dark-800 border border-dark-700 text-dark-300 text-sm rounded-lg hover:text-dark-50 transition-colors"
                   >
                     Cancel
                   </button>

@@ -83,7 +83,7 @@ export default function AdminDashboardPage() {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-white">Admin Dashboard</h1>
+        <h1 className="text-2xl font-bold text-dark-50">Admin Dashboard</h1>
         <p className="text-dark-400 mt-1">System overview and management</p>
       </div>
 
@@ -117,7 +117,7 @@ export default function AdminDashboardPage() {
               </div>
               <div>
                 <p className="text-sm text-dark-400">Total Users</p>
-                <p className="text-2xl font-bold text-white">{data?.users ?? 0}</p>
+                <p className="text-2xl font-bold text-dark-50">{data?.users ?? 0}</p>
               </div>
             </div>
           </Card>
@@ -131,7 +131,7 @@ export default function AdminDashboardPage() {
               </div>
               <div>
                 <p className="text-sm text-dark-400">Tenants</p>
-                <p className="text-2xl font-bold text-white">{data?.tenants ?? 0}</p>
+                <p className="text-2xl font-bold text-dark-50">{data?.tenants ?? 0}</p>
               </div>
             </div>
           </Card>
@@ -179,7 +179,7 @@ export default function AdminDashboardPage() {
               </div>
               <div>
                 <p className="text-sm text-dark-400">Revenue Today</p>
-                <p className="text-2xl font-bold text-white">{formatCents(latestRevenue)}</p>
+                <p className="text-2xl font-bold text-dark-50">{formatCents(latestRevenue)}</p>
               </div>
             </div>
           </Card>
@@ -192,7 +192,7 @@ export default function AdminDashboardPage() {
             </div>
             <div>
               <p className="text-sm text-dark-400">ARR</p>
-              <p className="text-2xl font-bold text-white">{formatCents(latestArr)}</p>
+              <p className="text-2xl font-bold text-dark-50">{formatCents(latestArr)}</p>
             </div>
           </div>
         </Card>
@@ -204,7 +204,7 @@ export default function AdminDashboardPage() {
             </div>
             <div>
               <p className="text-sm text-dark-400">DAU</p>
-              <p className="text-2xl font-bold text-white">{formatNum(latestDau)}</p>
+              <p className="text-2xl font-bold text-dark-50">{formatNum(latestDau)}</p>
             </div>
           </div>
         </Card>
@@ -212,14 +212,14 @@ export default function AdminDashboardPage() {
 
       {/* Charts */}
       <div className="mb-6 flex items-center justify-between">
-        <h2 className="text-lg font-semibold text-white">Business Metrics</h2>
+        <h2 className="text-lg font-semibold text-dark-50">Business Metrics</h2>
         <div className="flex gap-1 bg-dark-900/50 border border-dark-800 rounded-lg p-1">
           {(['7d', '30d', '1y'] as const).map(range => (
             <button
               key={range}
               onClick={() => setChartRange(range)}
               className={`px-3 py-1 text-xs font-medium rounded-md transition-colors ${
-                chartRange === range ? 'bg-dark-700 text-white' : 'text-dark-400 hover:text-dark-300'
+                chartRange === range ? 'bg-dark-700 text-dark-50' : 'text-dark-400 hover:text-dark-300'
               }`}
             >
               {range}

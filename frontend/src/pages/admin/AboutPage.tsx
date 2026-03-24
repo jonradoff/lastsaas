@@ -22,7 +22,7 @@ export default function AboutPage() {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-white flex items-center gap-3">
+        <h1 className="text-2xl font-bold text-dark-50 flex items-center gap-3">
           <Info className="w-7 h-7 text-primary-400" />
           About
         </h1>
@@ -32,15 +32,15 @@ export default function AboutPage() {
         <div className="space-y-6">
           <div>
             <p className="text-sm text-dark-400 mb-1">Software</p>
-            <p className="text-lg font-semibold text-white">MCPLens</p>
+            <p className="text-lg font-semibold text-dark-50">MCPLens</p>
           </div>
           <div>
             <p className="text-sm text-dark-400 mb-1">Version</p>
-            <p className="text-lg font-semibold text-white">{about?.version ?? 'Unknown'}</p>
+            <p className="text-lg font-semibold text-dark-50">{about?.version ?? 'Unknown'}</p>
           </div>
           <div>
             <p className="text-sm text-dark-400 mb-1">Copyright</p>
-            <p className="text-white">{about?.copyright}</p>
+            <p className="text-dark-50">{about?.copyright}</p>
           </div>
         </div>
       </div>

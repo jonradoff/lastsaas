@@ -16,9 +16,9 @@ export default function MFAChallengePage() {
     return (
       <div className="min-h-screen bg-dark-950 flex items-center justify-center px-4">
         <div className="bg-dark-900/50 backdrop-blur-sm border border-dark-800 rounded-2xl p-8 text-center max-w-md">
-          <h1 className="text-xl font-bold text-white mb-2">Invalid Request</h1>
+          <h1 className="text-xl font-bold text-dark-50 mb-2">Invalid Request</h1>
           <p className="text-dark-400 mb-4">Missing MFA token.</p>
-          <button onClick={() => navigate('/login')} className="py-2.5 px-6 bg-dark-800 border border-dark-700 text-white font-medium rounded-lg hover:bg-dark-700 transition-all">
+          <button onClick={() => navigate('/login')} className="py-2.5 px-6 bg-dark-800 border border-dark-700 text-dark-50 font-medium rounded-lg hover:bg-dark-700 transition-all">
             Back to Login
           </button>
         </div>
@@ -46,9 +46,9 @@ export default function MFAChallengePage() {
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary-500 to-accent-purple flex items-center justify-center mx-auto mb-4">
-            <KeyRound className="w-7 h-7 text-white" />
+            <KeyRound className="w-7 h-7 text-dark-50" />
           </div>
-          <h1 className="text-2xl font-bold text-white">Two-Factor Authentication</h1>
+          <h1 className="text-2xl font-bold text-dark-50">Two-Factor Authentication</h1>
           <p className="text-dark-400 mt-2">Enter the code from your authenticator app or a recovery code</p>
         </div>
 
@@ -69,7 +69,7 @@ export default function MFAChallengePage() {
               inputMode="numeric"
               value={code}
               onChange={(e) => setCode(e.target.value)}
-              className="w-full px-4 py-2.5 bg-dark-800 border border-dark-700 rounded-lg text-white placeholder-dark-400 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-colors text-center text-lg tracking-widest"
+              className="w-full px-4 py-2.5 bg-dark-800 border border-dark-700 rounded-lg text-dark-50 placeholder-dark-400 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-colors text-center text-lg tracking-widest"
               placeholder="000000"
               maxLength={32}
             />

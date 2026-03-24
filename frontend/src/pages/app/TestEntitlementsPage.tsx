@@ -131,7 +131,7 @@ export default function TestEntitlementsPage() {
     }
     if (meta?.type === 'numeric') {
       return ent.numericValue > 0
-        ? <span className="text-white font-medium">{ent.numericValue.toLocaleString()}</span>
+        ? <span className="text-dark-50 font-medium">{ent.numericValue.toLocaleString()}</span>
         : <span className="text-dark-500">0</span>;
     }
     return <span className="text-dark-500">—</span>;
@@ -149,7 +149,7 @@ export default function TestEntitlementsPage() {
         : <X className="w-4 h-4 text-dark-600" />;
     }
     if (meta?.type === 'numeric') {
-      return <span className={ent.numericValue > 0 ? 'text-white' : 'text-dark-600'}>{ent.numericValue.toLocaleString()}</span>;
+      return <span className={ent.numericValue > 0 ? 'text-dark-50' : 'text-dark-600'}>{ent.numericValue.toLocaleString()}</span>;
     }
     return <span className="text-dark-600">—</span>;
   };
@@ -159,12 +159,12 @@ export default function TestEntitlementsPage() {
   return (
     <div>
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-white flex items-center gap-3">
+        <h1 className="text-2xl font-bold text-dark-50 flex items-center gap-3">
           <Shield className="w-7 h-7 text-accent-emerald" />
           Test Entitlements
         </h1>
         <p className="text-dark-400 mt-1">
-          Current plan: <span className="text-white font-medium">{currentPlan?.name || 'None'}</span>
+          Current plan: <span className="text-dark-50 font-medium">{currentPlan?.name || 'None'}</span>
         </p>
       </div>
 
@@ -179,7 +179,7 @@ export default function TestEntitlementsPage() {
           {/* Entitlements Test Table */}
           <div className="bg-dark-900/50 backdrop-blur-sm border border-dark-800 rounded-2xl overflow-hidden mb-8">
             <div className="px-6 py-4 border-b border-dark-800">
-              <h2 className="text-lg font-semibold text-white">Entitlements on Current Plan</h2>
+              <h2 className="text-lg font-semibold text-dark-50">Entitlements on Current Plan</h2>
               <p className="text-sm text-dark-400 mt-0.5">Click "Test" to simulate using each entitlement</p>
             </div>
             <div className="overflow-x-auto">
@@ -196,7 +196,7 @@ export default function TestEntitlementsPage() {
                   {allEntitlements.map((ent) => (
                     <tr key={ent.key} className="border-b border-dark-800/50">
                       <td className="px-6 py-3.5">
-                        <p className="text-sm font-medium text-white">{ent.description}</p>
+                        <p className="text-sm font-medium text-dark-50">{ent.description}</p>
                         <p className="text-xs text-dark-500 font-mono">{ent.key}</p>
                       </td>
                       <td className="px-6 py-3.5">
@@ -232,12 +232,12 @@ export default function TestEntitlementsPage() {
                               value={numericInputs[ent.key] || ''}
                               onChange={(e) => setNumericInputs(prev => ({ ...prev, [ent.key]: e.target.value }))}
                               onKeyDown={(e) => { if (e.key === 'Enter') handleTest(ent.key); }}
-                              className="w-20 px-2 py-1.5 text-xs bg-dark-800 border border-dark-700 rounded-lg text-white placeholder-dark-400 focus:outline-none focus:border-primary-500 transition-colors text-right"
+                              className="w-20 px-2 py-1.5 text-xs bg-dark-800 border border-dark-700 rounded-lg text-dark-50 placeholder-dark-400 focus:outline-none focus:border-primary-500 transition-colors text-right"
                             />
                           )}
                           <button
                             onClick={() => handleTest(ent.key)}
-                            className="text-xs px-3 py-1.5 rounded-lg border border-dark-700 text-dark-300 hover:text-white hover:border-dark-600 transition-colors"
+                            className="text-xs px-3 py-1.5 rounded-lg border border-dark-700 text-dark-300 hover:text-dark-50 hover:border-dark-600 transition-colors"
                           >
                             Test
                           </button>
@@ -253,7 +253,7 @@ export default function TestEntitlementsPage() {
           {/* Comparison Matrix */}
           <div className="bg-dark-900/50 backdrop-blur-sm border border-dark-800 rounded-2xl overflow-hidden">
             <div className="px-6 py-4 border-b border-dark-800">
-              <h2 className="text-lg font-semibold text-white">Entitlements by Plan</h2>
+              <h2 className="text-lg font-semibold text-dark-50">Entitlements by Plan</h2>
               <p className="text-sm text-dark-400 mt-0.5">Compare entitlements across all plans</p>
             </div>
             <div className="overflow-x-auto">
@@ -312,7 +312,7 @@ export default function TestEntitlementsPage() {
             <div className="bg-dark-900 border border-dark-700 rounded-2xl p-6 max-w-md mx-4 w-full">
               <div className="flex items-center gap-3 mb-4">
                 <Zap className="w-6 h-6 text-primary-400" />
-                <h3 className="text-lg font-semibold text-white">
+                <h3 className="text-lg font-semibold text-dark-50">
                   {renderTemplate(promptTitle, templateVars)}
                 </h3>
               </div>
@@ -322,7 +322,7 @@ export default function TestEntitlementsPage() {
               <div className="flex gap-3 justify-end">
                 <button
                   onClick={() => { setShowUpgradeModal(false); setTestingKey(null); }}
-                  className="px-4 py-2 text-sm text-dark-300 hover:text-white transition-colors"
+                  className="px-4 py-2 text-sm text-dark-300 hover:text-dark-50 transition-colors"
                 >
                   Cancel
                 </button>

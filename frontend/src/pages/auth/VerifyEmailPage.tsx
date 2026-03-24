@@ -33,7 +33,7 @@ export default function VerifyEmailPage() {
         {status === 'loading' && (
           <>
             <Loader2 className="w-12 h-12 text-primary-500 animate-spin mx-auto mb-4" />
-            <h1 className="text-xl font-bold text-white">Verifying your email...</h1>
+            <h1 className="text-xl font-bold text-dark-50">Verifying your email...</h1>
           </>
         )}
 
@@ -42,7 +42,7 @@ export default function VerifyEmailPage() {
             <div className="w-14 h-14 rounded-2xl bg-accent-emerald/20 flex items-center justify-center mx-auto mb-4">
               <MailCheck className="w-7 h-7 text-accent-emerald" />
             </div>
-            <h1 className="text-xl font-bold text-white mb-2">Email Verified</h1>
+            <h1 className="text-xl font-bold text-dark-50 mb-2">Email Verified</h1>
             <p className="text-dark-400 mb-6">{message}</p>
             <Link
               to="/login"
@@ -58,11 +58,11 @@ export default function VerifyEmailPage() {
             <div className="w-14 h-14 rounded-2xl bg-red-500/20 flex items-center justify-center mx-auto mb-4">
               <MailX className="w-7 h-7 text-red-400" />
             </div>
-            <h1 className="text-xl font-bold text-white mb-2">Verification Failed</h1>
+            <h1 className="text-xl font-bold text-dark-50 mb-2">Verification Failed</h1>
             <p className="text-dark-400 mb-6">{message}</p>
             <Link
               to="/login"
-              className="inline-block py-2.5 px-6 bg-dark-800 border border-dark-700 text-white font-medium rounded-lg hover:bg-dark-700 transition-all"
+              className="inline-block py-2.5 px-6 bg-dark-800 border border-dark-700 text-dark-50 font-medium rounded-lg hover:bg-dark-700 transition-all"
             >
               Back to Login
             </Link>

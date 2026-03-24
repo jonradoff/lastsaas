@@ -25,9 +25,9 @@ export default function ForgotPasswordPage() {
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary-500 to-accent-purple flex items-center justify-center mx-auto mb-4">
-            <KeyRound className="w-7 h-7 text-white" />
+            <KeyRound className="w-7 h-7 text-dark-50" />
           </div>
-          <h1 className="text-2xl font-bold text-white">Reset your password</h1>
+          <h1 className="text-2xl font-bold text-dark-50">Reset your password</h1>
           <p className="text-dark-400 mt-2">We'll send you a link to reset it.</p>
         </div>
 
@@ -35,7 +35,7 @@ export default function ForgotPasswordPage() {
           {sent ? (
             <div className="text-center py-4">
               <p className="text-dark-300 mb-4">
-                If an account exists for <span className="text-white font-medium">{email}</span>, you'll receive a password reset link shortly.
+                If an account exists for <span className="text-dark-50 font-medium">{email}</span>, you'll receive a password reset link shortly.
               </p>
               <Link
                 to="/login"
@@ -54,7 +54,7 @@ export default function ForgotPasswordPage() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full px-4 py-2.5 bg-dark-800 border border-dark-700 rounded-lg text-white placeholder-dark-400 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-colors"
+                  className="w-full px-4 py-2.5 bg-dark-800 border border-dark-700 rounded-lg text-dark-50 placeholder-dark-400 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-colors"
                   placeholder="you@example.com"
                 />
               </div>
@@ -70,7 +70,7 @@ export default function ForgotPasswordPage() {
               <div className="text-center">
                 <Link
                   to="/login"
-                  className="inline-flex items-center gap-2 text-dark-400 hover:text-white transition-colors text-sm"
+                  className="inline-flex items-center gap-2 text-dark-400 hover:text-dark-50 transition-colors text-sm"
                 >
                   <ArrowLeft className="w-4 h-4" />
                   Back to login

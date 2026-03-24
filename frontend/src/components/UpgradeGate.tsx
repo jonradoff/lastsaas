@@ -59,7 +59,7 @@ export default function UpgradeGate({
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="bg-dark-900/90 border border-dark-700 rounded-xl p-6 text-center max-w-sm">
             <Lock className="w-8 h-8 text-dark-500 mx-auto mb-3" />
-            <h3 className="text-white font-semibold mb-1">{featureName}</h3>
+            <h3 className="text-dark-50 font-semibold mb-1">{featureName}</h3>
             <p className="text-dark-400 text-sm mb-4">
               Upgrade to {tierLabel} to unlock this feature.
             </p>
@@ -78,7 +78,7 @@ export default function UpgradeGate({
   return (
     <div className="bg-dark-900 border border-dark-700 rounded-xl p-8 text-center">
       <Lock className="w-10 h-10 text-dark-500 mx-auto mb-4" />
-      <h3 className="text-lg font-semibold text-white mb-2">{featureName}</h3>
+      <h3 className="text-lg font-semibold text-dark-50 mb-2">{featureName}</h3>
       <p className="text-dark-400 text-sm mb-6 max-w-md mx-auto">
         This feature is available on the {tierLabel} plan and above.
       </p>

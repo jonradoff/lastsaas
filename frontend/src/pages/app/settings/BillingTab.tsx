@@ -63,14 +63,14 @@ export default function BillingTab() {
     <div className="space-y-6 max-w-3xl">
       {/* Subscription Summary */}
       <div className="bg-dark-900/50 backdrop-blur-sm border border-dark-800 rounded-2xl p-6">
-        <h2 className="text-lg font-semibold text-white flex items-center gap-2 mb-4">
+        <h2 className="text-lg font-semibold text-dark-50 flex items-center gap-2 mb-4">
           <CreditCard className="w-5 h-5 text-dark-400" />
           Subscription
         </h2>
         <div className="space-y-3">
           <div className="flex items-center justify-between py-2">
             <span className="text-sm text-dark-400">Plan</span>
-            <span className="text-sm text-white font-medium">{currentPlanName}</span>
+            <span className="text-sm text-dark-50 font-medium">{currentPlanName}</span>
           </div>
           <div className="flex items-center justify-between py-2 border-t border-dark-800">
             <span className="text-sm text-dark-400">Status</span>
@@ -89,7 +89,7 @@ export default function BillingTab() {
           {billingInterval && (
             <div className="flex items-center justify-between py-2 border-t border-dark-800">
               <span className="text-sm text-dark-400">Billing Interval</span>
-              <span className="text-sm text-white capitalize">{billingInterval}ly</span>
+              <span className="text-sm text-dark-50 capitalize">{billingInterval}ly</span>
             </div>
           )}
           {currentPeriodEnd && (
@@ -97,7 +97,7 @@ export default function BillingTab() {
               <span className="text-sm text-dark-400">
                 {billingStatus === 'canceled' ? 'Benefits Until' : 'Next Billing'}
               </span>
-              <span className="text-sm text-white">{new Date(currentPeriodEnd).toLocaleDateString()}</span>
+              <span className="text-sm text-dark-50">{new Date(currentPeriodEnd).toLocaleDateString()}</span>
             </div>
           )}
         </div>
@@ -107,7 +107,7 @@ export default function BillingTab() {
             <button
               onClick={handlePortal}
               disabled={portalLoading}
-              className="inline-flex items-center gap-2 px-4 py-2 text-sm bg-dark-800 text-dark-300 border border-dark-700 rounded-lg hover:border-dark-600 hover:text-white transition-colors disabled:opacity-60"
+              className="inline-flex items-center gap-2 px-4 py-2 text-sm bg-dark-800 text-dark-300 border border-dark-700 rounded-lg hover:border-dark-600 hover:text-dark-50 transition-colors disabled:opacity-60"
             >
               {portalLoading ? <LoadingSpinner size="sm" /> : <><ExternalLink className="w-4 h-4" /> Update Payment Method</>}
             </button>
@@ -118,7 +118,7 @@ export default function BillingTab() {
       {/* Transaction History */}
       <div className="bg-dark-900/50 backdrop-blur-sm border border-dark-800 rounded-2xl overflow-hidden">
         <div className="px-6 py-4 border-b border-dark-800">
-          <h2 className="text-lg font-semibold text-white flex items-center gap-2">
+          <h2 className="text-lg font-semibold text-dark-50 flex items-center gap-2">
             <Receipt className="w-5 h-5 text-dark-400" />
             Transaction History
           </h2>
@@ -145,8 +145,8 @@ export default function BillingTab() {
                       <td className="px-6 py-3 text-sm text-dark-300 whitespace-nowrap">
                         {new Date(tx.createdAt).toLocaleDateString()}
                       </td>
-                      <td className="px-6 py-3 text-sm text-white">{tx.description}</td>
-                      <td className="px-6 py-3 text-sm text-white text-right font-mono">
+                      <td className="px-6 py-3 text-sm text-dark-50">{tx.description}</td>
+                      <td className="px-6 py-3 text-sm text-dark-50 text-right font-mono">
                         ${(tx.amountCents / 100).toFixed(2)}
                         {tx.taxAmountCents > 0 && (
                           <span className="block text-xs text-dark-500">incl. ${(tx.taxAmountCents / 100).toFixed(2)} tax</span>

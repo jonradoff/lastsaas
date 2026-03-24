@@ -71,10 +71,10 @@ export default function SignupPage() {
             <img src={logoUrl} alt={branding.appName} className="h-14 mx-auto mb-4 object-contain" />
           ) : (
             <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary-500 to-accent-purple flex items-center justify-center mx-auto mb-4">
-              <UserPlus className="w-7 h-7 text-white" />
+              <UserPlus className="w-7 h-7 text-dark-50" />
             </div>
           )}
-          <h1 className="text-2xl font-bold text-white">{heading}</h1>
+          <h1 className="text-2xl font-bold text-dark-50">{heading}</h1>
           <p className="text-dark-400 mt-2">{subtext}</p>
         </div>
 
@@ -92,7 +92,7 @@ export default function SignupPage() {
                 {providers?.google && (
                   <a
                     href={`/api/auth/google${invitationToken ? `?invitation=${invitationToken}` : ''}`}
-                    className="flex items-center justify-center gap-3 w-full py-2.5 px-4 bg-dark-800 border border-dark-700 text-white font-medium rounded-lg hover:bg-dark-700 transition-all"
+                    className="flex items-center justify-center gap-3 w-full py-2.5 px-4 bg-dark-800 border border-dark-700 text-dark-50 font-medium rounded-lg hover:bg-dark-700 transition-all"
                   >
                     <GoogleIcon className="w-5 h-5" />
                     Continue with Google
@@ -101,7 +101,7 @@ export default function SignupPage() {
                 {providers?.github && (
                   <a
                     href={`/api/auth/github${invitationToken ? `?invitation=${invitationToken}` : ''}`}
-                    className="flex items-center justify-center gap-3 w-full py-2.5 px-4 bg-dark-800 border border-dark-700 text-white font-medium rounded-lg hover:bg-dark-700 transition-all"
+                    className="flex items-center justify-center gap-3 w-full py-2.5 px-4 bg-dark-800 border border-dark-700 text-dark-50 font-medium rounded-lg hover:bg-dark-700 transition-all"
                   >
                     <Github className="w-5 h-5" />
                     Continue with GitHub
@@ -110,7 +110,7 @@ export default function SignupPage() {
                 {providers?.microsoft && (
                   <a
                     href={`/api/auth/microsoft${invitationToken ? `?invitation=${invitationToken}` : ''}`}
-                    className="flex items-center justify-center gap-3 w-full py-2.5 px-4 bg-dark-800 border border-dark-700 text-white font-medium rounded-lg hover:bg-dark-700 transition-all"
+                    className="flex items-center justify-center gap-3 w-full py-2.5 px-4 bg-dark-800 border border-dark-700 text-dark-50 font-medium rounded-lg hover:bg-dark-700 transition-all"
                   >
                     <MicrosoftIcon className="w-4 h-4" />
                     Continue with Microsoft
@@ -137,7 +137,7 @@ export default function SignupPage() {
                 required
                 value={form.displayName}
                 onChange={(e) => setForm({ ...form, displayName: e.target.value })}
-                className="w-full px-4 py-2.5 bg-dark-800 border border-dark-700 rounded-lg text-white placeholder-dark-400 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-colors"
+                className="w-full px-4 py-2.5 bg-dark-800 border border-dark-700 rounded-lg text-dark-50 placeholder-dark-400 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-colors"
                 placeholder="Jane Doe"
               />
             </div>
@@ -149,7 +149,7 @@ export default function SignupPage() {
                 required
                 value={form.email}
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
-                className="w-full px-4 py-2.5 bg-dark-800 border border-dark-700 rounded-lg text-white placeholder-dark-400 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-colors"
+                className="w-full px-4 py-2.5 bg-dark-800 border border-dark-700 rounded-lg text-dark-50 placeholder-dark-400 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-colors"
                 placeholder="you@example.com"
               />
             </div>
@@ -161,7 +161,7 @@ export default function SignupPage() {
                 required
                 value={form.password}
                 onChange={(e) => setForm({ ...form, password: e.target.value })}
-                className="w-full px-4 py-2.5 bg-dark-800 border border-dark-700 rounded-lg text-white placeholder-dark-400 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-colors"
+                className="w-full px-4 py-2.5 bg-dark-800 border border-dark-700 rounded-lg text-dark-50 placeholder-dark-400 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-colors"
                 placeholder="Min 10 chars, mixed case, number, special"
               />
             </div>

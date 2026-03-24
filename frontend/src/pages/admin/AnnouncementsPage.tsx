@@ -51,7 +51,7 @@ export default function AnnouncementsPage() {
     <div>
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white flex items-center gap-3">
+          <h1 className="text-2xl font-bold text-dark-50 flex items-center gap-3">
             <Megaphone className="w-7 h-7 text-primary-400" />
             Announcements
           </h1>
@@ -80,7 +80,7 @@ export default function AnnouncementsPage() {
               <div className="flex items-start justify-between gap-4">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
-                    <h3 className="text-white font-semibold truncate">{ann.title}</h3>
+                    <h3 className="text-dark-50 font-semibold truncate">{ann.title}</h3>
                     <Badge variant={ann.isPublished ? 'success' : 'neutral'}>
                       {ann.isPublished ? 'Published' : 'Draft'}
                     </Badge>
@@ -97,7 +97,7 @@ export default function AnnouncementsPage() {
                   <div className="flex items-center gap-1">
                     <button
                       onClick={() => toggleMutation.mutate(ann)}
-                      className="p-2 text-dark-400 hover:text-white transition-colors"
+                      className="p-2 text-dark-400 hover:text-dark-50 transition-colors"
                       aria-label={ann.isPublished ? 'Unpublish' : 'Publish'}
                     >
                       {ann.isPublished ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}

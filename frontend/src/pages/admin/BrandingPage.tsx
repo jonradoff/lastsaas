@@ -199,7 +199,7 @@ export default function BrandingPage() {
     <div>
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-white flex items-center gap-3">
+          <h1 className="text-2xl font-bold text-dark-50 flex items-center gap-3">
             <Paintbrush className="w-7 h-7 text-accent-pink" />
             Branding
           </h1>
@@ -389,13 +389,13 @@ export default function BrandingPage() {
                   <input
                     value={item.label}
                     onChange={e => updateNavItem(i, 'label', e.target.value)}
-                    className={`w-32 px-2 py-1 border rounded text-sm ${!isOwner || item.isBuiltIn ? 'bg-dark-800/50 border-dark-700/50 text-dark-400 cursor-not-allowed' : 'bg-dark-800 border-dark-700 text-white'}`}
+                    className={`w-32 px-2 py-1 border rounded text-sm ${!isOwner || item.isBuiltIn ? 'bg-dark-800/50 border-dark-700/50 text-dark-400 cursor-not-allowed' : 'bg-dark-800 border-dark-700 text-dark-50'}`}
                     disabled={!isOwner || item.isBuiltIn}
                   />
                   <select
                     value={item.icon}
                     onChange={e => updateNavItem(i, 'icon', e.target.value)}
-                    className={`w-40 px-2 py-1 border rounded text-sm ${!isOwner ? 'bg-dark-800/50 border-dark-700/50 text-dark-400 cursor-not-allowed' : 'bg-dark-800 border-dark-700 text-white'}`}
+                    className={`w-40 px-2 py-1 border rounded text-sm ${!isOwner ? 'bg-dark-800/50 border-dark-700/50 text-dark-400 cursor-not-allowed' : 'bg-dark-800 border-dark-700 text-dark-50'}`}
                     disabled={!isOwner}
                   >
                     <option value="LayoutDashboard">Dashboard</option>
@@ -417,7 +417,7 @@ export default function BrandingPage() {
                     <input
                       value={item.target}
                       onChange={e => updateNavItem(i, 'target', e.target.value)}
-                      className={`flex-1 px-2 py-1 border rounded text-sm font-mono ${!isOwner ? 'bg-dark-800/50 border-dark-700/50 text-dark-400 cursor-not-allowed' : 'bg-dark-800 border-dark-700 text-white'}`}
+                      className={`flex-1 px-2 py-1 border rounded text-sm font-mono ${!isOwner ? 'bg-dark-800/50 border-dark-700/50 text-dark-400 cursor-not-allowed' : 'bg-dark-800 border-dark-700 text-dark-50'}`}
                       disabled={!isOwner}
                       placeholder="/p/my-page"
                     />
@@ -487,7 +487,7 @@ export default function BrandingPage() {
                   <tbody>
                     {pages.map(page => (
                       <tr key={page.id} className="border-b border-dark-800/50">
-                        <td className="px-6 py-3 text-sm text-white font-medium">{page.title}</td>
+                        <td className="px-6 py-3 text-sm text-dark-50 font-medium">{page.title}</td>
                         <td className="px-6 py-3 text-sm text-dark-400 font-mono">/p/{page.slug}</td>
                         <td className="px-6 py-3">
                           <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
@@ -499,7 +499,7 @@ export default function BrandingPage() {
                         {isOwner && (
                           <td className="px-6 py-3 text-right">
                             <div className="flex items-center justify-end gap-2">
-                              <button onClick={() => setEditingPage(page)} className="text-xs px-3 py-1.5 rounded-lg border border-dark-700 text-dark-300 hover:text-white transition-colors">
+                              <button onClick={() => setEditingPage(page)} className="text-xs px-3 py-1.5 rounded-lg border border-dark-700 text-dark-300 hover:text-dark-50 transition-colors">
                                 Edit
                               </button>
                               <button onClick={() => handlePageDelete(page.id)} className="text-xs px-3 py-1.5 rounded-lg border border-red-500/30 text-red-400 hover:bg-red-500/10 transition-colors">
@@ -521,8 +521,8 @@ export default function BrandingPage() {
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
               <div className="bg-dark-900 border border-dark-700 rounded-2xl p-6 max-w-2xl mx-4 w-full max-h-[90vh] overflow-y-auto">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-semibold text-white">{editingPage.id ? 'Edit Page' : 'New Page'}</h3>
-                  <button onClick={() => setEditingPage(null)} className="text-dark-400 hover:text-white"><X className="w-5 h-5" /></button>
+                  <h3 className="text-lg font-semibold text-dark-50">{editingPage.id ? 'Edit Page' : 'New Page'}</h3>
+                  <button onClick={() => setEditingPage(null)} className="text-dark-400 hover:text-dark-50"><X className="w-5 h-5" /></button>
                 </div>
                 <div className="space-y-4">
                   <Field label="Title">
@@ -548,7 +548,7 @@ export default function BrandingPage() {
                     </label>
                   </Field>
                   <div className="flex gap-3 justify-end pt-2">
-                    <button onClick={() => setEditingPage(null)} className="px-4 py-2 text-sm text-dark-300 hover:text-white transition-colors">Cancel</button>
+                    <button onClick={() => setEditingPage(null)} className="px-4 py-2 text-sm text-dark-300 hover:text-dark-50 transition-colors">Cancel</button>
                     <button onClick={handlePageSave} disabled={pageSaving} className="px-4 py-2 text-sm bg-primary-500 text-white rounded-lg hover:bg-primary-600 disabled:opacity-60 transition-colors">
                       {pageSaving ? 'Saving...' : 'Save Page'}
                     </button>
@@ -601,7 +601,7 @@ export default function BrandingPage() {
                     </div>
                   )}
                   <div className="p-3">
-                    <p className="text-xs text-white truncate font-medium">{item.filename}</p>
+                    <p className="text-xs text-dark-50 truncate font-medium">{item.filename}</p>
                     <p className="text-xs text-dark-500 mt-0.5">{(item.size / 1024).toFixed(1)} KB</p>
                     <div className="flex items-center gap-2 mt-2">
                       <button
@@ -632,13 +632,13 @@ export default function BrandingPage() {
 
 // --- Sub-components ---
 
-const inputClass = 'w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-white placeholder-dark-400 focus:outline-none focus:border-primary-500 transition-colors text-sm';
+const inputClass = 'w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-dark-50 placeholder-dark-400 focus:outline-none focus:border-primary-500 transition-colors text-sm';
 const disabledInputClass = 'w-full px-3 py-2 bg-dark-800/50 border border-dark-700/50 rounded-lg text-dark-400 placeholder-dark-400 cursor-not-allowed transition-colors text-sm';
 
 function Section({ title, description, children }: { title: string; description?: string; children: React.ReactNode }) {
   return (
     <div className="bg-dark-900/50 border border-dark-800 rounded-2xl p-6">
-      <h3 className="text-md font-semibold text-white mb-1">{title}</h3>
+      <h3 className="text-md font-semibold text-dark-50 mb-1">{title}</h3>
       {description && <p className="text-sm text-dark-400 mb-4">{description}</p>}
       {!description && <div className="mb-4" />}
       <div className="space-y-4">{children}</div>

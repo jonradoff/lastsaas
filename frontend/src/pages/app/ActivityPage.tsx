@@ -58,7 +58,7 @@ export default function ActivityPage() {
   return (
     <div>
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-white flex items-center gap-3">
+        <h1 className="text-2xl font-bold text-dark-50 flex items-center gap-3">
           <Activity className="w-7 h-7 text-primary-400" />
           Activity
         </h1>
@@ -75,7 +75,7 @@ export default function ActivityPage() {
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
               placeholder="Search activity..."
-              className="w-full pl-10 pr-4 py-2 bg-dark-800 border border-dark-700 rounded-lg text-sm text-white placeholder-dark-400 focus:outline-none focus:border-primary-500"
+              className="w-full pl-10 pr-4 py-2 bg-dark-800 border border-dark-700 rounded-lg text-sm text-dark-50 placeholder-dark-400 focus:outline-none focus:border-primary-500"
             />
           </div>
           <button
@@ -88,7 +88,7 @@ export default function ActivityPage() {
             <button
               type="button"
               onClick={clearSearch}
-              className="flex items-center gap-1 px-3 py-2 bg-dark-800 border border-dark-700 text-dark-300 text-sm rounded-lg hover:text-white transition-colors"
+              className="flex items-center gap-1 px-3 py-2 bg-dark-800 border border-dark-700 text-dark-300 text-sm rounded-lg hover:text-dark-50 transition-colors"
             >
               <X className="w-3.5 h-3.5" /> Clear
             </button>
@@ -99,7 +99,7 @@ export default function ActivityPage() {
           value={action}
           onChange={(e) => { setAction(e.target.value); setPage(1); }}
           placeholder="Filter by action..."
-          className="px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-sm text-white placeholder-dark-400 focus:outline-none focus:border-primary-500 w-48"
+          className="px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-sm text-dark-50 placeholder-dark-400 focus:outline-none focus:border-primary-500 w-48"
         />
       </div>
 
@@ -118,7 +118,7 @@ export default function ActivityPage() {
                       {log.severity}
                     </span>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm text-white">{log.message}</p>
+                      <p className="text-sm text-dark-50">{log.message}</p>
                       {log.action && (
                         <span className="inline-block mt-1 px-2 py-0.5 bg-dark-800 rounded text-xs text-dark-400 font-mono">{log.action}</span>
                       )}
@@ -140,7 +140,7 @@ export default function ActivityPage() {
                   <button
                     onClick={() => setPage(p => Math.max(1, p - 1))}
                     disabled={page <= 1}
-                    className="p-1.5 rounded-lg text-dark-400 hover:text-white hover:bg-dark-800 disabled:opacity-30 transition-colors"
+                    className="p-1.5 rounded-lg text-dark-400 hover:text-dark-50 hover:bg-dark-800 disabled:opacity-30 transition-colors"
                   >
                     <ChevronLeft className="w-4 h-4" />
                   </button>
@@ -148,7 +148,7 @@ export default function ActivityPage() {
                   <button
                     onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                     disabled={page >= totalPages}
-                    className="p-1.5 rounded-lg text-dark-400 hover:text-white hover:bg-dark-800 disabled:opacity-30 transition-colors"
+                    className="p-1.5 rounded-lg text-dark-400 hover:text-dark-50 hover:bg-dark-800 disabled:opacity-30 transition-colors"
                   >
                     <ChevronRight className="w-4 h-4" />
                   </button>

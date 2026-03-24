@@ -33,7 +33,7 @@ export default function ResetPasswordPage() {
     return (
       <div className="min-h-screen bg-dark-950 flex items-center justify-center px-4">
         <div className="bg-dark-900/50 backdrop-blur-sm border border-dark-800 rounded-2xl p-8 text-center max-w-md">
-          <h1 className="text-xl font-bold text-white mb-2">Invalid Link</h1>
+          <h1 className="text-xl font-bold text-dark-50 mb-2">Invalid Link</h1>
           <p className="text-dark-400 mb-4">This password reset link is invalid or has expired.</p>
           <Link to="/forgot-password" className="text-primary-400 hover:text-primary-300 transition-colors">
             Request a new link
@@ -48,9 +48,9 @@ export default function ResetPasswordPage() {
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary-500 to-accent-purple flex items-center justify-center mx-auto mb-4">
-            <KeyRound className="w-7 h-7 text-white" />
+            <KeyRound className="w-7 h-7 text-dark-50" />
           </div>
-          <h1 className="text-2xl font-bold text-white">Set new password</h1>
+          <h1 className="text-2xl font-bold text-dark-50">Set new password</h1>
         </div>
 
         <div className="bg-dark-900/50 backdrop-blur-sm border border-dark-800 rounded-2xl p-6">
@@ -74,7 +74,7 @@ export default function ResetPasswordPage() {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-4 py-2.5 bg-dark-800 border border-dark-700 rounded-lg text-white placeholder-dark-400 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-colors"
+                  className="w-full px-4 py-2.5 bg-dark-800 border border-dark-700 rounded-lg text-dark-50 placeholder-dark-400 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-colors"
                   placeholder="Min 10 chars, mixed case, number, special"
                 />
               </div>

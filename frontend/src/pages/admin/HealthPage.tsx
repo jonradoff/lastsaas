@@ -81,7 +81,7 @@ export default function HealthPage() {
             <Activity className="w-5 h-5 text-emerald-400" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-white">System Health</h1>
+            <h1 className="text-2xl font-bold text-dark-50">System Health</h1>
             <p className="text-dark-400 text-sm">Real-time server monitoring and metrics</p>
           </div>
         </div>

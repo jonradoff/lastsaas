@@ -83,7 +83,7 @@ export default function OnboardingPage() {
         {/* Profile Step */}
         {step === 'profile' && (
           <div className="bg-dark-900/50 backdrop-blur-sm border border-dark-800 rounded-2xl p-6">
-            <h2 className="text-xl font-bold text-white mb-2">Welcome! Let's set up your profile</h2>
+            <h2 className="text-xl font-bold text-dark-50 mb-2">Welcome! Let's set up your profile</h2>
             <p className="text-dark-400 text-sm mb-6">Confirm your display name</p>
 
             <div className="space-y-4">
@@ -93,7 +93,7 @@ export default function OnboardingPage() {
                   type="text"
                   value={displayName}
                   onChange={(e) => setDisplayName(e.target.value)}
-                  className="w-full px-4 py-2.5 bg-dark-800 border border-dark-700 rounded-lg text-white placeholder-dark-400 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-colors"
+                  className="w-full px-4 py-2.5 bg-dark-800 border border-dark-700 rounded-lg text-dark-50 placeholder-dark-400 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-colors"
                   placeholder="Your name"
                 />
               </div>
@@ -112,7 +112,7 @@ export default function OnboardingPage() {
         {/* Team Step */}
         {step === 'team' && (
           <div className="bg-dark-900/50 backdrop-blur-sm border border-dark-800 rounded-2xl p-6">
-            <h2 className="text-xl font-bold text-white mb-2">Invite your team</h2>
+            <h2 className="text-xl font-bold text-dark-50 mb-2">Invite your team</h2>
             <p className="text-dark-400 text-sm mb-6">Optionally invite team members to join your organization</p>
 
             <div className="space-y-4">
@@ -121,7 +121,7 @@ export default function OnboardingPage() {
                   {invitedEmails.map((email) => (
                     <div key={email} className="flex items-center gap-2 px-3 py-2 bg-dark-800/50 rounded-lg">
                       <CheckCircle className="w-4 h-4 text-accent-emerald" />
-                      <span className="text-sm text-white">{email}</span>
+                      <span className="text-sm text-dark-50">{email}</span>
                     </div>
                   ))}
                 </div>
@@ -137,13 +137,13 @@ export default function OnboardingPage() {
                   value={inviteEmail}
                   onChange={(e) => setInviteEmail(e.target.value)}
                   onKeyDown={(e) => { if (e.key === 'Enter') handleInvite(); }}
-                  className="flex-1 px-4 py-2.5 bg-dark-800 border border-dark-700 rounded-lg text-white placeholder-dark-400 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-colors text-sm"
+                  className="flex-1 px-4 py-2.5 bg-dark-800 border border-dark-700 rounded-lg text-dark-50 placeholder-dark-400 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-colors text-sm"
                   placeholder="colleague@example.com"
                 />
                 <button
                   onClick={handleInvite}
                   disabled={!inviteEmail.trim()}
-                  className="px-4 py-2.5 bg-dark-800 border border-dark-700 text-white font-medium rounded-lg hover:bg-dark-700 disabled:opacity-60 transition-all text-sm"
+                  className="px-4 py-2.5 bg-dark-800 border border-dark-700 text-dark-50 font-medium rounded-lg hover:bg-dark-700 disabled:opacity-60 transition-all text-sm"
                 >
                   Invite
                 </button>
@@ -171,9 +171,9 @@ export default function OnboardingPage() {
         {step === 'complete' && (
           <div className="bg-dark-900/50 backdrop-blur-sm border border-dark-800 rounded-2xl p-6 text-center">
             <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-accent-emerald to-accent-cyan flex items-center justify-center mx-auto mb-4">
-              <CheckCircle className="w-8 h-8 text-white" />
+              <CheckCircle className="w-8 h-8 text-dark-50" />
             </div>
-            <h2 className="text-xl font-bold text-white mb-2">You're all set!</h2>
+            <h2 className="text-xl font-bold text-dark-50 mb-2">You're all set!</h2>
             <p className="text-dark-400 text-sm mb-6">Your account is ready. Let's get started.</p>
 
             <button

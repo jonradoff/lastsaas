@@ -56,7 +56,7 @@ export default function SessionsTab() {
     <div className="space-y-6 max-w-2xl">
       <div className="bg-dark-900/50 backdrop-blur-sm border border-dark-800 rounded-2xl p-6">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-white flex items-center gap-2">
+          <h2 className="text-lg font-semibold text-dark-50 flex items-center gap-2">
             <Monitor className="w-5 h-5 text-dark-400" />
             Active Sessions
           </h2>
@@ -81,7 +81,7 @@ export default function SessionsTab() {
                 <div className="flex items-start gap-3">
                   <Smartphone className="w-5 h-5 text-dark-400 mt-0.5 shrink-0" />
                   <div>
-                    <p className="text-sm text-white">
+                    <p className="text-sm text-dark-50">
                       {session.deviceInfo || session.userAgent.slice(0, 50)}
                       {session.isCurrent && (
                         <span className="ml-2 px-2 py-0.5 bg-primary-500/20 text-primary-400 text-xs rounded">Current</span>

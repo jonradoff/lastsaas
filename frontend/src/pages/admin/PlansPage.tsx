@@ -146,7 +146,7 @@ export default function PlansPage() {
     <div>
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-white flex items-center gap-3">
+          <h1 className="text-2xl font-bold text-dark-50 flex items-center gap-3">
             <CreditCard className="w-7 h-7 text-primary-400" />
             Plans
           </h1>
@@ -185,7 +185,7 @@ export default function PlansPage() {
                 className={`hover:bg-dark-800/30 transition-colors cursor-pointer ${plan.isArchived ? 'opacity-50' : ''}`}
               >
                 <td className="px-6 py-4">
-                  <span className="text-white font-medium">{plan.name}</span>
+                  <span className="text-dark-50 font-medium">{plan.name}</span>
                   {plan.description && <div className="text-xs text-dark-500 mt-0.5">{plan.description}</div>}
                 </td>
                 <td className="px-6 py-4">
@@ -221,7 +221,7 @@ export default function PlansPage() {
                 </td>
                 <td className="px-6 py-4">
                   <span className={`inline-flex px-2 py-0.5 text-xs font-medium rounded-full tabular-nums ${
-                    (plan.subscriberCount ?? 0) > 0 ? 'bg-primary-500/10 text-primary-400' : 'bg-dark-700 text-dark-500'
+                    (plan.subscriberCount ?? 0) > 0 ? 'bg-primary-500/10 text-primary-400' : 'bg-dark-700 text-white0'
                   }`}>
                     {plan.subscriberCount ?? 0}
                   </span>
@@ -242,8 +242,8 @@ export default function PlansPage() {
                       {Object.entries(plan.entitlements).map(([key, val]) => (
                         <span key={key} className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-xs ${
                           val.type === 'bool'
-                            ? val.boolValue ? 'bg-accent-emerald/10 text-accent-emerald' : 'bg-dark-700 text-dark-500'
-                            : val.numericValue > 0 ? 'bg-primary-500/10 text-primary-400' : 'bg-dark-700 text-dark-500'
+                            ? val.boolValue ? 'bg-accent-emerald/10 text-accent-emerald' : 'bg-dark-700 text-white0'
+                            : val.numericValue > 0 ? 'bg-primary-500/10 text-primary-400' : 'bg-dark-700 text-white0'
                         }`}>
                           {key}{val.type === 'numeric' ? `: ${val.numericValue}` : val.boolValue ? '' : ': off'}
                         </span>
@@ -321,10 +321,10 @@ export default function PlansPage() {
               <div className="w-10 h-10 rounded-full bg-red-500/20 flex items-center justify-center">
                 <AlertTriangle className="w-5 h-5 text-red-400" />
               </div>
-              <h3 className="text-lg font-semibold text-white">Delete Plan</h3>
+              <h3 className="text-lg font-semibold text-dark-50">Delete Plan</h3>
             </div>
             <p className="text-dark-300 mb-6">
-              Are you sure you want to delete <strong className="text-white">{deleteTarget.name}</strong>? This cannot be undone.
+              Are you sure you want to delete <strong className="text-dark-50">{deleteTarget.name}</strong>? This cannot be undone.
             </p>
             {deleteError && (
               <div className="mb-4 p-3 bg-red-500/10 border border-red-500/30 rounded-lg text-sm text-red-400">
@@ -334,7 +334,7 @@ export default function PlansPage() {
             <div className="flex justify-end gap-3">
               <button
                 onClick={() => { setDeleteTarget(null); setDeleteError(''); }}
-                className="px-4 py-2 text-sm font-medium text-dark-300 hover:text-white transition-colors"
+                className="px-4 py-2 text-sm font-medium text-dark-300 hover:text-dark-50 transition-colors"
               >
                 Cancel
               </button>
@@ -354,7 +354,7 @@ export default function PlansPage() {
       <div className="mt-12">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h2 className="text-xl font-bold text-white flex items-center gap-3">
+            <h2 className="text-xl font-bold text-dark-50 flex items-center gap-3">
               <Zap className="w-6 h-6 text-accent-purple" />
               Credit Bundles
             </h2>
@@ -394,12 +394,12 @@ export default function PlansPage() {
                     onClick={() => setEditBundle(bundle)}
                     className="hover:bg-dark-800/30 transition-colors cursor-pointer"
                   >
-                    <td className="px-6 py-4 text-white font-medium">{bundle.name}</td>
+                    <td className="px-6 py-4 text-dark-50 font-medium">{bundle.name}</td>
                     <td className="px-6 py-4 text-dark-300 text-sm">{bundle.credits.toLocaleString()}</td>
                     <td className="px-6 py-4 text-dark-300 text-sm">{formatPrice(bundle.priceCents)}</td>
                     <td className="px-6 py-4">
                       <span className={`inline-flex px-2 py-0.5 text-xs font-medium rounded-full ${
-                        bundle.isActive ? 'bg-accent-emerald/10 text-accent-emerald' : 'bg-dark-700 text-dark-500'
+                        bundle.isActive ? 'bg-accent-emerald/10 text-accent-emerald' : 'bg-dark-700 text-white0'
                       }`}>
                         {bundle.isActive ? 'Active' : 'Inactive'}
                       </span>
@@ -466,10 +466,10 @@ export default function PlansPage() {
               <div className="w-10 h-10 rounded-full bg-red-500/20 flex items-center justify-center">
                 <AlertTriangle className="w-5 h-5 text-red-400" />
               </div>
-              <h3 className="text-lg font-semibold text-white">Delete Credit Bundle</h3>
+              <h3 className="text-lg font-semibold text-dark-50">Delete Credit Bundle</h3>
             </div>
             <p className="text-dark-300 mb-6">
-              Are you sure you want to delete <strong className="text-white">{deleteBundleTarget.name}</strong>? This cannot be undone.
+              Are you sure you want to delete <strong className="text-dark-50">{deleteBundleTarget.name}</strong>? This cannot be undone.
             </p>
             {deleteBundleError && (
               <div className="mb-4 p-3 bg-red-500/10 border border-red-500/30 rounded-lg text-sm text-red-400">
@@ -479,7 +479,7 @@ export default function PlansPage() {
             <div className="flex justify-end gap-3">
               <button
                 onClick={() => { setDeleteBundleTarget(null); setDeleteBundleError(''); }}
-                className="px-4 py-2 text-sm font-medium text-dark-300 hover:text-white transition-colors"
+                className="px-4 py-2 text-sm font-medium text-dark-300 hover:text-dark-50 transition-colors"
               >
                 Cancel
               </button>
@@ -641,8 +641,8 @@ function PlanFormModal({ plan, subscriberCount, readOnly, onClose, onSaved }: Pl
       <div className="fixed inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
       <div className="relative bg-dark-900 rounded-2xl border border-dark-700 p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between mb-6">
-          <h3 className="text-lg font-semibold text-white">{readOnly ? 'View Plan' : isEdit ? 'Edit Plan' : 'Create Plan'}</h3>
-          <button onClick={onClose} className="p-2 text-dark-400 hover:text-white transition-colors">
+          <h3 className="text-lg font-semibold text-dark-50">{readOnly ? 'View Plan' : isEdit ? 'Edit Plan' : 'Create Plan'}</h3>
+          <button onClick={onClose} className="p-2 text-dark-400 hover:text-dark-50 transition-colors">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -667,7 +667,7 @@ function PlanFormModal({ plan, subscriberCount, readOnly, onClose, onSaved }: Pl
                   value={name}
                   onChange={e => setName(e.target.value)}
                   disabled={readOnly || (isEdit && plan?.isSystem)}
-                  className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-white text-sm focus:border-primary-500 focus:outline-none disabled:opacity-60"
+                  className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-dark-50 text-sm focus:border-primary-500 focus:outline-none disabled:opacity-60"
                   placeholder="e.g. Pro"
                 />
               </div>
@@ -677,7 +677,7 @@ function PlanFormModal({ plan, subscriberCount, readOnly, onClose, onSaved }: Pl
                   value={description}
                   onChange={e => setDescription(e.target.value)}
                   disabled={readOnly}
-                  className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-white text-sm focus:border-primary-500 focus:outline-none disabled:opacity-60"
+                  className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-dark-50 text-sm focus:border-primary-500 focus:outline-none disabled:opacity-60"
                   placeholder="Short description"
                 />
               </div>
@@ -698,7 +698,7 @@ function PlanFormModal({ plan, subscriberCount, readOnly, onClose, onSaved }: Pl
                   onFocus={e => e.target.select()}
                   onBlur={() => { const n = parseFloat(monthlyPriceDollars); setMonthlyPriceDollars(isNaN(n) ? '0.00' : n.toFixed(2)); }}
                   disabled={readOnly}
-                  className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-white text-sm focus:border-primary-500 focus:outline-none disabled:opacity-60"
+                  className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-dark-50 text-sm focus:border-primary-500 focus:outline-none disabled:opacity-60"
                 />
               </div>
               <div>
@@ -711,7 +711,7 @@ function PlanFormModal({ plan, subscriberCount, readOnly, onClose, onSaved }: Pl
                   onFocus={e => e.target.select()}
                   onBlur={() => setAnnualDiscountPct(String(parseInt(annualDiscountPct) || 0))}
                   disabled={readOnly}
-                  className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-white text-sm focus:border-primary-500 focus:outline-none disabled:opacity-60"
+                  className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-dark-50 text-sm focus:border-primary-500 focus:outline-none disabled:opacity-60"
                 />
                 <p className="text-xs text-dark-500 mt-1">Set to 0 to hide annual option</p>
               </div>
@@ -725,7 +725,7 @@ function PlanFormModal({ plan, subscriberCount, readOnly, onClose, onSaved }: Pl
                   onFocus={e => e.target.select()}
                   onBlur={() => setTrialDays(String(parseInt(trialDays) || 0))}
                   disabled={readOnly}
-                  className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-white text-sm focus:border-primary-500 focus:outline-none disabled:opacity-60"
+                  className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-dark-50 text-sm focus:border-primary-500 focus:outline-none disabled:opacity-60"
                 />
                 <p className="text-xs text-dark-500 mt-1">0 = no trial</p>
               </div>
@@ -771,7 +771,7 @@ function PlanFormModal({ plan, subscriberCount, readOnly, onClose, onSaved }: Pl
                       onFocus={e => e.target.select()}
                       onBlur={() => { const n = parseFloat(perSeatPriceDollars); setPerSeatPriceDollars(isNaN(n) ? '0.00' : n.toFixed(2)); }}
                       disabled={readOnly}
-                      className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-white text-sm focus:border-primary-500 focus:outline-none disabled:opacity-60"
+                      className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-dark-50 text-sm focus:border-primary-500 focus:outline-none disabled:opacity-60"
                     />
                   </div>
                   <div>
@@ -784,7 +784,7 @@ function PlanFormModal({ plan, subscriberCount, readOnly, onClose, onSaved }: Pl
                       onFocus={e => e.target.select()}
                       onBlur={() => setIncludedSeats(String(parseInt(includedSeats) || 0))}
                       disabled={readOnly}
-                      className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-white text-sm focus:border-primary-500 focus:outline-none disabled:opacity-60"
+                      className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-dark-50 text-sm focus:border-primary-500 focus:outline-none disabled:opacity-60"
                     />
                     <p className="text-xs text-dark-500 mt-1">Seats included in base price (0 = purely per-seat)</p>
                   </div>
@@ -800,7 +800,7 @@ function PlanFormModal({ plan, subscriberCount, readOnly, onClose, onSaved }: Pl
                       onFocus={e => e.target.select()}
                       onBlur={() => setMinSeats(String(parseInt(minSeats) || 1))}
                       disabled={readOnly}
-                      className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-white text-sm focus:border-primary-500 focus:outline-none disabled:opacity-60"
+                      className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-dark-50 text-sm focus:border-primary-500 focus:outline-none disabled:opacity-60"
                     />
                   </div>
                   <div>
@@ -813,7 +813,7 @@ function PlanFormModal({ plan, subscriberCount, readOnly, onClose, onSaved }: Pl
                       onFocus={e => e.target.select()}
                       onBlur={() => setMaxSeats(String(parseInt(maxSeats) || 0))}
                       disabled={readOnly}
-                      className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-white text-sm focus:border-primary-500 focus:outline-none disabled:opacity-60"
+                      className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-dark-50 text-sm focus:border-primary-500 focus:outline-none disabled:opacity-60"
                     />
                     <p className="text-xs text-dark-500 mt-1">0 = unlimited</p>
                   </div>
@@ -836,7 +836,7 @@ function PlanFormModal({ plan, subscriberCount, readOnly, onClose, onSaved }: Pl
                   onFocus={e => e.target.select()}
                   onBlur={() => setUsageCreditsPerMonth(String(parseInt(usageCreditsPerMonth) || 0))}
                   disabled={readOnly}
-                  className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-white text-sm focus:border-primary-500 focus:outline-none disabled:opacity-60"
+                  className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-dark-50 text-sm focus:border-primary-500 focus:outline-none disabled:opacity-60"
                 />
               </div>
               {(parseInt(usageCreditsPerMonth) || 0) > 0 && (
@@ -846,7 +846,7 @@ function PlanFormModal({ plan, subscriberCount, readOnly, onClose, onSaved }: Pl
                     value={creditResetPolicy}
                     onChange={e => setCreditResetPolicy(e.target.value as 'reset' | 'accrue')}
                     disabled={readOnly}
-                    className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-white text-sm focus:border-primary-500 focus:outline-none disabled:opacity-60"
+                    className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-dark-50 text-sm focus:border-primary-500 focus:outline-none disabled:opacity-60"
                   >
                     <option value="reset">Reset each month</option>
                     <option value="accrue">Accrue (roll over)</option>
@@ -864,7 +864,7 @@ function PlanFormModal({ plan, subscriberCount, readOnly, onClose, onSaved }: Pl
                 onFocus={e => e.target.select()}
                 onBlur={() => setBonusCredits(String(parseInt(bonusCredits) || 0))}
                 disabled={readOnly}
-                className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-white text-sm focus:border-primary-500 focus:outline-none disabled:opacity-60"
+                className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-dark-50 text-sm focus:border-primary-500 focus:outline-none disabled:opacity-60"
               />
               <p className="text-xs text-dark-500 mt-1">Added once when plan is activated</p>
             </div>
@@ -883,7 +883,7 @@ function PlanFormModal({ plan, subscriberCount, readOnly, onClose, onSaved }: Pl
                 onFocus={e => e.target.select()}
                 onBlur={() => setUserLimit(String(parseInt(userLimit) || 0))}
                 disabled={readOnly}
-                className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-white text-sm focus:border-primary-500 focus:outline-none disabled:opacity-60"
+                className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-dark-50 text-sm focus:border-primary-500 focus:outline-none disabled:opacity-60"
               />
               <p className="text-xs text-dark-500 mt-1">0 = unlimited</p>
             </div>
@@ -904,7 +904,7 @@ function PlanFormModal({ plan, subscriberCount, readOnly, onClose, onSaved }: Pl
                   return (
                     <div key={key} className="bg-dark-800/50 rounded-lg px-3 py-2 space-y-2">
                       <div className="flex items-center gap-3">
-                        <span className="text-sm text-white font-mono flex-1">{key}</span>
+                        <span className="text-sm text-dark-50 font-mono flex-1">{key}</span>
                         <span className="text-xs text-dark-500 uppercase">{type}</span>
                         {isBool ? (
                           <button
@@ -926,7 +926,7 @@ function PlanFormModal({ plan, subscriberCount, readOnly, onClose, onSaved }: Pl
                             }}
                             onFocus={e => e.target.select()}
                             disabled={readOnly}
-                            className="w-24 px-2 py-1 bg-dark-700 border border-dark-600 rounded text-white text-sm focus:border-primary-500 focus:outline-none disabled:opacity-60"
+                            className="w-24 px-2 py-1 bg-dark-700 border border-dark-600 rounded text-dark-50 text-sm focus:border-primary-500 focus:outline-none disabled:opacity-60"
                           />
                         )}
                         {!readOnly && (
@@ -958,13 +958,13 @@ function PlanFormModal({ plan, subscriberCount, readOnly, onClose, onSaved }: Pl
                   value={newKey}
                   onChange={e => setNewKey(e.target.value)}
                   placeholder="entitlement_name"
-                  className="flex-1 px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-white text-sm font-mono focus:border-primary-500 focus:outline-none"
+                  className="flex-1 px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-dark-50 text-sm font-mono focus:border-primary-500 focus:outline-none"
                   onKeyDown={e => { if (e.key === 'Enter') addEntitlement(); }}
                 />
                 <select
                   value={newType}
                   onChange={e => setNewType(e.target.value as EntitlementType)}
-                  className="px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-white text-sm focus:border-primary-500 focus:outline-none"
+                  className="px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-dark-50 text-sm focus:border-primary-500 focus:outline-none"
                 >
                   <option value="bool">Boolean</option>
                   <option value="numeric">Numeric</option>
@@ -972,7 +972,7 @@ function PlanFormModal({ plan, subscriberCount, readOnly, onClose, onSaved }: Pl
                 <button
                   onClick={addEntitlement}
                   disabled={!newKey.trim()}
-                  className="px-3 py-2 bg-dark-700 text-dark-300 text-sm rounded-lg hover:bg-dark-600 hover:text-white transition-colors disabled:opacity-30"
+                  className="px-3 py-2 bg-dark-700 text-dark-300 text-sm rounded-lg hover:bg-dark-600 hover:text-dark-50 transition-colors disabled:opacity-30"
                 >
                   <Plus className="w-4 h-4" />
                 </button>
@@ -992,7 +992,7 @@ function PlanFormModal({ plan, subscriberCount, readOnly, onClose, onSaved }: Pl
         <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-dark-800">
           <button
             onClick={onClose}
-            className="px-4 py-2 text-sm font-medium text-dark-300 hover:text-white transition-colors"
+            className="px-4 py-2 text-sm font-medium text-dark-300 hover:text-dark-50 transition-colors"
           >
             {readOnly ? 'Close' : 'Cancel'}
           </button>
@@ -1082,8 +1082,8 @@ function BundleFormModal({ bundle, readOnly, onClose, onSaved }: BundleFormModal
       <div className="fixed inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
       <div className="relative bg-dark-900 rounded-2xl border border-dark-700 p-6 w-full max-w-lg">
         <div className="flex items-center justify-between mb-6">
-          <h3 className="text-lg font-semibold text-white">{readOnly ? 'View Credit Bundle' : isEdit ? 'Edit Credit Bundle' : 'Create Credit Bundle'}</h3>
-          <button onClick={onClose} className="p-2 text-dark-400 hover:text-white transition-colors">
+          <h3 className="text-lg font-semibold text-dark-50">{readOnly ? 'View Credit Bundle' : isEdit ? 'Edit Credit Bundle' : 'Create Credit Bundle'}</h3>
+          <button onClick={onClose} className="p-2 text-dark-400 hover:text-dark-50 transition-colors">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -1095,7 +1095,7 @@ function BundleFormModal({ bundle, readOnly, onClose, onSaved }: BundleFormModal
               value={name}
               onChange={e => setName(e.target.value)}
               disabled={readOnly}
-              className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-white text-sm focus:border-primary-500 focus:outline-none disabled:opacity-60"
+              className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-dark-50 text-sm focus:border-primary-500 focus:outline-none disabled:opacity-60"
               placeholder="e.g. Starter Pack"
             />
           </div>
@@ -1111,7 +1111,7 @@ function BundleFormModal({ bundle, readOnly, onClose, onSaved }: BundleFormModal
                 onFocus={e => e.target.select()}
                 onBlur={() => setCredits(String(parseInt(credits) || 0))}
                 disabled={readOnly}
-                className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-white text-sm focus:border-primary-500 focus:outline-none disabled:opacity-60"
+                className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-dark-50 text-sm focus:border-primary-500 focus:outline-none disabled:opacity-60"
               />
             </div>
             <div>
@@ -1124,7 +1124,7 @@ function BundleFormModal({ bundle, readOnly, onClose, onSaved }: BundleFormModal
                 onFocus={e => e.target.select()}
                 onBlur={() => { const n = parseFloat(priceDollars); setPriceDollars(isNaN(n) ? '0.00' : n.toFixed(2)); }}
                 disabled={readOnly}
-                className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-white text-sm focus:border-primary-500 focus:outline-none disabled:opacity-60"
+                className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-dark-50 text-sm focus:border-primary-500 focus:outline-none disabled:opacity-60"
               />
             </div>
           </div>
@@ -1140,7 +1140,7 @@ function BundleFormModal({ bundle, readOnly, onClose, onSaved }: BundleFormModal
                 onFocus={e => e.target.select()}
                 onBlur={() => setSortOrder(String(parseInt(sortOrder) || 0))}
                 disabled={readOnly}
-                className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-white text-sm focus:border-primary-500 focus:outline-none disabled:opacity-60"
+                className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-dark-50 text-sm focus:border-primary-500 focus:outline-none disabled:opacity-60"
               />
               <p className="text-xs text-dark-500 mt-1">Lower numbers display first</p>
             </div>
@@ -1167,7 +1167,7 @@ function BundleFormModal({ bundle, readOnly, onClose, onSaved }: BundleFormModal
         <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-dark-800">
           <button
             onClick={onClose}
-            className="px-4 py-2 text-sm font-medium text-dark-300 hover:text-white transition-colors"
+            className="px-4 py-2 text-sm font-medium text-dark-300 hover:text-dark-50 transition-colors"
           >
             {readOnly ? 'Close' : 'Cancel'}
           </button>
