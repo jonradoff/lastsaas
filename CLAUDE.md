@@ -47,3 +47,13 @@ fly deploy -c fly.saas.toml
 - Using bare `fly deploy` picks up `fly.toml` which references no Dockerfile override and builds without the scanner, causing silent scan failures
 
 **Full instructions:** See `deploy.md` at the repo root.
+
+## Scout ↔ Builder Coordination
+
+MCPLens uses an autonomous scout system that monitors the live site, audits source code, and researches improvements. Findings are stored in `scout/findings/` and coordinated through `scout/HANDOFF.md`.
+
+**If you are building/implementing:** Run `/builder-check` before starting work to see if the scout has found issues worth addressing. When you finish a fix, update the finding status to `done` in `scout/HANDOFF.md` and push.
+
+**If you are scouting:** Run `/scout` (typically via `/loop 20m /scout`). Create one finding per cycle, push to master.
+
+See `.claude/commands/scout.md` and `.claude/commands/builder-check.md` for full protocols.
