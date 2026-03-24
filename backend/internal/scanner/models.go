@@ -168,10 +168,24 @@ type StoredScan struct {
 type TrackedStore struct {
 	ID            primitive.ObjectID  `json:"id" bson:"_id,omitempty"`
 	Domain        string              `json:"domain" bson:"domain"`
+	Label         string              `json:"label" bson:"label,omitempty"`
 	TenantID      primitive.ObjectID  `json:"tenantId" bson:"tenantId"`
 	AddedAt       time.Time           `json:"addedAt" bson:"addedAt"`
 	LastScannedAt *time.Time          `json:"lastScannedAt,omitempty" bson:"lastScannedAt,omitempty"`
 	CurrentScore  int                 `json:"currentScore" bson:"currentScore"`
 	PreviousScore int                 `json:"previousScore" bson:"previousScore"`
 	Trend         string              `json:"trend" bson:"trend"` // "up", "down", "stable"
+}
+
+// ComparisonSeries holds score history for a single tracked store (used in comparison chart).
+type ComparisonSeries struct {
+	Domain string           `json:"domain"`
+	Label  string           `json:"label"`
+	Points []ComparisonPoint `json:"points"`
+}
+
+// ComparisonPoint is a single score data point.
+type ComparisonPoint struct {
+	Date  time.Time `json:"date"`
+	Score int       `json:"score"`
 }

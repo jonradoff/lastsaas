@@ -88,3 +88,40 @@ func TestTrackedStoreTrendValues(t *testing.T) {
 		}
 	}
 }
+
+func TestTrackedStoreLabelField(t *testing.T) {
+	ts := TrackedStore{
+		Domain: "allbirds.com",
+		Label:  "My Store",
+	}
+	if ts.Label != "My Store" {
+		t.Errorf("Label = %q, want 'My Store'", ts.Label)
+	}
+
+	// Label can be empty
+	ts2 := TrackedStore{Domain: "competitor.com"}
+	if ts2.Label != "" {
+		t.Errorf("Empty label = %q, want empty string", ts2.Label)
+	}
+}
+
+func TestComparisonSeriesStructure(t *testing.T) {
+	series := ComparisonSeries{
+		Domain: "allbirds.com",
+		Label:  "My Store",
+		Points: []ComparisonPoint{
+			{Score: 85},
+			{Score: 90},
+		},
+	}
+
+	if len(series.Points) != 2 {
+		t.Fatalf("expected 2 points, got %d", len(series.Points))
+	}
+	if series.Points[0].Score != 85 {
+		t.Errorf("first point score = %d, want 85", series.Points[0].Score)
+	}
+	if series.Label != "My Store" {
+		t.Errorf("label = %q, want 'My Store'", series.Label)
+	}
+}

@@ -166,8 +166,10 @@ func setupTestServer(t *testing.T) *testEnv {
 	trackedAPI.Use(tenantMiddleware.RequireTenant)
 	trackedAPI.HandleFunc("", scannerHandler.ListTrackedStores).Methods("GET")
 	trackedAPI.HandleFunc("", scannerHandler.AddTrackedStore).Methods("POST")
+	trackedAPI.HandleFunc("/comparison", scannerHandler.GetTrackedStoresComparison).Methods("GET")
 	trackedAPI.HandleFunc("/{id}", scannerHandler.RemoveTrackedStore).Methods("DELETE")
 	trackedAPI.HandleFunc("/{id}/history", scannerHandler.GetTrackedStoreHistory).Methods("GET")
+	trackedAPI.HandleFunc("/{id}/label", scannerHandler.UpdateTrackedStoreLabel).Methods("PATCH")
 
 	// Scan list (authenticated + tenant)
 	scanListAPI := guarded.PathPrefix("/scans").Subrouter()

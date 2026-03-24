@@ -226,6 +226,7 @@ func (h *ScannerHandler) AddTrackedStore(w http.ResponseWriter, r *http.Request)
 
 	var req struct {
 		Domain string `json:"domain"`
+		Label  string `json:"label"`
 	}
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		respondWithError(w, http.StatusBadRequest, "Invalid request body")
@@ -253,13 +254,73 @@ func (h *ScannerHandler) AddTrackedStore(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	store, err := h.service.TrackedStores().AddTrackedStore(ctx, tenant.ID, req.Domain)
+	store, err := h.service.TrackedStores().AddTrackedStore(ctx, tenant.ID, req.Domain, req.Label)
 	if err != nil {
 		respondWithError(w, http.StatusBadRequest, err.Error())
 		return
 	}
 
 	respondWithJSON(w, http.StatusCreated, store)
+}
+
+// UpdateTrackedStoreLabel handles PATCH /api/tracked-stores/{id}/label.
+func (h *ScannerHandler) UpdateTrackedStoreLabel(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	tenant, ok := middleware.GetTenantFromContext(ctx)
+	if !ok {
+		respondWithError(w, http.StatusBadRequest, "Tenant context required")
+		return
+	}
+
+	vars := mux.Vars(r)
+	storeID, err := primitive.ObjectIDFromHex(vars["id"])
+	if err != nil {
+		respondWithError(w, http.StatusBadRequest, "Invalid store ID")
+		return
+	}
+
+	var req struct {
+		Label string `json:"label"`
+	}
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		respondWithError(w, http.StatusBadRequest, "Invalid request body")
+		return
+	}
+
+	if err := h.service.TrackedStores().UpdateTrackedStoreLabel(ctx, tenant.ID, storeID, req.Label); err != nil {
+		if err.Error() == "tracked store not found" {
+			respondWithError(w, http.StatusNotFound, "Tracked store not found")
+			return
+		}
+		respondWithError(w, http.StatusInternalServerError, "Failed to update label")
+		return
+	}
+
+	respondWithJSON(w, http.StatusOK, map[string]string{"message": "Label updated"})
+}
+
+// GetTrackedStoresComparison handles GET /api/tracked-stores/comparison.
+// Returns score history for all tracked stores, for the comparison timeline chart.
+func (h *ScannerHandler) GetTrackedStoresComparison(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	tenant, ok := middleware.GetTenantFromContext(ctx)
+	if !ok {
+		respondWithError(w, http.StatusBadRequest, "Tenant context required")
+		return
+	}
+
+	limitStr := r.URL.Query().Get("limit")
+	limit, _ := strconv.Atoi(limitStr)
+
+	series, err := h.service.TrackedStores().GetComparisonData(ctx, tenant.ID, limit)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Failed to retrieve comparison data")
+		return
+	}
+
+	respondWithJSON(w, http.StatusOK, map[string]interface{}{
+		"series": series,
+	})
 }
 
 // RemoveTrackedStore handles DELETE /api/tracked-stores/{id}.

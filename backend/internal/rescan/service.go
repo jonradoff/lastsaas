@@ -40,7 +40,9 @@ type rescanJob struct {
 	FrequencyHours int
 }
 
-// Service manages automated rescans and score drop alerts.
+const digestInterval = 7 * 24 * time.Hour // weekly
+
+// Service manages automated rescans and score change alerts.
 type Service struct {
 	db       *db.MongoDB
 	scanner  *scanner.Service
@@ -90,6 +92,10 @@ func (s *Service) run() {
 	defer renewTicker.Stop()
 	defer cycleTicker.Stop()
 
+	// Check for weekly digests once per cycle too
+	digestTicker := time.NewTicker(1 * time.Hour) // check hourly
+	defer digestTicker.Stop()
+
 	for {
 		select {
 		case <-renewTicker.C:
@@ -97,6 +103,10 @@ func (s *Service) run() {
 		case <-cycleTicker.C:
 			if s.isLeader() {
 				s.processRescanCycle(context.Background())
+			}
+		case <-digestTicker.C:
+			if s.isLeader() {
+				s.processWeeklyDigests(context.Background())
 			}
 		case <-s.stop:
 			return
@@ -340,15 +350,19 @@ func (s *Service) rescanStore(ctx context.Context, job rescanJob) error {
 
 	slog.Info("Rescan complete", "domain", job.Domain, "score", result.CompositeScore, "previousScore", job.CurrentScore)
 
-	// Check for score drop and alert
+	// Check for significant score change and alert
 	s.checkAndAlert(ctx, job, result.CompositeScore)
 	return nil
 }
 
-// checkAndAlert sends an email if the score dropped significantly.
+// checkAndAlert sends an email if the score changed significantly (up or down).
 func (s *Service) checkAndAlert(ctx context.Context, job rescanJob, newScore int) {
-	drop := job.CurrentScore - newScore
-	if drop < scoreDropThreshold {
+	delta := newScore - job.CurrentScore
+	absDelta := delta
+	if absDelta < 0 {
+		absDelta = -absDelta
+	}
+	if absDelta < scoreDropThreshold {
 		return
 	}
 
@@ -362,12 +376,12 @@ func (s *Service) checkAndAlert(ctx context.Context, job rescanJob, newScore int
 		return
 	}
 
-	if err := s.email.SendScoreDropAlert(ownerEmail, ownerName, job.Domain, job.CurrentScore, newScore, drop); err != nil {
-		slog.Error("Failed to send score drop alert", "domain", job.Domain, "to", ownerEmail, "error", err)
+	if err := s.email.SendScoreChangeAlert(ownerEmail, ownerName, job.Domain, job.CurrentScore, newScore, delta); err != nil {
+		slog.Error("Failed to send score change alert", "domain", job.Domain, "to", ownerEmail, "error", err)
 	} else {
-		slog.Info("Score drop alert sent", "domain", job.Domain, "to", ownerEmail, "drop", drop)
-		s.syslog.Medium(ctx, fmt.Sprintf("Score drop alert sent: %s dropped %d points (%d → %d), notified %s",
-			job.Domain, drop, job.CurrentScore, newScore, ownerEmail))
+		slog.Info("Score change alert sent", "domain", job.Domain, "to", ownerEmail, "delta", delta)
+		s.syslog.Medium(ctx, fmt.Sprintf("Score change alert: %s changed %+d points (%d → %d), notified %s",
+			job.Domain, delta, job.CurrentScore, newScore, ownerEmail))
 	}
 }
 
@@ -387,4 +401,87 @@ func (s *Service) findTenantOwnerEmail(ctx context.Context, tenantID primitive.O
 		return "", "", err
 	}
 	return user.Email, user.DisplayName, nil
+}
+
+// processWeeklyDigests sends a weekly digest email to each tenant that has tracked stores.
+// Uses a per-tenant timestamp in the "digest_sent" collection to avoid duplicates.
+func (s *Service) processWeeklyDigests(ctx context.Context) {
+	if s.email == nil {
+		return
+	}
+
+	col := s.db.Database.Collection("digest_sent")
+	now := time.Now().UTC()
+	threshold := now.Add(-digestInterval)
+
+	// Find all tenants with tracked stores
+	pipeline := mongo.Pipeline{
+		{{Key: "$group", Value: bson.M{
+			"_id": "$tenantId",
+		}}},
+	}
+	cursor, err := s.db.Database.Collection("tracked_stores").Aggregate(ctx, pipeline)
+	if err != nil {
+		slog.Error("Digest: failed to find tenants with tracked stores", "error", err)
+		return
+	}
+	defer cursor.Close(ctx)
+
+	var tenants []struct {
+		ID primitive.ObjectID `bson:"_id"`
+	}
+	if err := cursor.All(ctx, &tenants); err != nil {
+		slog.Error("Digest: failed to decode tenants", "error", err)
+		return
+	}
+
+	for _, t := range tenants {
+		// Check if digest was sent recently
+		var lastDigest struct {
+			SentAt time.Time `bson:"sentAt"`
+		}
+		err := col.FindOne(ctx, bson.M{"_id": t.ID}).Decode(&lastDigest)
+		if err == nil && lastDigest.SentAt.After(threshold) {
+			continue // already sent this week
+		}
+
+		s.sendDigestForTenant(ctx, t.ID, col, now)
+	}
+}
+
+func (s *Service) sendDigestForTenant(ctx context.Context, tenantID primitive.ObjectID, col *mongo.Collection, now time.Time) {
+	ownerEmail, ownerName, err := s.findTenantOwnerEmail(ctx, tenantID)
+	if err != nil || ownerEmail == "" {
+		return
+	}
+
+	stores, err := s.scanner.TrackedStores().ListTrackedStores(ctx, tenantID)
+	if err != nil || len(stores) == 0 {
+		return
+	}
+
+	digestStores := make([]email.DigestStore, len(stores))
+	for i, store := range stores {
+		delta := store.CurrentScore - store.PreviousScore
+		digestStores[i] = email.DigestStore{
+			Domain:       store.Domain,
+			Label:        store.Label,
+			CurrentScore: store.CurrentScore,
+			Delta:        delta,
+		}
+	}
+
+	if err := s.email.SendWeeklyDigest(ownerEmail, ownerName, digestStores); err != nil {
+		slog.Error("Failed to send weekly digest", "tenantId", tenantID.Hex(), "error", err)
+		return
+	}
+
+	// Mark digest as sent
+	_, _ = col.UpdateOne(ctx,
+		bson.M{"_id": tenantID},
+		bson.M{"$set": bson.M{"sentAt": now}},
+		options.Update().SetUpsert(true),
+	)
+
+	slog.Info("Weekly digest sent", "tenantId", tenantID.Hex(), "to", ownerEmail, "stores", len(stores))
 }

@@ -705,8 +705,10 @@ func main() {
 	trackedStoresAPI.Use(tenantMiddleware.RequireTenant)
 	trackedStoresAPI.HandleFunc("", scannerHandler.ListTrackedStores).Methods("GET")
 	trackedStoresAPI.HandleFunc("", scannerHandler.AddTrackedStore).Methods("POST")
+	trackedStoresAPI.HandleFunc("/comparison", scannerHandler.GetTrackedStoresComparison).Methods("GET")
 	trackedStoresAPI.HandleFunc("/{id}", scannerHandler.RemoveTrackedStore).Methods("DELETE")
 	trackedStoresAPI.HandleFunc("/{id}/history", scannerHandler.GetTrackedStoreHistory).Methods("GET")
+	trackedStoresAPI.HandleFunc("/{id}/label", scannerHandler.UpdateTrackedStoreLabel).Methods("PATCH")
 
 	// Webhook route (no auth — uses Stripe signature verification)
 	api.HandleFunc("/billing/webhook", webhookHandler.HandleWebhook).Methods("POST")

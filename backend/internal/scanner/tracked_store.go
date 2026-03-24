@@ -45,7 +45,7 @@ func NewTrackedStoreStore(database *mongo.Database) *TrackedStoreStore {
 
 // AddTrackedStore inserts a new tracked store for the given tenant.
 // Returns the created document. Does not enforce entitlement limits (caller must).
-func (s *TrackedStoreStore) AddTrackedStore(ctx context.Context, tenantID primitive.ObjectID, domain string) (*TrackedStore, error) {
+func (s *TrackedStoreStore) AddTrackedStore(ctx context.Context, tenantID primitive.ObjectID, domain, label string) (*TrackedStore, error) {
 	domain = sanitiseDomain(domain)
 	if domain == "" {
 		return nil, fmt.Errorf("empty or invalid domain")
@@ -54,6 +54,7 @@ func (s *TrackedStoreStore) AddTrackedStore(ctx context.Context, tenantID primit
 	doc := TrackedStore{
 		ID:       primitive.NewObjectID(),
 		Domain:   domain,
+		Label:    label,
 		TenantID: tenantID,
 		AddedAt:  time.Now().UTC(),
 		Trend:    "stable",
@@ -165,6 +166,81 @@ func (s *TrackedStoreStore) GetScanHistory(ctx context.Context, tenantID primiti
 		scans = []StoredScan{}
 	}
 	return scans, nil
+}
+
+// UpdateTrackedStoreLabel updates the user-defined label on a tracked store.
+func (s *TrackedStoreStore) UpdateTrackedStoreLabel(ctx context.Context, tenantID, storeID primitive.ObjectID, label string) error {
+	res, err := s.col.UpdateOne(ctx,
+		bson.M{"_id": storeID, "tenantId": tenantID},
+		bson.M{"$set": bson.M{"label": label}},
+	)
+	if err != nil {
+		return fmt.Errorf("update label: %w", err)
+	}
+	if res.MatchedCount == 0 {
+		return fmt.Errorf("tracked store not found")
+	}
+	return nil
+}
+
+// GetComparisonData returns score history for all tracked stores, for the comparison chart.
+func (s *TrackedStoreStore) GetComparisonData(ctx context.Context, tenantID primitive.ObjectID, limit int) ([]ComparisonSeries, error) {
+	if limit <= 0 || limit > 90 {
+		limit = 30
+	}
+
+	stores, err := s.ListTrackedStores(ctx, tenantID)
+	if err != nil {
+		return nil, err
+	}
+
+	series := make([]ComparisonSeries, 0, len(stores))
+	for _, store := range stores {
+		opts := options.Find().
+			SetSort(bson.D{{Key: "createdAt", Value: -1}}).
+			SetLimit(int64(limit)).
+			SetProjection(bson.M{"createdAt": 1, "compositeScore": 1})
+
+		filter := bson.M{
+			"domain": store.Domain,
+			"$or": []bson.M{
+				{"tenantId": tenantID},
+				{"tenantId": bson.M{"$exists": false}},
+				{"tenantId": nil},
+			},
+		}
+
+		cursor, err := s.scans.Find(ctx, filter, opts)
+		if err != nil {
+			continue
+		}
+
+		var scans []struct {
+			CreatedAt      time.Time `bson:"createdAt"`
+			CompositeScore int       `bson:"compositeScore"`
+		}
+		if err := cursor.All(ctx, &scans); err != nil {
+			cursor.Close(ctx)
+			continue
+		}
+		cursor.Close(ctx)
+
+		points := make([]ComparisonPoint, len(scans))
+		for i, scan := range scans {
+			points[len(scans)-1-i] = ComparisonPoint{
+				Date:  scan.CreatedAt,
+				Score: scan.CompositeScore,
+			}
+		}
+
+		series = append(series, ComparisonSeries{
+			Domain: store.Domain,
+			Label:  store.Label,
+			Points: points,
+		})
+	}
+
+	return series, nil
 }
 
 // UpdateTrackedStoreScore updates the score fields after a new scan for this domain.
