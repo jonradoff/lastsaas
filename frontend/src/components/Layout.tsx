@@ -7,6 +7,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { useTenant } from '../contexts/TenantContext';
 import { useBranding } from '../contexts/BrandingContext';
 import { useTheme } from '../contexts/ThemeContext';
+import { usePlan } from '../contexts/PlanContext';
 import { messagesApi, plansApi, bundlesApi, announcementsApi } from '../api/client';
 import ImpersonationBanner from './ImpersonationBanner';
 import { useState, useRef, useEffect } from 'react';
@@ -23,6 +24,7 @@ export default function Layout() {
   const { activeTenant, setActiveTenant } = useTenant();
   const { branding } = useBranding();
   const { resolvedTheme, setTheme } = useTheme();
+  const { tierName, isPaid, isLoaded: planLoaded } = usePlan();
   const [showTenantMenu, setShowTenantMenu] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
   const [showCredits, setShowCredits] = useState(false);
@@ -84,9 +86,14 @@ export default function Layout() {
   };
 
   // Build nav items from branding config or fallback to defaults
+  const TIER_ORDER: Record<string, number> = { free: 0, pro: 1, max: 2, agency: 3 };
+  const currentLevel = planLoaded ? (TIER_ORDER[tierName] ?? 0) : 0;
+  const showBonuses = currentLevel >= 1; // Pro+
+
   const defaultNavItems = [
     { path: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
     ...(showTeam ? [{ path: '/team', icon: Users, label: 'Team' }] : []),
+    ...(showBonuses ? [{ path: '/bonuses', icon: Star, label: 'Bonuses' }] : []),
     { path: '/plan', icon: CreditCard, label: 'Plan' },
     { path: '/settings', icon: Settings, label: 'Settings' },
   ];

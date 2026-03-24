@@ -1,6 +1,6 @@
 import { useState, useEffect, type FormEvent } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { scanApi, leadsApi, type ScanResult, type ScanCategoryResult } from '../../api/client';
+import { scanApi, leadsApi, type ScanResult, type ScanCategoryResult, type AIAssessment, type AIFinding, type AIQuerySimulation, type AgentSimulation, type ShoppingScenario, type AgentStep } from '../../api/client';
 
 function setMetaTag(property: string, content: string) {
   const selector = `meta[property="${property}"], meta[name="${property}"]`;
@@ -31,6 +31,7 @@ const LOADING_MESSAGES = [
   'Evaluating product discovery...',
   'Testing checkout flow...',
   'Generating report...',
+  'Running AI quality assessment...',
 ];
 
 function scoreColor(score: number): string {
@@ -362,6 +363,304 @@ function FindingCard({ finding, fixUnlocked }: { finding: Finding; fixUnlocked: 
   );
 }
 
+// --- Layer 2: AI Quality Assessment Section ---
+
+function AIScoreCard({ label, score, summary }: { label: string; score: number; summary: string }) {
+  const color = scoreColor(score);
+  return (
+    <div className="bg-white border border-slate-200 rounded-xl p-4">
+      <div className="text-xs font-medium text-slate-500 mb-1">{label}</div>
+      <div className="text-2xl font-bold mb-1" style={{ color }}>{score}</div>
+      <p className="text-xs text-slate-500 leading-relaxed">{summary}</p>
+    </div>
+  );
+}
+
+function AIFindingCard({ finding }: { finding: AIFinding }) {
+  const impactColors: Record<string, string> = {
+    high: 'bg-red-50 border-red-200',
+    medium: 'bg-amber-50 border-amber-200',
+    low: 'bg-blue-50 border-blue-200',
+  };
+  const impactBadge: Record<string, string> = {
+    high: 'bg-red-500',
+    medium: 'bg-amber-500',
+    low: 'bg-blue-500',
+  };
+
+  return (
+    <div className={`border rounded-xl p-4 ${impactColors[finding.revenueImpact] ?? 'bg-slate-50 border-slate-200'}`}>
+      <div className="flex items-start gap-3">
+        <span className={`px-2 py-0.5 text-xs font-semibold rounded-full text-white shrink-0 mt-0.5 ${impactBadge[finding.revenueImpact] ?? 'bg-slate-500'}`}>
+          {finding.revenueImpact.toUpperCase()}
+        </span>
+        <div className="flex-1 min-w-0">
+          <h4 className="font-semibold text-slate-900 text-sm">{finding.title}</h4>
+          <p className="text-sm text-slate-700 mt-1">{finding.explanation}</p>
+          <div className="mt-3 bg-white/70 border border-slate-200 rounded-lg p-3">
+            <div className="text-xs font-semibold text-emerald-700 uppercase tracking-wider mb-1">How to fix</div>
+            <p className="text-sm text-slate-700 whitespace-pre-wrap">{finding.fix}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function AIQueryTable({ simulations }: { simulations: AIQuerySimulation[] }) {
+  return (
+    <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
+      <div className="px-4 py-3 border-b border-slate-200 bg-slate-50">
+        <h3 className="text-sm font-semibold text-slate-700">Simulated Buyer Queries</h3>
+      </div>
+      <div className="divide-y divide-slate-100">
+        {simulations.map((sim, i) => (
+          <div key={i} className="px-4 py-3 flex items-start gap-3">
+            <div className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 mt-0.5 ${sim.wouldFindResult ? 'bg-emerald-100' : 'bg-red-100'}`}>
+              {sim.wouldFindResult ? (
+                <svg className="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+              ) : (
+                <svg className="w-3.5 h-3.5 text-red-600" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+              )}
+            </div>
+            <div className="flex-1">
+              <div className="text-sm font-medium text-slate-900">"{sim.query}"</div>
+              <div className="text-xs text-slate-500 mt-0.5">{sim.explanation}</div>
+            </div>
+            <div className="text-xs text-slate-400 shrink-0">{sim.confidence}% confidence</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function AIAssessmentSection({ assessment }: { assessment: AIAssessment }) {
+  return (
+    <div className="flex flex-col gap-5">
+      <h2 className="text-sm font-semibold text-slate-400 uppercase tracking-widest">
+        AI Quality Assessment
+        <span className="ml-2 px-2 py-0.5 text-xs rounded-full bg-indigo-100 text-indigo-700 font-medium normal-case tracking-normal">
+          Powered by Claude
+        </span>
+      </h2>
+
+      {/* Sub-scores grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <AIScoreCard label="Product Relevance" score={assessment.productRelevance.score} summary={assessment.productRelevance.summary} />
+        <AIScoreCard label="Description Quality" score={assessment.descriptionQuality.score} summary={assessment.descriptionQuality.summary} />
+        <AIScoreCard label="Data Completeness" score={assessment.dataCompleteness.score} summary={assessment.dataCompleteness.summary} />
+      </div>
+
+      {/* Missing attributes */}
+      {assessment.dataCompleteness.missingAttributes.length > 0 && (
+        <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
+          <div className="text-sm font-semibold text-amber-800 mb-2">Missing Structured Attributes</div>
+          <div className="flex flex-wrap gap-2">
+            {assessment.dataCompleteness.missingAttributes.map((attr, i) => (
+              <span key={i} className="px-2.5 py-1 bg-white border border-amber-300 rounded-lg text-xs text-amber-700">{attr}</span>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Query simulations */}
+      {assessment.querySimulations.length > 0 && (
+        <AIQueryTable simulations={assessment.querySimulations} />
+      )}
+
+      {/* Findings */}
+      {assessment.findings.length > 0 && (
+        <div className="flex flex-col gap-3">
+          <h3 className="text-sm font-semibold text-slate-500">AI-Identified Issues ({assessment.findings.length})</h3>
+          {assessment.findings.map((f, i) => (
+            <AIFindingCard key={i} finding={f} />
+          ))}
+        </div>
+      )}
+
+      {/* Competitive comparison */}
+      {assessment.competitiveComparison && (
+        <div className="bg-indigo-50 border border-indigo-200 rounded-xl p-5">
+          <h3 className="text-sm font-semibold text-indigo-800 mb-2">Competitive Context</h3>
+          <p className="text-sm text-indigo-700 leading-relaxed">{assessment.competitiveComparison}</p>
+        </div>
+      )}
+
+      {/* Meta info */}
+      <div className="text-xs text-slate-400 flex flex-wrap gap-4">
+        <span>Model: {assessment.modelUsed}</span>
+        <span>Tokens: {assessment.tokenUsage.input + assessment.tokenUsage.output}</span>
+        <span>Cost: ${assessment.costEstimateUsd.toFixed(4)}</span>
+        <span>Duration: {(assessment.durationMs / 1000).toFixed(1)}s</span>
+      </div>
+    </div>
+  );
+}
+
+// --- Agent Simulation Section ---
+
+function StepIcon({ action }: { action: AgentStep['action'] }) {
+  const icons: Record<string, { bg: string; icon: string }> = {
+    tool_call: { bg: 'bg-blue-100', icon: '🔧' },
+    tool_result: { bg: 'bg-emerald-100', icon: '📦' },
+    decision: { bg: 'bg-purple-100', icon: '✅' },
+    failure: { bg: 'bg-red-100', icon: '❌' },
+    think: { bg: 'bg-slate-100', icon: '💭' },
+  };
+  const { bg, icon } = icons[action] ?? icons.think;
+  return <div className={`w-7 h-7 rounded-full ${bg} flex items-center justify-center text-sm shrink-0`}>{icon}</div>;
+}
+
+function TranscriptTimeline({ steps }: { steps: AgentStep[] }) {
+  return (
+    <div className="space-y-2">
+      {steps.map((step) => (
+        <div key={step.stepNumber} className="flex items-start gap-3">
+          <StepIcon action={step.action} />
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 text-xs text-slate-400">
+              <span>Step {step.stepNumber}</span>
+              <span>{step.action.replace('_', ' ')}</span>
+              <span>{step.durationMs}ms</span>
+            </div>
+            {step.toolName && (
+              <div className="text-xs font-mono text-blue-600 mt-0.5">
+                {step.toolName}({step.toolArgs ? JSON.stringify(step.toolArgs).slice(0, 80) : ''})
+              </div>
+            )}
+            <p className="text-sm text-slate-700 mt-0.5 whitespace-pre-wrap leading-relaxed">
+              {step.action === 'tool_result'
+                ? (typeof step.toolResult === 'string' ? step.toolResult.slice(0, 200) : JSON.stringify(step.toolResult)?.slice(0, 200) + '...')
+                : step.reasoning.slice(0, 500)}
+            </p>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function ScenarioCard({ scenario, index }: { scenario: ShoppingScenario; index: number }) {
+  const [expanded, setExpanded] = useState(false);
+  const outcomeColors: Record<string, string> = {
+    completed: 'bg-emerald-100 text-emerald-700',
+    failed: 'bg-red-100 text-red-700',
+    abandoned: 'bg-amber-100 text-amber-700',
+  };
+
+  return (
+    <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
+      <button
+        onClick={() => setExpanded(!expanded)}
+        className="w-full px-5 py-4 flex items-center gap-4 text-left hover:bg-slate-50 transition-colors"
+      >
+        <div className="text-lg font-bold text-slate-300 w-6 text-center">{index + 1}</div>
+        <div className="flex-1 min-w-0">
+          <div className="font-medium text-slate-900 text-sm truncate">"{scenario.intent}"</div>
+          <div className="text-xs text-slate-400 mt-0.5">
+            {scenario.persona !== 'default' && <span className="capitalize">{scenario.persona} buyer · </span>}
+            {scenario.totalSteps} steps · {(scenario.durationMs / 1000).toFixed(1)}s
+          </div>
+        </div>
+        <span className={`px-2.5 py-0.5 text-xs font-medium rounded-full ${outcomeColors[scenario.outcome] ?? 'bg-slate-100 text-slate-600'}`}>
+          {scenario.outcome}
+        </span>
+        <svg className={`w-4 h-4 text-slate-400 transition-transform ${expanded ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+        </svg>
+      </button>
+
+      {expanded && (
+        <div className="px-5 pb-5 border-t border-slate-100 pt-4 space-y-4">
+          {/* Selected product */}
+          {scenario.selectedProduct && (
+            <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-4">
+              <div className="text-xs font-semibold text-emerald-700 uppercase tracking-wider mb-1">Agent's Selection</div>
+              <div className="font-medium text-slate-900">{scenario.selectedProduct.name}</div>
+              {scenario.selectedProduct.price != null && scenario.selectedProduct.price > 0 && (
+                <div className="text-sm text-slate-600">${scenario.selectedProduct.price}</div>
+              )}
+              <p className="text-sm text-emerald-700 mt-2 italic">"{scenario.selectedProduct.reason}"</p>
+            </div>
+          )}
+
+          {/* Failure point */}
+          {scenario.failurePoint && (
+            <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+              <div className="text-xs font-semibold text-red-700 uppercase tracking-wider mb-1">Failure Point — Step {scenario.failurePoint.stepNumber}</div>
+              <p className="text-sm text-red-700 font-medium">{scenario.failurePoint.reason}</p>
+              {scenario.failurePoint.context && (
+                <p className="text-xs text-red-600 mt-1">{scenario.failurePoint.context}</p>
+              )}
+            </div>
+          )}
+
+          {/* Transcript */}
+          <div>
+            <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Transcript</div>
+            <TranscriptTimeline steps={scenario.steps} />
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function SimulationSection({ simulation }: { simulation: AgentSimulation }) {
+  const personas = [...new Set(simulation.scenarios.map(s => s.persona))];
+  const [activePersona, setActivePersona] = useState(personas[0] ?? 'default');
+  const filtered = simulation.scenarios.filter(s => s.persona === activePersona);
+
+  const completed = simulation.scenarios.filter(s => s.outcome === 'completed').length;
+  const total = simulation.scenarios.length;
+
+  return (
+    <div className="flex flex-col gap-5">
+      <h2 className="text-sm font-semibold text-slate-400 uppercase tracking-widest">
+        Simulated Shopping Experience
+        <span className="ml-2 px-2 py-0.5 text-xs rounded-full bg-purple-100 text-purple-700 font-medium normal-case tracking-normal">
+          {completed}/{total} completed
+        </span>
+      </h2>
+
+      {/* Persona tabs (only if multiple) */}
+      {personas.length > 1 && (
+        <div className="flex gap-2">
+          {personas.map(p => (
+            <button
+              key={p}
+              onClick={() => setActivePersona(p)}
+              className={`px-3 py-1.5 text-xs font-medium rounded-full transition-colors capitalize ${
+                activePersona === p
+                  ? 'bg-purple-100 text-purple-700'
+                  : 'bg-slate-100 text-slate-500 hover:bg-slate-200'
+              }`}
+            >
+              {p === 'default' ? 'Balanced' : p} buyer
+            </button>
+          ))}
+        </div>
+      )}
+
+      {/* Scenario cards */}
+      <div className="space-y-3">
+        {filtered.map((scenario, i) => (
+          <ScenarioCard key={`${scenario.persona}-${i}`} scenario={scenario} index={i} />
+        ))}
+      </div>
+
+      {/* Meta info */}
+      <div className="text-xs text-slate-400 flex flex-wrap gap-4">
+        <span>Model: {simulation.modelUsed}</span>
+        <span>Scenarios: {total}</span>
+        <span>Cost: ${simulation.costEstimateUsd.toFixed(4)}</span>
+        <span>Duration: {(simulation.durationMs / 1000).toFixed(1)}s</span>
+      </div>
+    </div>
+  );
+}
+
 export default function ScanResultPage() {
   const { domain } = useParams<{ domain: string }>();
   const navigate = useNavigate();
@@ -585,6 +884,60 @@ export default function ScanResultPage() {
                 ))}
               </div>
             </div>
+
+            {/* AI Quality Assessment — show results or upsell */}
+            {result.aiAssessment ? (
+              <AIAssessmentSection assessment={result.aiAssessment} />
+            ) : (
+              <div className="bg-gradient-to-br from-indigo-50 to-blue-50 border border-indigo-200 rounded-2xl p-6">
+                <div className="flex items-start gap-4">
+                  <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center shrink-0">
+                    <svg className="w-5 h-5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 00-2.455 2.456z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-slate-900 mb-1">Want deeper analysis?</h3>
+                    <p className="text-sm text-slate-600 mb-3">
+                      Max plan includes AI-powered quality assessment — product relevance scoring, description analysis, simulated buyer queries, and specific fix recommendations with code snippets.
+                    </p>
+                    <Link
+                      to="/plan"
+                      className="inline-flex items-center px-4 py-2 bg-indigo-500 hover:bg-indigo-600 text-white text-sm font-semibold rounded-lg transition-colors"
+                    >
+                      Upgrade to Max
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Agent Simulation — show results or upsell */}
+            {result.agentSimulation ? (
+              <SimulationSection simulation={result.agentSimulation} />
+            ) : (
+              <div className="bg-gradient-to-br from-purple-50 to-indigo-50 border border-purple-200 rounded-2xl p-6">
+                <div className="flex items-start gap-4">
+                  <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center shrink-0">
+                    <svg className="w-5 h-5 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-slate-900 mb-1">See how AI agents actually shop your store</h3>
+                    <p className="text-sm text-slate-600 mb-3">
+                      Max plan includes simulated buyer agents — watch step-by-step as an AI tries to find products, compare options, and complete a purchase on your store.
+                    </p>
+                    <Link
+                      to="/plan"
+                      className="inline-flex items-center px-4 py-2 bg-purple-500 hover:bg-purple-600 text-white text-sm font-semibold rounded-lg transition-colors"
+                    >
+                      Upgrade to Max
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Findings with email-gated fixes */}
             {(() => {

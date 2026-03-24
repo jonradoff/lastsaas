@@ -53,12 +53,18 @@ func (h *ScannerHandler) TriggerScan(w http.ResponseWriter, r *http.Request) {
 
 	// Optionally attach tenant ID when the request is authenticated, for paid scan history.
 	var tenantID *primitive.ObjectID
+	scanOpts := scanner.ScanOptions{}
 	if tenant, ok := middleware.GetTenantFromContext(ctx); ok {
 		id := tenant.ID
 		tenantID = &id
+		scanOpts.Assess = h.hasAIAssessmentEntitlement(ctx, tenant)
+		scanOpts.Simulate = h.hasSimulationEntitlement(ctx, tenant)
+		if h.hasCrossAgentEntitlement(ctx, tenant) {
+			scanOpts.Personas = "default,price,quality,speed"
+		}
 	}
 
-	stored, err := h.service.ScanStore(ctx, req.Domain, tenantID)
+	stored, err := h.service.ScanStore(ctx, req.Domain, tenantID, scanOpts)
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Scan failed: "+err.Error())
 		return
@@ -160,6 +166,51 @@ func (h *ScannerHandler) getMaxTrackedStores(ctx context.Context, tenant *models
 		return ent.NumericValue
 	}
 	return 0
+}
+
+// hasSimulationEntitlement checks if the tenant's plan includes agent simulation.
+func (h *ScannerHandler) hasSimulationEntitlement(ctx context.Context, tenant *models.Tenant) bool {
+	if h.db == nil || tenant.PlanID == nil {
+		return false
+	}
+	var plan models.Plan
+	if err := h.db.Plans().FindOne(ctx, bson.M{"_id": *tenant.PlanID}).Decode(&plan); err != nil {
+		return false
+	}
+	if ent, ok := plan.Entitlements["ai_simulation"]; ok && ent.Type == models.EntitlementTypeBool {
+		return ent.BoolValue
+	}
+	return false
+}
+
+// hasCrossAgentEntitlement checks if the tenant's plan includes cross-agent personas.
+func (h *ScannerHandler) hasCrossAgentEntitlement(ctx context.Context, tenant *models.Tenant) bool {
+	if h.db == nil || tenant.PlanID == nil {
+		return false
+	}
+	var plan models.Plan
+	if err := h.db.Plans().FindOne(ctx, bson.M{"_id": *tenant.PlanID}).Decode(&plan); err != nil {
+		return false
+	}
+	if ent, ok := plan.Entitlements["cross_agent"]; ok && ent.Type == models.EntitlementTypeBool {
+		return ent.BoolValue
+	}
+	return false
+}
+
+// hasAIAssessmentEntitlement checks if the tenant's plan includes AI quality assessment.
+func (h *ScannerHandler) hasAIAssessmentEntitlement(ctx context.Context, tenant *models.Tenant) bool {
+	if h.db == nil || tenant.PlanID == nil {
+		return false
+	}
+	var plan models.Plan
+	if err := h.db.Plans().FindOne(ctx, bson.M{"_id": *tenant.PlanID}).Decode(&plan); err != nil {
+		return false
+	}
+	if ent, ok := plan.Entitlements["ai_assessment"]; ok && ent.Type == models.EntitlementTypeBool {
+		return ent.BoolValue
+	}
+	return false
 }
 
 // AddTrackedStore handles POST /api/tracked-stores.

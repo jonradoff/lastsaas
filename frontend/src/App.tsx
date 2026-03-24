@@ -6,6 +6,7 @@ import { AuthProvider } from './contexts/AuthContext';
 import { TenantProvider } from './contexts/TenantContext';
 import { BrandingProvider } from './contexts/BrandingContext';
 import { ThemeProvider } from './contexts/ThemeContext';
+import { PlanProvider } from './contexts/PlanContext';
 import Layout from './components/Layout';
 import AdminLayout from './components/AdminLayout';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -136,6 +137,7 @@ export default function App() {
           <AuthProvider>
             <ThemeProvider>
               <TenantProvider>
+              <PlanProvider>
                 <BrowserRouter>
                   <ScrollToTop />
                   <BrandingThemeInjector />
@@ -226,6 +228,7 @@ export default function App() {
                     }}
                   />
                 </BrowserRouter>
+              </PlanProvider>
               </TenantProvider>
             </ThemeProvider>
           </AuthProvider>

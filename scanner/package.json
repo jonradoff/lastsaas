@@ -13,21 +13,29 @@
     "test:watch": "vitest"
   },
   "dependencies": {
+    "@google/genai": "^1.46.0",
     "@modelcontextprotocol/sdk": "^1.12.0",
+    "ajv": "^8.17.0",
     "commander": "^13.0.0",
-    "js-yaml": "^4.1.0",
-    "ajv": "^8.17.0"
+    "js-yaml": "^4.1.0"
   },
   "devDependencies": {
-    "typescript": "^5.7.0",
-    "vitest": "^3.0.0",
     "@types/js-yaml": "^4.0.9",
-    "@types/node": "^22.0.0"
+    "@types/node": "^22.0.0",
+    "typescript": "^5.7.0",
+    "vitest": "^3.0.0"
   },
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/reesthomas212/mcplens"
   },
-  "keywords": ["mcp", "shopify", "agent-commerce", "testing", "scanner", "lighthouse"]
+  "keywords": [
+    "mcp",
+    "shopify",
+    "agent-commerce",
+    "testing",
+    "scanner",
+    "lighthouse"
+  ]
 }

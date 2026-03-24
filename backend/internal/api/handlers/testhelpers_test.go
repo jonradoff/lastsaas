@@ -15,6 +15,7 @@ import (
 	"lastsaas/internal/events"
 	"lastsaas/internal/middleware"
 	"lastsaas/internal/models"
+	"lastsaas/internal/scanner"
 	"lastsaas/internal/syslog"
 	"lastsaas/internal/testutil"
 
@@ -84,6 +85,11 @@ func setupTestServer(t *testing.T) *testEnv {
 	apiKeysHandler := NewAPIKeysHandler(sharedDB, emitter, sysLogger)
 	webhooksHandler := NewWebhooksHandler(sharedDB, sysLogger, nil)
 
+	// Scanner handler (uses DB directly for tracked stores, no CLI needed)
+	scannerSvc := scanner.NewService(sharedDB.Database)
+	scannerHandler := NewScannerHandler(scannerSvc)
+	scannerHandler.SetDB(sharedDB)
+
 	// Middleware
 	authMiddleware := middleware.NewAuthMiddleware(jwtService, sharedDB)
 	tenantMiddleware := middleware.NewTenantMiddleware(sharedDB)
@@ -101,6 +107,12 @@ func setupTestServer(t *testing.T) *testEnv {
 	guarded.HandleFunc("/auth/register", authHandler.Register).Methods("POST")
 	guarded.HandleFunc("/auth/login", authHandler.Login).Methods("POST")
 	guarded.HandleFunc("/auth/refresh", authHandler.Refresh).Methods("POST")
+	guarded.HandleFunc("/auth/verify-email", authHandler.VerifyEmail).Methods("POST")
+	guarded.HandleFunc("/auth/resend-verification", authHandler.ResendVerification).Methods("POST")
+	guarded.HandleFunc("/auth/forgot-password", authHandler.ForgotPassword).Methods("POST")
+	guarded.HandleFunc("/auth/reset-password", authHandler.ResetPassword).Methods("POST")
+	guarded.HandleFunc("/auth/providers", authHandler.GetProviders).Methods("GET")
+	guarded.HandleFunc("/auth/mfa/challenge", authHandler.MFAChallenge).Methods("POST")
 
 	// Protected auth routes
 	protectedAuth := guarded.PathPrefix("/auth").Subrouter()
@@ -111,6 +123,12 @@ func setupTestServer(t *testing.T) *testEnv {
 	protectedAuth.HandleFunc("/mfa/setup", authHandler.MFASetup).Methods("POST")
 	protectedAuth.HandleFunc("/mfa/verify-setup", authHandler.MFAVerifySetup).Methods("POST")
 	protectedAuth.HandleFunc("/mfa/disable", authHandler.MFADisable).Methods("POST")
+	protectedAuth.HandleFunc("/mfa/regenerate-codes", authHandler.MFARegenerateRecoveryCodes).Methods("POST")
+	protectedAuth.HandleFunc("/sessions", authHandler.ListSessions).Methods("GET")
+	protectedAuth.HandleFunc("/sessions", authHandler.RevokeAllSessions).Methods("DELETE")
+	protectedAuth.HandleFunc("/sessions/{sessionId}", authHandler.RevokeSession).Methods("DELETE")
+	protectedAuth.HandleFunc("/preferences", authHandler.UpdatePreferences).Methods("PATCH")
+	protectedAuth.HandleFunc("/complete-onboarding", authHandler.CompleteOnboarding).Methods("POST")
 
 	// Tenant routes
 	tenantAPI := guarded.PathPrefix("/tenant").Subrouter()
@@ -136,6 +154,26 @@ func setupTestServer(t *testing.T) *testEnv {
 	ownerRouter.Use(middleware.RequireRole(models.RoleOwner))
 	ownerRouter.HandleFunc("/role", tenantHandler.ChangeRole).Methods("PATCH")
 	ownerRouter.HandleFunc("/transfer-ownership", tenantHandler.TransferOwnership).Methods("POST")
+
+	// Scanner routes (public)
+	guarded.HandleFunc("/scan", scannerHandler.TriggerScan).Methods("POST")
+	guarded.HandleFunc("/scan/{id}", scannerHandler.GetScan).Methods("GET")
+	guarded.HandleFunc("/scan/domain/{domain}", scannerHandler.GetLatestDomainScan).Methods("GET")
+
+	// Tracked stores routes (authenticated + tenant)
+	trackedAPI := guarded.PathPrefix("/tracked-stores").Subrouter()
+	trackedAPI.Use(authMiddleware.RequireAuth)
+	trackedAPI.Use(tenantMiddleware.RequireTenant)
+	trackedAPI.HandleFunc("", scannerHandler.ListTrackedStores).Methods("GET")
+	trackedAPI.HandleFunc("", scannerHandler.AddTrackedStore).Methods("POST")
+	trackedAPI.HandleFunc("/{id}", scannerHandler.RemoveTrackedStore).Methods("DELETE")
+	trackedAPI.HandleFunc("/{id}/history", scannerHandler.GetTrackedStoreHistory).Methods("GET")
+
+	// Scan list (authenticated + tenant)
+	scanListAPI := guarded.PathPrefix("/scans").Subrouter()
+	scanListAPI.Use(authMiddleware.RequireAuth)
+	scanListAPI.Use(tenantMiddleware.RequireTenant)
+	scanListAPI.HandleFunc("", scannerHandler.ListScans).Methods("GET")
 
 	// Billing routes
 	billingAPI := guarded.PathPrefix("/billing").Subrouter()

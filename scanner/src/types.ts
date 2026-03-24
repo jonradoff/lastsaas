@@ -124,6 +124,87 @@ export interface TestRunResult {
   schemaVersion: string;
   scenarioCount: number;
   testedCategories: CategoryName[];
+  aiAssessment?: AIAssessment;
+  agentSimulation?: AgentSimulation;
+}
+
+// --- AI Quality Assessment ---
+
+export interface AIFinding {
+  title: string;
+  category: "relevance" | "description-quality" | "data-completeness" | "query-simulation" | "competitive";
+  severity: "high" | "medium" | "low";
+  explanation: string;
+  revenueImpact: "high" | "medium" | "low";
+  fix: string;
+}
+
+export interface AIQuerySimulation {
+  query: string;
+  wouldFindResult: boolean;
+  confidence: number;
+  explanation: string;
+}
+
+export interface AIAssessment {
+  overallQualityScore: number;
+  productRelevance: { score: number; summary: string };
+  descriptionQuality: { score: number; summary: string };
+  dataCompleteness: { score: number; missingAttributes: string[]; summary: string };
+  querySimulations: AIQuerySimulation[];
+  findings: AIFinding[];
+  competitiveComparison: string;
+  modelUsed: string;
+  tokenUsage: { input: number; output: number };
+  costEstimateUsd: number;
+  durationMs: number;
+}
+
+// --- Agent Simulation ---
+
+export type AgentPersona = "default" | "price" | "quality" | "speed";
+
+export interface AgentStep {
+  stepNumber: number;
+  action: "think" | "tool_call" | "tool_result" | "decision" | "failure";
+  toolName?: string;
+  toolArgs?: Record<string, unknown>;
+  toolResult?: unknown;
+  reasoning: string;
+  durationMs: number;
+}
+
+export interface SelectedProduct {
+  id: string;
+  name: string;
+  price?: number;
+  reason: string;
+}
+
+export interface FailurePoint {
+  stepNumber: number;
+  reason: string;
+  context: string;
+}
+
+export interface ShoppingScenario {
+  intent: string;
+  persona: AgentPersona;
+  steps: AgentStep[];
+  outcome: "completed" | "failed" | "abandoned";
+  selectedProduct?: SelectedProduct;
+  failurePoint?: FailurePoint;
+  totalSteps: number;
+  durationMs: number;
+  tokenUsage: { input: number; output: number };
+}
+
+export interface AgentSimulation {
+  scenarios: ShoppingScenario[];
+  modelUsed: string;
+  totalTokenUsage: { input: number; output: number };
+  costEstimateUsd: number;
+  durationMs: number;
 }
 
 // --- CLI ---
@@ -139,4 +220,7 @@ export interface CliOptions {
   out?: string;
   open?: boolean;
   verbose?: boolean;
+  assess?: boolean;
+  simulate?: boolean;
+  personas?: string;
 }

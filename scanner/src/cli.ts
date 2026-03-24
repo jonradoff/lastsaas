@@ -32,6 +32,9 @@ program
   .option("--out <path>", "Output file path")
   .option("--open", "Open report in default browser after generation")
   .option("--verbose", "Print interaction log to stderr")
+  .option("--assess", "Run AI quality assessment (requires GEMINI_API_KEY)")
+  .option("--simulate", "Run buyer agent simulation (requires GEMINI_API_KEY)")
+  .option("--personas <list>", "Comma-separated agent personas: default,price,quality,speed")
   .action(async (opts: CliOptions & { nonInteractive?: boolean; failUnder?: number }) => {
     try {
       // 1. Validate: either --url or --command required (not both, not neither)
@@ -107,6 +110,9 @@ program
           categoryFilter,
           verbose: opts.verbose,
           log: verboseLog,
+          assess: opts.assess,
+          simulate: opts.simulate,
+          personas: opts.personas?.split(",").map(p => p.trim()).filter(Boolean),
         });
 
         // 7. Write report to output file
@@ -186,9 +192,12 @@ program
   .option("--open", "Open report in default browser after generation")
   .option("--verbose", "Print interaction log to stderr")
   .option("--fail-under <score>", "Exit code 1 if composite score is below this threshold", parseFloat)
+  .option("--assess", "Run AI quality assessment (requires GEMINI_API_KEY)")
+  .option("--simulate", "Run buyer agent simulation (requires GEMINI_API_KEY)")
+  .option("--personas <list>", "Comma-separated agent personas: default,price,quality,speed")
   .action(async (
     domains: string[],
-    opts: { header?: string[]; compare?: boolean; format?: string; out?: string; open?: boolean; verbose?: boolean; failUnder?: number }
+    opts: { header?: string[]; compare?: boolean; format?: string; out?: string; open?: boolean; verbose?: boolean; failUnder?: number; assess?: boolean; simulate?: boolean; personas?: string }
   ) => {
     try {
       // Parse headers from --header flags
@@ -223,7 +232,7 @@ program
         const connection = await connectHTTP(url, headersArg);
         try {
           const verboseLog = opts.verbose ? (msg: string) => process.stderr.write(msg + "\n") : undefined;
-          const result = await runTests(connection, { verbose: opts.verbose, log: verboseLog, scenariosDir: shopifyScenariosDir });
+          const result = await runTests(connection, { verbose: opts.verbose, log: verboseLog, scenariosDir: shopifyScenariosDir, assess: opts.assess, simulate: opts.simulate, personas: opts.personas?.split(",").map(p => p.trim()).filter(Boolean) });
 
           const safeLabel = domain.replace(/[^a-z0-9.-]/gi, "_");
           const defaultOut = format === "json" ? `mcplens-${safeLabel}.json` : `mcplens-${safeLabel}.html`;
@@ -281,7 +290,7 @@ program
         const connection = await connectHTTP(url, headersArg);
         try {
           const verboseLog = opts.verbose ? (msg: string) => process.stderr.write(msg + "\n") : undefined;
-          const result = await runTests(connection, { verbose: opts.verbose, log: verboseLog, scenariosDir: shopifyScenariosDir });
+          const result = await runTests(connection, { verbose: opts.verbose, log: verboseLog, scenariosDir: shopifyScenariosDir, assess: opts.assess, simulate: opts.simulate, personas: opts.personas?.split(",").map(p => p.trim()).filter(Boolean) });
           results.push({ domain, result });
           process.stdout.write(`  ${domain}: ${result.compositeScore}/100\n`);
           await connection.close();

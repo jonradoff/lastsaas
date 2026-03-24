@@ -60,6 +60,9 @@ export async function runTests(
     scenariosDir?: string;
     verbose?: boolean;
     log?: (msg: string) => void;
+    assess?: boolean;
+    simulate?: boolean;
+    personas?: string[];
   } = {},
 ): Promise<TestRunResult> {
   const log = options.log ?? console.log;
@@ -95,6 +98,7 @@ export async function runTests(
 
   // 4. Execute each scenario
   const scenarioResults: ScenarioResult[] = [];
+  const allRawData: Record<string, unknown> = {}; // Collect raw MCP data for Layer 2
 
   for (const scenario of scenarios) {
     log(`Running scenario: ${scenario.name}...`);
@@ -188,6 +192,11 @@ export async function runTests(
       durationMs: Date.now() - scenarioStart,
     });
 
+    // Collect raw data for Layer 2 (prefix with scenario name to avoid collisions)
+    for (const [key, value] of Object.entries(variables)) {
+      allRawData[`${scenario.name}__${key}`] = value;
+    }
+
     // Execute teardown (best effort)
     for (const step of scenario.teardown) {
       const toolName = capabilityToTool[step.action];
@@ -251,7 +260,7 @@ export async function runTests(
 
   const durationMs = Date.now() - runStart;
 
-  return {
+  const result: TestRunResult = {
     serverIdentifier: "local",
     timestamp: Date.now(),
     durationMs,
@@ -268,4 +277,52 @@ export async function runTests(
     scenarioCount: scenarios.length,
     testedCategories,
   };
+
+  // 7. AI Quality Assessment (optional)
+  if (options.assess) {
+    log("Running AI quality assessment...");
+    try {
+      const { runAIAssessment } = await import("./ai-assessor.js");
+      const assessment = await runAIAssessment(allRawData, result, {
+        verbose: options.verbose,
+        log,
+      });
+      if (assessment) {
+        result.aiAssessment = assessment;
+        log(`AI assessment complete: quality score ${assessment.overallQualityScore}/100`);
+      }
+    } catch (err) {
+      log(`AI assessment error: ${err instanceof Error ? err.message : String(err)}`);
+    }
+  }
+
+  // 8. Agent Simulation (optional)
+  if (options.simulate) {
+    log("Running buyer agent simulation...");
+    try {
+      const { runAgentSimulation } = await import("./agent-simulator.js");
+      const parsedPersonas = options.personas?.map(
+        (p) => p as import("./types.js").AgentPersona,
+      );
+      const simulation = await runAgentSimulation(
+        connection,
+        capabilityToTool,
+        tools as Array<{ name: string; description?: string; inputSchema?: { type: string; properties?: Record<string, unknown>; required?: string[] } }>,
+        allRawData,
+        {
+          personas: parsedPersonas,
+          verbose: options.verbose,
+          log,
+        },
+      );
+      if (simulation) {
+        result.agentSimulation = simulation;
+        log(`Simulation complete: ${simulation.scenarios.length} scenarios, $${simulation.costEstimateUsd}`);
+      }
+    } catch (err) {
+      log(`Simulation error: ${err instanceof Error ? err.message : String(err)}`);
+    }
+  }
+
+  return result;
 }

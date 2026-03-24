@@ -577,14 +577,17 @@ export default function LandingPage() {
               initial={prefersReducedMotion ? false : { opacity: 0, y: -10 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="mb-10 bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-xl px-6 py-4 text-center"
+              className="mb-10 bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-xl px-6 py-5 text-center"
             >
               <p className="text-sm sm:text-base font-semibold text-amber-800">
                 Founding User Pricing &mdash; First 100 users get 50% off their first month
-                <span className="hidden sm:inline"> (or 4 months free on annual plans)</span>
               </p>
-              <p className="text-xs text-amber-600 mt-1 sm:hidden">
-                Or 4 months free on annual plans
+              <p className="text-xs text-amber-600 mt-1.5">
+                Use code{' '}
+                <span className="inline-flex items-center gap-1.5 font-mono font-bold text-amber-900 bg-white border border-amber-300 rounded px-2 py-0.5 text-xs select-all">
+                  FOUNDING50
+                </span>
+                {' '}at checkout
               </p>
             </motion.div>
 
@@ -595,9 +598,9 @@ export default function LandingPage() {
               See the problems free. Pay for the solutions.
             </p>
 
-            {/* Billing toggle */}
+            {/* Billing toggle — fixed width, no layout shift */}
             <div className="flex items-center justify-center gap-3 mb-12">
-              <span className={`text-sm font-medium ${!billingAnnual ? 'text-slate-900' : 'text-slate-400'}`}>
+              <span className={`text-sm font-medium transition-colors ${!billingAnnual ? 'text-slate-900' : 'text-slate-400'}`}>
                 Monthly
               </span>
               <button
@@ -613,165 +616,89 @@ export default function LandingPage() {
                   }`}
                 />
               </button>
-              <span className={`text-sm font-medium ${billingAnnual ? 'text-slate-900' : 'text-slate-400'}`}>
+              <span className={`text-sm font-medium transition-colors ${billingAnnual ? 'text-slate-900' : 'text-slate-400'}`}>
                 Annual
               </span>
-              {billingAnnual && (
-                <span className="text-xs font-semibold text-emerald-600 bg-emerald-50 border border-emerald-200 rounded-full px-2.5 py-0.5">
-                  Save 2 months
-                </span>
-              )}
             </div>
 
-            {/* Pricing cards: Agency | Max (featured) | Pro */}
+            {/* Pricing cards: Free | Pro | Max — same height, aligned */}
             <motion.div
-              className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start"
+              className="grid grid-cols-1 lg:grid-cols-3 gap-6"
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true, amount: 0.15 }}
               variants={staggerContainer}
             >
-              {/* Agency — anchor card */}
+              {/* Free */}
               <motion.div
                 variants={fadeInUp}
                 {...(prefersReducedMotion ? {} : cardHover)}
-                className="rounded-xl p-7 border border-slate-700 bg-slate-900 text-white flex flex-col gap-6 cursor-default order-3 lg:order-1"
+                className="rounded-xl p-7 border border-slate-200 bg-white shadow-sm flex flex-col gap-6 cursor-default"
               >
                 <div>
-                  <div className="text-xs font-semibold text-amber-400 uppercase tracking-widest mb-3">
-                    For Agencies
-                  </div>
-                  <div className="text-lg font-bold mb-1">The Full Suite</div>
-                  <div className="text-xs text-slate-400 mb-4">
-                    Best for: agencies and consultancies managing multiple client stores
+                  <div className="text-lg font-bold text-slate-900 mb-1">Free</div>
+                  <div className="text-xs text-slate-500 mb-4">
+                    See your score instantly. No account required.
                   </div>
                   <div className="flex items-end gap-1">
-                    <span className="text-4xl font-bold">${billingAnnual ? '500' : '600'}</span>
-                    <span className="text-slate-400 mb-1 text-sm">/ {billingAnnual ? 'mo' : 'mo'}</span>
+                    <span className="text-4xl font-bold text-slate-900">$0</span>
+                    <span className="text-slate-500 mb-1 text-sm">/ forever</span>
                   </div>
-                  {billingAnnual && (
-                    <div className="text-xs text-emerald-400 mt-1">$6,000/yr (save $1,200)</div>
-                  )}
+                  <div className="text-xs text-slate-400 mt-1">&nbsp;</div>
                 </div>
-                <ul className="flex flex-col gap-2.5">
+                <ul className="flex flex-col gap-2.5 flex-1">
                   {[
-                    'Everything in Max',
-                    '50 tracked stores',
-                    'White-label reports + branded sharing',
-                    'API access',
-                    'Batch scanning',
-                    'Team/multi-user + role-based access',
-                    'Cross-agent compatibility testing',
-                    'Custom scenario development',
+                    'Instant 0-100 readiness score',
+                    '4-category breakdown',
+                    '10 automated test scenarios',
+                    'Shareable report URL',
+                    'OG images + README badge',
+                    'Scan any Shopify store',
+                    'Unlimited free scans',
                   ].map((f) => (
-                    <li key={f} className="flex items-start gap-2 text-sm text-slate-300">
-                      <svg className="w-4 h-4 mt-0.5 text-amber-400 shrink-0" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                    <li key={f} className="flex items-start gap-2 text-sm text-slate-600">
+                      <svg className="w-4 h-4 mt-0.5 text-slate-400 shrink-0" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
                       </svg>
                       {f}
                     </li>
                   ))}
                 </ul>
-                <div className="space-y-1.5 pt-2 border-t border-slate-700">
-                  <div className="text-sm text-amber-400 font-medium">
-                    BONUS: Cold email swipe file <span className="line-through text-slate-500">($500 value)</span>
-                  </div>
-                  <div className="text-sm text-amber-400 font-medium">
-                    BONUS: Agency pitch deck <span className="line-through text-slate-500">($2,000 value)</span>
-                  </div>
-                </div>
                 <Link
-                  to="/signup"
-                  className="mt-auto inline-flex items-center justify-center px-5 py-2.5 rounded-full font-semibold text-sm transition-colors bg-white text-slate-900 hover:bg-slate-100"
+                  to="/scan"
+                  className="mt-auto inline-flex items-center justify-center px-5 py-2.5 rounded-full font-semibold text-sm transition-colors bg-white text-slate-700 border border-slate-300 hover:bg-slate-50"
                 >
-                  Start 30-Day Trial &rarr;
+                  Scan Free &rarr;
                 </Link>
-                <p className="text-xs text-slate-500 text-center -mt-3">30-day money-back guarantee</p>
+                <p className="text-xs text-slate-400 text-center -mt-3">&nbsp;</p>
               </motion.div>
 
-              {/* Max — featured center card */}
+              {/* Pro */}
               <motion.div
                 variants={fadeInUp}
                 {...(prefersReducedMotion ? {} : cardHover)}
-                className="rounded-xl p-7 border-2 border-blue-400 bg-blue-50 ring-1 ring-blue-300 flex flex-col gap-6 cursor-default relative lg:scale-105 lg:-my-2 order-1 lg:order-2"
-              >
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-blue-500 text-white text-xs font-bold uppercase tracking-widest px-4 py-1 rounded-full">
-                  Most Popular
-                </div>
-                <div>
-                  <div className="text-lg font-bold text-slate-900 mb-1">The Full Picture</div>
-                  <div className="text-xs text-slate-500 mb-4">
-                    Best for: store owners who want to see exactly what AI agents experience
-                  </div>
-                  <div className="flex items-end gap-1">
-                    <span className="text-4xl font-bold text-slate-900">${billingAnnual ? '167' : '200'}</span>
-                    <span className="text-slate-500 mb-1 text-sm">/ mo</span>
-                  </div>
-                  {billingAnnual && (
-                    <div className="text-xs text-emerald-600 mt-1">$2,000/yr (save $400)</div>
-                  )}
-                </div>
-                <ul className="flex flex-col gap-2.5">
-                  {[
-                    'Everything in Pro',
-                    'Simulated Buyer Agent (Early Access)',
-                    'Full shopping transcript',
-                    'Multi-query testing (5 scenarios)',
-                    'LLM Quality Assessment (Early Access)',
-                    '15 tracked stores',
-                    'Daily automated rescans',
-                    'Revenue impact calculator',
-                  ].map((f) => (
-                    <li key={f} className="flex items-start gap-2 text-sm text-slate-700">
-                      <svg className="w-4 h-4 mt-0.5 text-blue-500 shrink-0" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                      </svg>
-                      {f}
-                    </li>
-                  ))}
-                </ul>
-                <div className="pt-2 border-t border-blue-200">
-                  <div className="text-sm text-blue-600 font-medium">
-                    BONUS: Competitive quality comparison <span className="line-through text-slate-400">($500 value)</span>
-                  </div>
-                </div>
-                <Link
-                  to="/signup"
-                  className="mt-auto inline-flex items-center justify-center px-5 py-2.5 rounded-full font-semibold text-sm transition-colors bg-blue-500 hover:bg-blue-600 text-white"
-                >
-                  Start 30-Day Trial &rarr;
-                </Link>
-                <p className="text-xs text-slate-500 text-center -mt-3">30-day money-back guarantee</p>
-              </motion.div>
-
-              {/* Pro — downsell card */}
-              <motion.div
-                variants={fadeInUp}
-                {...(prefersReducedMotion ? {} : cardHover)}
-                className="rounded-xl p-7 border border-slate-200 bg-white shadow-sm flex flex-col gap-6 cursor-default order-2 lg:order-3"
+                className="rounded-xl p-7 border border-slate-200 bg-white shadow-sm flex flex-col gap-6 cursor-default"
               >
                 <div>
-                  <div className="text-lg font-bold text-slate-900 mb-1">The Fixer</div>
+                  <div className="text-lg font-bold text-slate-900 mb-1">Pro</div>
                   <div className="text-xs text-slate-500 mb-4">
-                    Best for: store owners actively fixing their agent readiness score
+                    Fix your score with actionable code snippets.
                   </div>
                   <div className="flex items-end gap-1">
                     <span className="text-4xl font-bold text-slate-900">${billingAnnual ? '42' : '50'}</span>
                     <span className="text-slate-500 mb-1 text-sm">/ mo</span>
                   </div>
-                  {billingAnnual && (
-                    <div className="text-xs text-emerald-600 mt-1">$500/yr (save $100)</div>
-                  )}
+                  <div className="text-xs text-emerald-600 mt-1">{billingAnnual ? '$500/yr (save $100)' : '\u00A0'}</div>
                 </div>
-                <ul className="flex flex-col gap-2.5">
+                <ul className="flex flex-col gap-2.5 flex-1">
                   {[
                     'Everything in Free',
                     '3 tracked stores',
+                    '10 AI quality assessments/mo',
                     'Fix instructions with code snippets',
                     'Weekly automated rescans',
                     'Email alerts on score drops',
                     'CLI tool + CI/CD integration',
-                    'JSON/HTML report download',
                   ].map((f) => (
                     <li key={f} className="flex items-start gap-2 text-sm text-slate-600">
                       <svg className="w-4 h-4 mt-0.5 text-blue-500 shrink-0" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
@@ -781,11 +708,6 @@ export default function LandingPage() {
                     </li>
                   ))}
                 </ul>
-                <div className="pt-2 border-t border-slate-200">
-                  <div className="text-sm text-blue-600 font-medium">
-                    BONUS: Copy-paste fix snippets <span className="line-through text-slate-400">($200 value)</span>
-                  </div>
-                </div>
                 <Link
                   to="/signup"
                   className="mt-auto inline-flex items-center justify-center px-5 py-2.5 rounded-full font-semibold text-sm transition-colors bg-white text-slate-700 border border-slate-300 hover:bg-slate-50"
@@ -794,21 +716,108 @@ export default function LandingPage() {
                 </Link>
                 <p className="text-xs text-slate-500 text-center -mt-3">30-day money-back guarantee</p>
               </motion.div>
+
+              {/* Max — featured */}
+              <motion.div
+                variants={fadeInUp}
+                {...(prefersReducedMotion ? {} : cardHover)}
+                className="rounded-xl p-7 border-2 border-blue-400 bg-blue-50 ring-1 ring-blue-300 flex flex-col gap-6 cursor-default relative"
+              >
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-blue-500 text-white text-xs font-bold uppercase tracking-widest px-4 py-1 rounded-full">
+                  Most Popular
+                </div>
+                <div>
+                  <div className="text-lg font-bold text-slate-900 mb-1">Max</div>
+                  <div className="text-xs text-slate-500 mb-4">
+                    See what AI agents actually experience in your store.
+                  </div>
+                  <div className="flex items-end gap-1">
+                    <span className="text-4xl font-bold text-slate-900">${billingAnnual ? '167' : '200'}</span>
+                    <span className="text-slate-500 mb-1 text-sm">/ mo</span>
+                  </div>
+                  <div className="text-xs text-emerald-600 mt-1">{billingAnnual ? '$2,000/yr (save $400)' : '\u00A0'}</div>
+                </div>
+                <ul className="flex flex-col gap-2.5 flex-1">
+                  {[
+                    'Everything in Pro',
+                    'Unlimited AI quality assessments',
+                    'Simulated buyer agent',
+                    'Full shopping transcript',
+                    'Multi-query testing (5 scenarios)',
+                    '15 tracked stores',
+                    'Daily automated rescans',
+                  ].map((f) => (
+                    <li key={f} className="flex items-start gap-2 text-sm text-slate-700">
+                      <svg className="w-4 h-4 mt-0.5 text-blue-500 shrink-0" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                      </svg>
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+                <Link
+                  to="/signup"
+                  className="mt-auto inline-flex items-center justify-center px-5 py-2.5 rounded-full font-semibold text-sm transition-colors bg-blue-500 hover:bg-blue-600 text-white"
+                >
+                  Start 30-Day Trial &rarr;
+                </Link>
+                <p className="text-xs text-slate-500 text-center -mt-3">30-day money-back guarantee</p>
+              </motion.div>
             </motion.div>
 
-            {/* Free scan CTA */}
-            <div className="text-center mt-10">
-              <Link
-                to="/scan"
-                className="text-sm text-blue-500 hover:text-blue-700 font-medium transition-colors"
-              >
-                Not ready to buy? Run a free scan &rarr;
-              </Link>
-            </div>
+            {/* Agency — standalone below */}
+            <motion.div
+              variants={fadeInUp}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              {...(prefersReducedMotion ? {} : cardHover)}
+              className="mt-8 max-w-3xl mx-auto rounded-xl p-7 border border-slate-700 bg-slate-900 text-white flex flex-col sm:flex-row gap-6 cursor-default"
+            >
+              <div className="flex-1">
+                <div className="text-xs font-semibold text-amber-400 uppercase tracking-widest mb-2">
+                  For Agencies
+                </div>
+                <div className="text-lg font-bold mb-1">Agency</div>
+                <div className="text-xs text-slate-400 mb-4">
+                  White-label reports, API access, and multi-user teams for consultancies managing client stores.
+                </div>
+                <div className="flex items-end gap-1 mb-1">
+                  <span className="text-4xl font-bold">${billingAnnual ? '500' : '600'}</span>
+                  <span className="text-slate-400 mb-1 text-sm">/ mo</span>
+                </div>
+                <div className="text-xs text-emerald-400">{billingAnnual ? '$6,000/yr (save $1,200)' : '\u00A0'}</div>
+              </div>
+              <div className="flex-1">
+                <ul className="flex flex-col gap-2 mb-4">
+                  {[
+                    'Everything in Max',
+                    '50 tracked stores',
+                    'White-label reports + branded sharing',
+                    'API access + batch scanning',
+                    'Team/multi-user + role-based access',
+                    'Cross-agent compatibility (4 buyer personas)',
+                  ].map((f) => (
+                    <li key={f} className="flex items-start gap-2 text-sm text-slate-300">
+                      <svg className="w-4 h-4 mt-0.5 text-amber-400 shrink-0" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                      </svg>
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+                <Link
+                  to="/signup"
+                  className="inline-flex items-center justify-center px-5 py-2.5 rounded-full font-semibold text-sm transition-colors bg-white text-slate-900 hover:bg-slate-100"
+                >
+                  Start 30-Day Trial &rarr;
+                </Link>
+              </div>
+            </motion.div>
 
             {/* Money-back guarantee */}
-            <p className="text-center text-sm text-slate-500 mt-6 max-w-lg mx-auto">
-              30-day money-back guarantee. You either improve your agent readiness
+            <p className="text-center text-sm text-slate-500 mt-8 max-w-lg mx-auto">
+              30-day money-back guarantee on all paid plans. You either improve your agent readiness
               or you get your money back.
             </p>
           </div>

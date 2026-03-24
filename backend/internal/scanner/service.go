@@ -85,7 +85,15 @@ func nodeExecutable() string {
 
 // ScanStore runs the scanner CLI against domain and stores the result.
 // tenantID may be nil for unauthenticated (free-tier) scans.
-func (s *Service) ScanStore(ctx context.Context, domain string, tenantID *primitive.ObjectID) (*StoredScan, error) {
+// ScanOptions controls optional AI features for a scan.
+type ScanOptions struct {
+	Assess   bool
+	Simulate bool
+	Personas string // comma-separated: "default,price,quality,speed"
+}
+
+// ScanStore runs the scanner CLI against domain and stores the result.
+func (s *Service) ScanStore(ctx context.Context, domain string, tenantID *primitive.ObjectID, opts ...ScanOptions) (*StoredScan, error) {
 	cliPath := filepath.Join(s.scannerPath, "cli.js")
 
 	// Sanitise domain — strip schemes and paths to avoid shell-injection via exec args.
@@ -104,7 +112,19 @@ func (s *Service) ScanStore(ctx context.Context, domain string, tenantID *primit
 	defer os.Remove(tmpPath) // clean up temp file regardless of outcome
 
 	node := nodeExecutable()
-	cmd := exec.CommandContext(ctx, node, cliPath, "scan", domain, "--format", "json", "--out", tmpPath)
+	args := []string{cliPath, "scan", domain, "--format", "json", "--out", tmpPath}
+	if len(opts) > 0 {
+		if opts[0].Assess {
+			args = append(args, "--assess")
+		}
+		if opts[0].Simulate {
+			args = append(args, "--simulate")
+		}
+		if opts[0].Personas != "" {
+			args = append(args, "--personas", opts[0].Personas)
+		}
+	}
+	cmd := exec.CommandContext(ctx, node, args...)
 
 	var stdout, stderr bytes.Buffer
 	cmd.Stdout = &stdout

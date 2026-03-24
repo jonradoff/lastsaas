@@ -548,6 +548,70 @@ export interface ScanCategoryResult {
   scoreKillers: Array<{ condition: string; cap: number }>;
 }
 
+// --- AI Quality Assessment ---
+
+export interface AIFinding {
+  title: string;
+  category: string;
+  severity: 'high' | 'medium' | 'low';
+  explanation: string;
+  revenueImpact: 'high' | 'medium' | 'low';
+  fix: string;
+}
+
+export interface AIQuerySimulation {
+  query: string;
+  wouldFindResult: boolean;
+  confidence: number;
+  explanation: string;
+}
+
+export interface AIAssessment {
+  overallQualityScore: number;
+  productRelevance: { score: number; summary: string };
+  descriptionQuality: { score: number; summary: string };
+  dataCompleteness: { score: number; missingAttributes: string[]; summary: string };
+  querySimulations: AIQuerySimulation[];
+  findings: AIFinding[];
+  competitiveComparison: string;
+  modelUsed: string;
+  tokenUsage: { input: number; output: number };
+  costEstimateUsd: number;
+  durationMs: number;
+}
+
+// --- Agent Simulation ---
+
+export interface AgentStep {
+  stepNumber: number;
+  action: 'think' | 'tool_call' | 'tool_result' | 'decision' | 'failure';
+  toolName?: string;
+  toolArgs?: Record<string, unknown>;
+  toolResult?: unknown;
+  reasoning: string;
+  durationMs: number;
+}
+
+export interface ShoppingScenario {
+  intent: string;
+  persona: string;
+  steps: AgentStep[];
+  outcome: 'completed' | 'failed' | 'abandoned';
+  selectedProduct?: { id: string; name: string; price?: number; reason: string };
+  failurePoint?: { stepNumber: number; reason: string; context: string };
+  totalSteps: number;
+  durationMs: number;
+  tokenUsage: { input: number; output: number };
+}
+
+export interface AgentSimulation {
+  scenarios: ShoppingScenario[];
+  modelUsed: string;
+  totalTokenUsage: { input: number; output: number };
+  costEstimateUsd: number;
+  durationMs: number;
+}
+
 export interface ScanResult {
   serverIdentifier: string;
   timestamp: number;
@@ -560,6 +624,8 @@ export interface ScanResult {
   schemaVersion: string;
   scenarioCount: number;
   testedCategories: string[];
+  aiAssessment?: AIAssessment;
+  agentSimulation?: AgentSimulation;
 }
 
 export const scanApi = {
