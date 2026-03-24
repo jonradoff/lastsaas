@@ -720,11 +720,11 @@ export default function LandingPage() {
                   {[
                     'Everything in Free',
                     '3 tracked stores',
+                    'Unlimited AI quality assessments',
                     'Fix instructions with code snippets',
                     'Weekly automated rescans',
                     'Email alerts on score drops',
                     'CLI tool + CI/CD integration',
-                    'JSON + HTML report downloads',
                   ].map((f) => (
                     <li key={f} className="flex items-start gap-2 text-sm text-slate-600">
                       <svg className="w-4 h-4 mt-0.5 text-blue-500 shrink-0" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
@@ -766,12 +766,12 @@ export default function LandingPage() {
                 <ul className="flex flex-col gap-2.5 flex-1">
                   {[
                     'Everything in Pro',
-                    'Unlimited AI quality assessments',
                     'Simulated buyer agent',
                     'Full shopping transcript',
                     'Multi-query testing (5 scenarios)',
                     '15 tracked stores',
                     'Daily automated rescans',
+                    'Side-by-side store comparison',
                   ].map((f) => (
                     <li key={f} className="flex items-start gap-2 text-sm text-slate-700">
                       <svg className="w-4 h-4 mt-0.5 text-blue-500 shrink-0" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">

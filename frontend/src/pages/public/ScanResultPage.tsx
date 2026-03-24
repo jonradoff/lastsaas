@@ -942,7 +942,7 @@ export default function ScanResultPage() {
                     <div className="flex items-center gap-3">
                       <BuyFeatureButton domain={domain!} feature="assess" label="Get AI Assessment" price="$5" />
                       <Link to="/plan" className="text-sm text-slate-500 hover:text-slate-700 transition-colors">
-                        or upgrade to Max for unlimited
+                        or upgrade to Pro for unlimited
                       </Link>
                     </div>
                   </div>
