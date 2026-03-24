@@ -71,14 +71,14 @@ function ScoreTimelineChart({ scans }: { scans: StoredScanEntry[] }) {
               x2={PADDING.left + chartW}
               y1={toY(label)}
               y2={toY(label)}
-              stroke="rgba(0,0,0,0.08)"
+              stroke="var(--color-dark-800)"
               strokeWidth="1"
             />
             <text
               x={PADDING.left - 6}
               y={toY(label) + 4}
               textAnchor="end"
-              fill="rgba(0,0,0,0.4)"
+              fill="var(--color-dark-500)"
               fontSize="10"
             >
               {label}
@@ -127,7 +127,7 @@ function ScoreTimelineChart({ scans }: { scans: StoredScanEntry[] }) {
               x={toX(origIndex)}
               y={HEIGHT - 6}
               textAnchor="middle"
-              fill="rgba(0,0,0,0.35)"
+              fill="var(--color-dark-500)"
               fontSize="9"
             >
               {new Date(scan.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
