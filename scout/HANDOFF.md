@@ -23,4 +23,4 @@ This file is the coordination protocol between the **Scout** (monitors site, fin
 
 | ID | Finding | Severity | Status | Owner | Updated |
 |----|---------|----------|--------|-------|---------|
-| 001 | Resend email API returning 401 — all transactional emails broken | high | new | scout | 2026-03-24 |
+| 001 | Resend email API returning 401 — all transactional emails broken | high | done | builder | 2026-03-24 |

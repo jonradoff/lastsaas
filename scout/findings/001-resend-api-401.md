@@ -2,7 +2,7 @@
 id: 001
 type: bug
 severity: high
-status: new
+status: done
 found: 2026-03-24
 phase: health
 ---
