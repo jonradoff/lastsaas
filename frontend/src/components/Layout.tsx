@@ -24,7 +24,7 @@ export default function Layout() {
   const { activeTenant, setActiveTenant } = useTenant();
   const { branding } = useBranding();
   const { resolvedTheme, setTheme } = useTheme();
-  const { tierName, isPaid, isLoaded: planLoaded } = usePlan();
+  const { tierName, isLoaded: planLoaded } = usePlan();
   const [showTenantMenu, setShowTenantMenu] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
   const [showCredits, setShowCredits] = useState(false);

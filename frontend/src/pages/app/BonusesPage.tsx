@@ -1,10 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Gift, Download, Mail, Presentation, Wrench, Lock, Crown, ArrowRight } from 'lucide-react';
-import { toast } from 'sonner';
-import { plansApi } from '../../api/client';
-import { getErrorMessage } from '../../utils/errors';
-import { useTenant } from '../../contexts/TenantContext';
 import { usePlan } from '../../contexts/PlanContext';
 import { useTelemetry } from '../../hooks/useTelemetry';
 import LoadingSpinner from '../../components/LoadingSpinner';
@@ -56,7 +52,6 @@ const BONUSES: BonusItem[] = [
 ];
 
 export default function BonusesPage() {
-  const { activeTenant } = useTenant();
   const { trackPageView } = useTelemetry();
   const { currentPlan, plans, tierName, isLoaded } = usePlan();
   const navigate = useNavigate();
