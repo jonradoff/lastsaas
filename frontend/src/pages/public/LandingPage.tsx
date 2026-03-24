@@ -414,7 +414,7 @@ export default function LandingPage() {
             >
               {[
                 { stat: '100+', label: 'Stores scanned' },
-                { stat: '11 – 100', label: 'Score range across scans' },
+                { stat: '0 – 100', label: 'Score range across scans' },
                 { stat: '~15 sec', label: 'Average scan time' },
               ].map(({ stat, label }) => (
                 <motion.div
@@ -889,9 +889,6 @@ export default function LandingPage() {
               className="hover:text-slate-900 transition-colors"
             >
               GitHub
-            </a>
-            <a href="#" className="hover:text-slate-900 transition-colors">
-              Docs
             </a>
             <Link to="/terms" className="hover:text-slate-900 transition-colors">
               Terms

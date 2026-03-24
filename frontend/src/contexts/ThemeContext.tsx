@@ -33,7 +33,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   const getInitialTheme = (): ThemeMode => {
     if (user?.themePreference) return user.themePreference;
     const stored = localStorage.getItem(THEME_KEY) as ThemeMode | null;
-    return stored || 'light';
+    return stored || 'dark';
   };
 
   const [theme, setThemeState] = useState<ThemeMode>(getInitialTheme);
