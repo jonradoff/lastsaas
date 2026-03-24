@@ -711,10 +711,10 @@ export default function LandingPage() {
                     Fix your score with actionable code snippets.
                   </div>
                   <div className="flex items-end gap-1">
-                    <span className="text-4xl font-bold text-slate-900">${billingAnnual ? '42' : '50'}</span>
+                    <span className="text-4xl font-bold text-slate-900">${billingAnnual ? '24' : '29'}</span>
                     <span className="text-slate-500 mb-1 text-sm">/ mo</span>
                   </div>
-                  <div className="text-xs text-emerald-600 mt-1">{billingAnnual ? '$500/yr (save $100)' : '\u00A0'}</div>
+                  <div className="text-xs text-emerald-600 mt-1">{billingAnnual ? '$290/yr (save $58)' : '\u00A0'}</div>
                 </div>
                 <ul className="flex flex-col gap-2.5 flex-1">
                   {[
@@ -758,10 +758,10 @@ export default function LandingPage() {
                     See what AI agents actually experience in your store.
                   </div>
                   <div className="flex items-end gap-1">
-                    <span className="text-4xl font-bold text-slate-900">${billingAnnual ? '167' : '200'}</span>
+                    <span className="text-4xl font-bold text-slate-900">${billingAnnual ? '66' : '79'}</span>
                     <span className="text-slate-500 mb-1 text-sm">/ mo</span>
                   </div>
-                  <div className="text-xs text-emerald-600 mt-1">{billingAnnual ? '$2,000/yr (save $400)' : '\u00A0'}</div>
+                  <div className="text-xs text-emerald-600 mt-1">{billingAnnual ? '$790/yr (save $158)' : '\u00A0'}</div>
                 </div>
                 <ul className="flex flex-col gap-2.5 flex-1">
                   {[
@@ -809,10 +809,10 @@ export default function LandingPage() {
                   White-label reports, API access, and multi-user teams for consultancies managing client stores.
                 </div>
                 <div className="flex items-end gap-1 mb-1">
-                  <span className="text-4xl font-bold">${billingAnnual ? '500' : '600'}</span>
+                  <span className="text-4xl font-bold">${billingAnnual ? '208' : '249'}</span>
                   <span className="text-slate-400 mb-1 text-sm">/ mo</span>
                 </div>
-                <div className="text-xs text-emerald-400">{billingAnnual ? '$6,000/yr (save $1,200)' : '\u00A0'}</div>
+                <div className="text-xs text-emerald-400">{billingAnnual ? '$2,490/yr (save $498)' : '\u00A0'}</div>
               </div>
               <div className="flex-1">
                 <ul className="flex flex-col gap-2 mb-4">
