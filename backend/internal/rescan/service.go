@@ -169,6 +169,9 @@ func (s *Service) isLeader() bool {
 }
 
 func (s *Service) releaseLock(ctx context.Context) {
+	if s.db == nil {
+		return
+	}
 	_, _ = s.db.LeaderLocks().DeleteOne(ctx, bson.M{
 		"_id":      lockName,
 		"holderId": s.holderID,
