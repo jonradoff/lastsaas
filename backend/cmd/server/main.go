@@ -22,6 +22,7 @@ import (
 	"lastsaas/internal/events"
 	"lastsaas/internal/health"
 	"lastsaas/internal/metrics"
+	"lastsaas/internal/rescan"
 	"lastsaas/internal/middleware"
 	"lastsaas/internal/models"
 	"lastsaas/internal/planstore"
@@ -379,6 +380,11 @@ func main() {
 	metricsService := metrics.New(database)
 	metricsService.Start()
 	defer metricsService.Stop()
+
+	// Initialize automated rescan service (scheduled rescans + score drop alerts)
+	rescanService := rescan.New(database, scannerSvc, emailService, sysLogger)
+	rescanService.Start()
+	defer rescanService.Stop()
 
 	// Setup router
 	router := mux.NewRouter()
