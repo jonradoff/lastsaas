@@ -628,6 +628,12 @@ export interface ScanResult {
   agentSimulation?: AgentSimulation;
 }
 
+// --- Scan Purchases ---
+export const scanPurchaseApi = {
+  checkout: (domain: string, feature: 'assess' | 'simulate') =>
+    api.post<{ checkoutUrl: string }>('/billing/scan-purchase', { domain, feature }).then(r => r.data),
+};
+
 export const scanApi = {
   trigger: async (domain: string): Promise<ScanResult> => {
     const response = await fetch('/api/scan', {

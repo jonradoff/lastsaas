@@ -1,6 +1,6 @@
 import { useState, useEffect, type FormEvent } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { scanApi, leadsApi, type ScanResult, type ScanCategoryResult, type AIAssessment, type AIFinding, type AIQuerySimulation, type AgentSimulation, type ShoppingScenario, type AgentStep } from '../../api/client';
+import { scanApi, leadsApi, scanPurchaseApi, type ScanResult, type ScanCategoryResult, type AIAssessment, type AIFinding, type AIQuerySimulation, type AgentSimulation, type ShoppingScenario, type AgentStep } from '../../api/client';
 
 function setMetaTag(property: string, content: string) {
   const selector = `meta[property="${property}"], meta[name="${property}"]`;
@@ -661,6 +661,44 @@ function SimulationSection({ simulation }: { simulation: AgentSimulation }) {
   );
 }
 
+function BuyFeatureButton({ domain, feature, label, price }: { domain: string; feature: 'assess' | 'simulate'; label: string; price: string }) {
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+
+  const handleBuy = async () => {
+    // Check if user has an access token (is logged in)
+    const token = localStorage.getItem('mcplens_access_token');
+    if (!token) {
+      // Redirect to signup with return URL
+      const returnTo = encodeURIComponent(window.location.pathname);
+      navigate(`/signup?returnTo=${returnTo}`);
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const { checkoutUrl } = await scanPurchaseApi.checkout(domain, feature);
+      window.location.href = checkoutUrl;
+    } catch {
+      // If 401, redirect to login
+      const returnTo = encodeURIComponent(window.location.pathname);
+      navigate(`/login?returnTo=${returnTo}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <button
+      onClick={handleBuy}
+      disabled={loading}
+      className="inline-flex items-center px-4 py-2 bg-blue-500 hover:bg-blue-600 disabled:opacity-60 text-white text-sm font-semibold rounded-lg transition-colors"
+    >
+      {loading ? 'Loading...' : `${label} — ${price}`}
+    </button>
+  );
+}
+
 export default function ScanResultPage() {
   const { domain } = useParams<{ domain: string }>();
   const navigate = useNavigate();
@@ -899,14 +937,14 @@ export default function ScanResultPage() {
                   <div>
                     <h3 className="font-semibold text-slate-900 mb-1">Want deeper analysis?</h3>
                     <p className="text-sm text-slate-600 mb-3">
-                      Max plan includes AI-powered quality assessment — product relevance scoring, description analysis, simulated buyer queries, and specific fix recommendations with code snippets.
+                      Get AI-powered quality assessment — product relevance scoring, description analysis, simulated buyer queries, and specific fix recommendations with code snippets.
                     </p>
-                    <Link
-                      to="/plan"
-                      className="inline-flex items-center px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white text-sm font-semibold rounded-lg transition-colors"
-                    >
-                      Upgrade to Max
-                    </Link>
+                    <div className="flex items-center gap-3">
+                      <BuyFeatureButton domain={domain!} feature="assess" label="Get AI Assessment" price="$5" />
+                      <Link to="/plan" className="text-sm text-slate-500 hover:text-slate-700 transition-colors">
+                        or upgrade to Max for unlimited
+                      </Link>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -926,14 +964,14 @@ export default function ScanResultPage() {
                   <div>
                     <h3 className="font-semibold text-slate-900 mb-1">See how AI agents actually shop your store</h3>
                     <p className="text-sm text-slate-600 mb-3">
-                      Max plan includes simulated buyer agents — watch step-by-step as an AI tries to find products, compare options, and complete a purchase on your store.
+                      Watch step-by-step as a simulated buyer agent tries to find products, compare options, and complete a purchase on your store.
                     </p>
-                    <Link
-                      to="/plan"
-                      className="inline-flex items-center px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white text-sm font-semibold rounded-lg transition-colors"
-                    >
-                      Upgrade to Max
-                    </Link>
+                    <div className="flex items-center gap-3">
+                      <BuyFeatureButton domain={domain!} feature="simulate" label="Run Buyer Simulation" price="$10" />
+                      <Link to="/plan" className="text-sm text-slate-500 hover:text-slate-700 transition-colors">
+                        or upgrade to Max for unlimited
+                      </Link>
+                    </div>
                   </div>
                 </div>
               </div>

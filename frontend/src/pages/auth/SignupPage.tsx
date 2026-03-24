@@ -32,6 +32,7 @@ export default function SignupPage() {
   // Validate invitation token format: alphanumeric, hyphens, underscores only
   const invitationToken = /^[a-zA-Z0-9_-]{1,128}$/.test(rawInvitation) ? rawInvitation : undefined;
   const prefillEmail = searchParams.get('email') || '';
+  const returnTo = searchParams.get('returnTo') || '/dashboard';
 
   const [form, setForm] = useState({ email: prefillEmail, password: '', displayName: '' });
   const [error, setError] = useState('');
@@ -45,7 +46,7 @@ export default function SignupPage() {
     setLoading(true);
     try {
       await register({ ...form, invitationToken });
-      navigate('/dashboard');
+      navigate(returnTo);
     } catch (err: unknown) {
       const msg = (err as { response?: { data?: { error?: string } } })?.response?.data?.error;
       setError(msg || 'Registration failed');

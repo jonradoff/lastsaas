@@ -679,6 +679,85 @@ func (h *BillingHandler) GetConfig(w http.ResponseWriter, r *http.Request) {
 	respondWithJSON(w, http.StatusOK, map[string]string{"publishableKey": pubKey})
 }
 
+// PurchaseScan creates a Stripe one-time checkout for a scan feature ($5 AI assessment or $10 simulation).
+// Body: {"domain": "allbirds.com", "feature": "assess" | "simulate"}
+// Requires auth + tenant.
+func (h *BillingHandler) PurchaseScan(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	tenant, ok := middleware.GetTenantFromContext(ctx)
+	if !ok {
+		respondWithError(w, http.StatusUnauthorized, "No tenant context")
+		return
+	}
+	user, ok := middleware.GetUserFromContext(ctx)
+	if !ok {
+		respondWithError(w, http.StatusUnauthorized, "Not authenticated")
+		return
+	}
+
+	var req struct {
+		Domain  string `json:"domain"`
+		Feature string `json:"feature"` // "assess" or "simulate"
+	}
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		respondWithError(w, http.StatusBadRequest, "Invalid request body")
+		return
+	}
+	if req.Domain == "" {
+		respondWithError(w, http.StatusBadRequest, "domain is required")
+		return
+	}
+	if req.Feature != "assess" && req.Feature != "simulate" {
+		respondWithError(w, http.StatusBadRequest, "feature must be 'assess' or 'simulate'")
+		return
+	}
+
+	if h.stripe == nil {
+		respondWithError(w, http.StatusServiceUnavailable, "Billing not configured")
+		return
+	}
+
+	var amountCents int64
+	var productName string
+	if req.Feature == "assess" {
+		amountCents = 500 // $5
+		productName = "AI Quality Assessment"
+	} else {
+		amountCents = 1000 // $10
+		productName = "Simulated Buyer Agent"
+	}
+
+	currency := strings.ToLower(h.store.Get("billing.default_currency"))
+	if currency == "" {
+		currency = "usd"
+	}
+
+	customerID, err := h.stripe.GetOrCreateCustomer(ctx, tenant, user.Email)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Failed to create billing session")
+		return
+	}
+
+	url, err := h.stripe.CreateCheckoutSession(ctx, stripeservice.CheckoutRequest{
+		CustomerID:  customerID,
+		BundleName:  productName,
+		AmountCents: amountCents,
+		TenantID:    tenant.ID.Hex(),
+		UserID:      user.ID.Hex(),
+		Currency:    currency,
+		ExtraMetadata: map[string]string{
+			"scanPurchase": req.Feature,
+			"scanDomain":   req.Domain,
+		},
+	})
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Failed to create checkout session")
+		return
+	}
+
+	respondWithJSON(w, http.StatusOK, map[string]string{"checkoutUrl": url})
+}
+
 // --- Admin endpoints ---
 
 // AdminListTransactions returns all transactions with optional filters.

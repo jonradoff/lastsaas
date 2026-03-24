@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { LogIn, Github, Mail, KeyRound, Fingerprint } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useBranding } from '../../contexts/BrandingContext';
@@ -26,6 +26,8 @@ function MicrosoftIcon({ className }: { className?: string }) {
 
 export default function LoginPage() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const returnTo = searchParams.get('returnTo') || '/dashboard';
   const { login, mfaPending, completeMfaChallenge, clearMfaPending } = useAuth();
   const { branding } = useBranding();
   const [form, setForm] = useState({ email: '', password: '' });
@@ -44,7 +46,7 @@ export default function LoginPage() {
     setLoading(true);
     try {
       await login(form.email, form.password);
-      navigate('/dashboard');
+      navigate(returnTo);
     } catch (err: unknown) {
       const msg = (err as { response?: { data?: { error?: string } } })?.response?.data?.error;
       setError(msg || 'Invalid email or password');
@@ -60,7 +62,7 @@ export default function LoginPage() {
     setLoading(true);
     try {
       await completeMfaChallenge(mfaPending.mfaToken, mfaCode);
-      navigate('/dashboard');
+      navigate(returnTo);
     } catch (err: unknown) {
       const msg = (err as { response?: { data?: { error?: string } } })?.response?.data?.error;
       setError(msg || 'Invalid verification code');
@@ -94,7 +96,7 @@ export default function LoginPage() {
       const data = await authApi.passkeyLoginFinish(credential);
       localStorage.setItem('mcplens_access_token', data.accessToken);
       localStorage.setItem('mcplens_refresh_token', data.refreshToken);
-      navigate('/dashboard');
+      navigate(returnTo);
     } catch (err: unknown) {
       const msg = (err as { response?: { data?: { error?: string } } })?.response?.data?.error
         || (err as Error)?.message || 'Passkey authentication failed';

@@ -15,6 +15,7 @@ import (
 	"lastsaas/internal/db"
 	"lastsaas/internal/events"
 	"lastsaas/internal/models"
+	"lastsaas/internal/scanner"
 	stripeservice "lastsaas/internal/stripe"
 	"lastsaas/internal/syslog"
 	"lastsaas/internal/telemetry"
@@ -34,9 +35,11 @@ type WebhookHandler struct {
 	syslog       *syslog.Logger
 	getConfig    func(string) string
 	telemetrySvc *telemetry.Service
+	scannerSvc   *scanner.Service
 }
 
 func (h *WebhookHandler) SetTelemetry(svc *telemetry.Service) { h.telemetrySvc = svc }
+func (h *WebhookHandler) SetScanner(svc *scanner.Service)      { h.scannerSvc = svc }
 
 func NewWebhookHandler(stripeSvc *stripeservice.Service, database *db.MongoDB, emitter events.Emitter, sysLogger *syslog.Logger, getConfig func(string) string) *WebhookHandler {
 	return &WebhookHandler{
@@ -180,6 +183,49 @@ func (h *WebhookHandler) handleCheckoutCompleted(ctx context.Context, event stri
 				return fmt.Errorf("customer %s already belongs to another tenant", session.Customer.ID)
 			}
 		}
+	}
+
+	// Check for scan feature purchase (one-time $5/$10)
+	if scanFeature := session.Metadata["scanPurchase"]; scanFeature != "" {
+		domain := session.Metadata["scanDomain"]
+		if domain == "" {
+			return fmt.Errorf("scan purchase missing domain in metadata")
+		}
+
+		h.syslog.High(ctx, fmt.Sprintf("Scan purchase: %s for %s by tenant %s ($%.2f)",
+			scanFeature, domain, tenantID.Hex(), float64(session.AmountTotal)/100))
+
+		// Trigger the scan with the purchased feature in a background goroutine
+		// so the webhook responds quickly
+		go func() {
+			bgCtx, cancel := context.WithTimeout(context.Background(), 120*time.Second)
+			defer cancel()
+
+			opts := scanner.ScanOptions{}
+			if scanFeature == "assess" {
+				opts.Assess = true
+			} else if scanFeature == "simulate" {
+				opts.Simulate = true
+			}
+
+			if _, err := h.scannerSvc.ScanStore(bgCtx, domain, &tenantID, opts); err != nil {
+				slog.Error("Webhook: scan purchase failed", "feature", scanFeature, "domain", domain, "error", err)
+			} else {
+				slog.Info("Webhook: scan purchase completed", "feature", scanFeature, "domain", domain)
+			}
+		}()
+
+		// Record transaction
+		amountCents := int64(0)
+		if session.AmountTotal > 0 {
+			amountCents = session.AmountTotal
+		}
+		desc := "AI Quality Assessment"
+		if scanFeature == "simulate" {
+			desc = "Simulated Buyer Agent"
+		}
+		h.recordTransaction(ctx, tenantID, userID, models.TransactionCreditPurchase, amountCents, amountCents, 0, desc+" — "+domain, "", nil, nil, "", session.ID)
+		return nil
 	}
 
 	planIDStr := session.Metadata["planId"]

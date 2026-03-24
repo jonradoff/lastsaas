@@ -364,6 +364,7 @@ func main() {
 	announcementsHandler := handlers.NewAnnouncementsHandler(database, sysLogger)
 	usageHandler := handlers.NewUsageHandler(database)
 	scannerSvc := scanner.NewService(database.Database)
+	webhookHandler.SetScanner(scannerSvc)
 	scannerHandler := handlers.NewScannerHandler(scannerSvc)
 	scannerHandler.SetDB(database)
 	ogHandler := handlers.NewOGHandler(scannerSvc)
@@ -718,6 +719,7 @@ func main() {
 	billingAPI.HandleFunc("/transactions/{id}/invoice", billingHandler.GetInvoice).Methods("GET")
 	billingAPI.HandleFunc("/transactions/{id}/invoice/pdf", billingHandler.GetInvoicePDF).Methods("GET")
 	billingAPI.HandleFunc("/config", billingHandler.GetConfig).Methods("GET")
+	billingAPI.HandleFunc("/scan-purchase", billingHandler.PurchaseScan).Methods("POST")
 
 	// Billing actions that modify the subscription (owner only)
 	billingOwner := billingAPI.PathPrefix("").Subrouter()

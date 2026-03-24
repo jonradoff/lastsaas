@@ -177,6 +177,7 @@ type CheckoutRequest struct {
 	TrialDays       int                 // Free trial period in days (0 = no trial)
 	Currency        string              // Currency code (e.g. "usd", "eur"); defaults to "usd"
 	AutomaticTax    bool                // Enable Stripe Tax for automatic tax calculation
+	ExtraMetadata   map[string]string   // Additional metadata for the checkout session
 }
 
 // CreateCheckoutSession creates a Stripe Checkout Session for a subscription or one-time payment.
@@ -197,8 +198,14 @@ func (s *Service) CreateCheckoutSession(ctx context.Context, req CheckoutRequest
 	} else if req.BundleID != nil {
 		mode = "payment"
 		metadata["bundleId"] = req.BundleID.Hex()
+	} else if req.AmountCents > 0 {
+		mode = "payment" // one-time payment without a bundle (e.g., scan purchase)
 	} else {
-		return "", fmt.Errorf("must specify planId or bundleId")
+		return "", fmt.Errorf("must specify planId, bundleId, or amountCents")
+	}
+
+	for k, v := range req.ExtraMetadata {
+		metadata[k] = v
 	}
 
 	if req.SeatQuantity > 0 {
