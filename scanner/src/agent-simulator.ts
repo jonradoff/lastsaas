@@ -17,8 +17,8 @@ const MAX_STEPS_PER_SCENARIO = 20;
 const SCENARIO_TIMEOUT_MS = 60_000;
 
 // Pricing for cost tracking
-const INPUT_COST_PER_M = 0.15;
-const OUTPUT_COST_PER_M = 0.60;
+const INPUT_COST_PER_M = 0.50;
+const OUTPUT_COST_PER_M = 3.00;
 
 /**
  * Convert MCP tool definitions to Gemini function declarations.

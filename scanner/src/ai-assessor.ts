@@ -3,9 +3,9 @@ import type { TestRunResult, AIAssessment } from "./types.js";
 
 const MODEL = "gemini-3-flash-preview";
 
-// Approximate pricing for Gemini 2.5 Flash (per million tokens)
-const INPUT_COST_PER_M = 0.15;
-const OUTPUT_COST_PER_M = 0.60;
+// Gemini 3 Flash Preview pricing (per million tokens)
+const INPUT_COST_PER_M = 0.50;
+const OUTPUT_COST_PER_M = 3.00;
 
 /**
  * Truncate raw MCP data to keep prompt under ~3K tokens.
