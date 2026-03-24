@@ -113,7 +113,7 @@ function CreateKeyModal({ onClose, onCreated }: {
               value={name}
               onChange={e => setName(e.target.value)}
               placeholder="e.g., CI/CD Pipeline"
-              className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-white placeholder-dark-500 text-sm focus:outline-none focus:border-primary-500"
+              className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-white placeholder-dark-400 text-sm focus:outline-none focus:border-primary-500"
             />
           </div>
           <div>
@@ -141,7 +141,7 @@ function CreateKeyModal({ onClose, onCreated }: {
           <button
             onClick={handleCreate}
             disabled={saving || !name.trim()}
-            className="px-4 py-2 text-sm bg-primary-500 hover:bg-primary-600 text-white rounded-lg disabled:opacity-50 transition-colors"
+            className="px-4 py-2 text-sm bg-primary-500 hover:bg-primary-600 text-white rounded-lg disabled:opacity-60 transition-colors"
           >
             {saving ? 'Creating...' : 'Create Key'}
           </button>
@@ -388,7 +388,7 @@ function APIKeysSection({ canWrite }: { canWrite: boolean }) {
               <button
                 onClick={confirmDelete}
                 disabled={deleting}
-                className="px-4 py-2 text-sm bg-red-500 hover:bg-red-600 text-white rounded-lg disabled:opacity-50 transition-colors"
+                className="px-4 py-2 text-sm bg-red-500 hover:bg-red-600 text-white rounded-lg disabled:opacity-60 transition-colors"
               >
                 {deleting ? 'Deleting...' : 'Delete Key'}
               </button>
@@ -555,7 +555,7 @@ function WebhookFormModal({ webhook, onClose, onSaved }: {
               value={name}
               onChange={e => setName(e.target.value)}
               placeholder="e.g., Provisioning Service"
-              className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-white placeholder-dark-500 text-sm focus:outline-none focus:border-primary-500"
+              className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-white placeholder-dark-400 text-sm focus:outline-none focus:border-primary-500"
             />
           </div>
           <div>
@@ -564,7 +564,7 @@ function WebhookFormModal({ webhook, onClose, onSaved }: {
               value={description}
               onChange={e => setDescription(e.target.value)}
               placeholder="What this webhook does"
-              className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-white placeholder-dark-500 text-sm focus:outline-none focus:border-primary-500"
+              className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-white placeholder-dark-400 text-sm focus:outline-none focus:border-primary-500"
             />
           </div>
           <div>
@@ -573,7 +573,7 @@ function WebhookFormModal({ webhook, onClose, onSaved }: {
               value={url}
               onChange={e => setUrl(e.target.value)}
               placeholder="https://your-service.com/webhook"
-              className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-white placeholder-dark-500 text-sm focus:outline-none focus:border-primary-500"
+              className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-white placeholder-dark-400 text-sm focus:outline-none focus:border-primary-500"
             />
           </div>
           {!webhook && (
@@ -649,7 +649,7 @@ function WebhookFormModal({ webhook, onClose, onSaved }: {
           <button
             onClick={handleSave}
             disabled={saving || !name.trim() || !url.trim() || events.length === 0}
-            className="px-4 py-2 text-sm bg-primary-500 hover:bg-primary-600 text-white rounded-lg disabled:opacity-50 transition-colors"
+            className="px-4 py-2 text-sm bg-primary-500 hover:bg-primary-600 text-white rounded-lg disabled:opacity-60 transition-colors"
           >
             {saving ? 'Saving...' : webhook ? 'Save Changes' : 'Create Webhook'}
           </button>
@@ -797,7 +797,7 @@ function WebhookDetailModal({ webhookId, onClose, onRefresh, canWrite }: {
                     <button
                       onClick={handleRegenerate}
                       disabled={regenerating}
-                      className="text-xs text-dark-500 hover:text-dark-300 transition-colors disabled:opacity-50"
+                      className="text-xs text-dark-500 hover:text-dark-300 transition-colors disabled:opacity-60"
                     >
                       {regenerating ? 'Regenerating...' : 'Regenerate'}
                     </button>
@@ -852,7 +852,7 @@ function WebhookDetailModal({ webhookId, onClose, onRefresh, canWrite }: {
               <button
                 onClick={handleTest}
                 disabled={testing}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-primary-500/10 hover:bg-primary-500/20 border border-primary-500/20 rounded-lg text-xs text-primary-400 transition-colors disabled:opacity-50"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-primary-500/10 hover:bg-primary-500/20 border border-primary-500/20 rounded-lg text-xs text-primary-400 transition-colors disabled:opacity-60"
               >
                 <Play className="w-3.5 h-3.5" />
                 {testing ? 'Sending...' : 'Send Test'}
@@ -1121,7 +1121,7 @@ function WebhooksSection({ canWrite }: { canWrite: boolean }) {
               <button
                 onClick={confirmDelete}
                 disabled={deleting}
-                className="px-4 py-2 text-sm bg-red-500 hover:bg-red-600 text-white rounded-lg disabled:opacity-50 transition-colors"
+                className="px-4 py-2 text-sm bg-red-500 hover:bg-red-600 text-white rounded-lg disabled:opacity-60 transition-colors"
               >
                 {deleting ? 'Deleting...' : 'Delete Webhook'}
               </button>

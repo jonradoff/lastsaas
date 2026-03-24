@@ -90,7 +90,7 @@ export default function MFASetupModal({ onClose, onComplete }: MFASetupModalProp
                 placeholder="000000"
                 maxLength={6}
               />
-              <button type="submit" disabled={loading} className="w-full py-2.5 px-4 bg-gradient-to-r from-primary-600 to-primary-500 text-white font-medium rounded-lg hover:from-primary-500 hover:to-primary-400 disabled:opacity-50 transition-all text-sm">
+              <button type="submit" disabled={loading} className="w-full py-2.5 px-4 bg-gradient-to-r from-primary-600 to-primary-500 text-white font-medium rounded-lg hover:from-primary-500 hover:to-primary-400 disabled:opacity-60 transition-all text-sm">
                 {loading ? 'Verifying...' : 'Enable MFA'}
               </button>
             </form>

@@ -209,7 +209,7 @@ export default function BrandingPage() {
           <button
             onClick={handleSave}
             disabled={saving}
-            className="flex items-center gap-2 px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 disabled:opacity-50 transition-colors text-sm font-medium"
+            className="flex items-center gap-2 px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 disabled:opacity-60 transition-colors text-sm font-medium"
           >
             {saved ? <><Check className="w-4 h-4" /> Saved</> : saving ? 'Saving...' : 'Save Changes'}
           </button>
@@ -549,7 +549,7 @@ export default function BrandingPage() {
                   </Field>
                   <div className="flex gap-3 justify-end pt-2">
                     <button onClick={() => setEditingPage(null)} className="px-4 py-2 text-sm text-dark-300 hover:text-white transition-colors">Cancel</button>
-                    <button onClick={handlePageSave} disabled={pageSaving} className="px-4 py-2 text-sm bg-primary-500 text-white rounded-lg hover:bg-primary-600 disabled:opacity-50 transition-colors">
+                    <button onClick={handlePageSave} disabled={pageSaving} className="px-4 py-2 text-sm bg-primary-500 text-white rounded-lg hover:bg-primary-600 disabled:opacity-60 transition-colors">
                       {pageSaving ? 'Saving...' : 'Save Page'}
                     </button>
                   </div>
@@ -575,7 +575,7 @@ export default function BrandingPage() {
                 <button
                   onClick={() => mediaInputRef.current?.click()}
                   disabled={uploading}
-                  className="flex items-center gap-2 px-3 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 disabled:opacity-50 transition-colors text-sm"
+                  className="flex items-center gap-2 px-3 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 disabled:opacity-60 transition-colors text-sm"
                 >
                   <Upload className="w-4 h-4" /> {uploading ? 'Uploading...' : 'Upload File'}
                 </button>
@@ -632,8 +632,8 @@ export default function BrandingPage() {
 
 // --- Sub-components ---
 
-const inputClass = 'w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-white placeholder-dark-500 focus:outline-none focus:border-primary-500 transition-colors text-sm';
-const disabledInputClass = 'w-full px-3 py-2 bg-dark-800/50 border border-dark-700/50 rounded-lg text-dark-400 placeholder-dark-500 cursor-not-allowed transition-colors text-sm';
+const inputClass = 'w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-white placeholder-dark-400 focus:outline-none focus:border-primary-500 transition-colors text-sm';
+const disabledInputClass = 'w-full px-3 py-2 bg-dark-800/50 border border-dark-700/50 rounded-lg text-dark-400 placeholder-dark-400 cursor-not-allowed transition-colors text-sm';
 
 function Section({ title, description, children }: { title: string; description?: string; children: React.ReactNode }) {
   return (

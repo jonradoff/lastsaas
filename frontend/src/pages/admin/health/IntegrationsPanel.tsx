@@ -216,7 +216,7 @@ function SendTestEmailModal({ onClose }: { onClose: () => void }) {
               onChange={e => setEmail(e.target.value)}
               onKeyDown={e => { if (e.key === 'Enter' && !loading) handleSend(); }}
               placeholder="you@example.com"
-              className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-white text-sm placeholder-dark-500 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500"
+              className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-white text-sm placeholder-dark-400 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500"
               autoFocus
               disabled={loading}
             />
@@ -224,7 +224,7 @@ function SendTestEmailModal({ onClose }: { onClose: () => void }) {
           <button
             onClick={handleSend}
             disabled={loading || !email.trim()}
-            className="w-full inline-flex items-center justify-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg text-sm font-medium text-white transition-colors"
+            className="w-full inline-flex items-center justify-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-60 disabled:cursor-not-allowed rounded-lg text-sm font-medium text-white transition-colors"
           >
             <Send className="w-4 h-4" />
             {loading ? 'Sending...' : 'Send Test Email'}

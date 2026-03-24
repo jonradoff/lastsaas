@@ -184,7 +184,7 @@ export default function ProfileTab() {
               required
               value={currentPassword}
               onChange={(e) => setCurrentPassword(e.target.value)}
-              className="w-full px-4 py-2.5 bg-dark-800 border border-dark-700 rounded-lg text-white placeholder-dark-500 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-colors"
+              className="w-full px-4 py-2.5 bg-dark-800 border border-dark-700 rounded-lg text-white placeholder-dark-400 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-colors"
             />
           </div>
           <div>
@@ -194,7 +194,7 @@ export default function ProfileTab() {
               required
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
-              className="w-full px-4 py-2.5 bg-dark-800 border border-dark-700 rounded-lg text-white placeholder-dark-500 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-colors"
+              className="w-full px-4 py-2.5 bg-dark-800 border border-dark-700 rounded-lg text-white placeholder-dark-400 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-colors"
               placeholder="Min 10 chars, mixed case, number, special"
             />
             {newPassword && <PasswordStrength password={newPassword} />}
@@ -202,7 +202,7 @@ export default function ProfileTab() {
           <button
             type="submit"
             disabled={changingPassword}
-            className="py-2.5 px-6 bg-gradient-to-r from-primary-600 to-primary-500 text-white font-medium rounded-lg hover:from-primary-500 hover:to-primary-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all text-sm"
+            className="py-2.5 px-6 bg-gradient-to-r from-primary-600 to-primary-500 text-white font-medium rounded-lg hover:from-primary-500 hover:to-primary-400 disabled:opacity-60 disabled:cursor-not-allowed transition-all text-sm"
           >
             {changingPassword ? 'Changing...' : 'Change Password'}
           </button>
@@ -219,7 +219,7 @@ export default function ProfileTab() {
         <button
           onClick={handleExportData}
           disabled={exporting}
-          className="py-2 px-4 bg-dark-800 text-dark-200 text-sm font-medium rounded-lg hover:bg-dark-700 disabled:opacity-50 transition-colors"
+          className="py-2 px-4 bg-dark-800 text-dark-200 text-sm font-medium rounded-lg hover:bg-dark-700 disabled:opacity-60 transition-colors"
         >
           {exporting ? 'Exporting...' : 'Download Data'}
         </button>
@@ -258,7 +258,7 @@ export default function ProfileTab() {
                   type="password"
                   value={deletePassword}
                   onChange={e => setDeletePassword(e.target.value)}
-                  className="w-full px-4 py-2.5 bg-dark-800 border border-dark-700 rounded-lg text-white placeholder-dark-500 focus:outline-none focus:border-red-500 transition-colors"
+                  className="w-full px-4 py-2.5 bg-dark-800 border border-dark-700 rounded-lg text-white placeholder-dark-400 focus:outline-none focus:border-red-500 transition-colors"
                   placeholder="Enter your password"
                 />
               </div>
@@ -273,7 +273,7 @@ export default function ProfileTab() {
               <button
                 onClick={handleDeleteAccount}
                 disabled={deleting || (user?.authMethods.includes('password') && !deletePassword)}
-                className="px-4 py-2 bg-red-500 text-white text-sm font-medium rounded-lg hover:bg-red-600 disabled:opacity-50 transition-colors"
+                className="px-4 py-2 bg-red-500 text-white text-sm font-medium rounded-lg hover:bg-red-600 disabled:opacity-60 transition-colors"
               >
                 {deleting ? 'Deleting...' : 'Permanently Delete'}
               </button>

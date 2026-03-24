@@ -230,7 +230,7 @@ export default function TenantProfilePage() {
               value={name}
               onChange={(e) => setName(e.target.value)}
               disabled={!canWrite}
-              className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-white focus:outline-none focus:border-primary-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-white focus:outline-none focus:border-primary-500 disabled:opacity-60 disabled:cursor-not-allowed"
             />
           </div>
           <div>
@@ -245,7 +245,7 @@ export default function TenantProfilePage() {
             <button
               onClick={handleSave}
               disabled={saving}
-              className="px-4 py-2 text-sm font-medium bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors disabled:opacity-50 flex items-center gap-2"
+              className="px-4 py-2 text-sm font-medium bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors disabled:opacity-60 flex items-center gap-2"
             >
               <Save className="w-4 h-4" />
               {saving ? 'Saving...' : 'Save Changes'}
@@ -269,7 +269,7 @@ export default function TenantProfilePage() {
               value={selectedPlanId}
               onChange={(e) => setSelectedPlanId(e.target.value)}
               disabled={!isOwner}
-              className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-white focus:outline-none focus:border-primary-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-white focus:outline-none focus:border-primary-500 disabled:opacity-60 disabled:cursor-not-allowed"
             >
               <option value="">{systemPlan ? `${systemPlan.name} (Default)` : 'System Default'}</option>
               {plans.filter(p => !p.isSystem).map(p => (
@@ -285,7 +285,7 @@ export default function TenantProfilePage() {
             <button
               onClick={() => setBillingWaived(!billingWaived)}
               disabled={!isOwner}
-              className={`px-3 py-2 text-sm font-medium rounded-lg border transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
+              className={`px-3 py-2 text-sm font-medium rounded-lg border transition-colors disabled:opacity-60 disabled:cursor-not-allowed ${
                 billingWaived
                   ? 'bg-green-500/20 text-green-400 border-green-500/30'
                   : 'bg-dark-800 text-dark-400 border-dark-700'
@@ -330,7 +330,7 @@ export default function TenantProfilePage() {
             <button
               onClick={handleSavePlan}
               disabled={savingPlan}
-              className="px-4 py-2 text-sm font-medium bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors disabled:opacity-50 flex items-center gap-2"
+              className="px-4 py-2 text-sm font-medium bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors disabled:opacity-60 flex items-center gap-2"
             >
               <Save className="w-4 h-4" />
               {savingPlan ? 'Saving...' : 'Save Plan'}
@@ -360,7 +360,7 @@ export default function TenantProfilePage() {
               value={subscriptionCredits}
               onChange={(e) => setSubscriptionCredits(parseInt(e.target.value) || 0)}
               disabled={!canWrite}
-              className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-white focus:outline-none focus:border-primary-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-white focus:outline-none focus:border-primary-500 disabled:opacity-60 disabled:cursor-not-allowed"
             />
           </div>
           <div>
@@ -372,7 +372,7 @@ export default function TenantProfilePage() {
               value={purchasedCredits}
               onChange={(e) => setPurchasedCredits(parseInt(e.target.value) || 0)}
               disabled={!canWrite}
-              className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-white focus:outline-none focus:border-primary-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-white focus:outline-none focus:border-primary-500 disabled:opacity-60 disabled:cursor-not-allowed"
             />
           </div>
         </div>
@@ -381,7 +381,7 @@ export default function TenantProfilePage() {
             <button
               onClick={handleSaveCredits}
               disabled={savingCredits}
-              className="px-4 py-2 text-sm font-medium bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors disabled:opacity-50 flex items-center gap-2"
+              className="px-4 py-2 text-sm font-medium bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors disabled:opacity-60 flex items-center gap-2"
             >
               <Save className="w-4 h-4" />
               {savingCredits ? 'Saving...' : 'Save Credits'}

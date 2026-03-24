@@ -92,7 +92,7 @@ function AddStoreModal({ onAdd, onClose }: { onAdd: (domain: string) => Promise<
             onChange={e => setDomain(e.target.value)}
             placeholder="e.g. allbirds.com"
             autoFocus
-            className="w-full px-4 py-2.5 bg-dark-800 border border-dark-700 rounded-xl text-dark-100 placeholder-dark-500 focus:outline-none focus:border-primary-500 transition-colors mb-4"
+            className="w-full px-4 py-2.5 bg-dark-800 border border-dark-700 rounded-xl text-dark-100 placeholder-dark-400 focus:outline-none focus:border-primary-500 transition-colors mb-4"
           />
           <div className="flex gap-3 justify-end">
             <button
@@ -105,7 +105,7 @@ function AddStoreModal({ onAdd, onClose }: { onAdd: (domain: string) => Promise<
             <button
               type="submit"
               disabled={loading || !domain.trim()}
-              className="px-4 py-2 text-sm bg-primary-500 hover:bg-primary-600 disabled:opacity-50 text-white font-medium rounded-lg transition-colors"
+              className="px-4 py-2 text-sm bg-primary-500 hover:bg-primary-600 disabled:opacity-60 text-white font-medium rounded-lg transition-colors"
             >
               {loading ? 'Adding…' : 'Add Store'}
             </button>
@@ -237,7 +237,7 @@ export default function DashboardPage() {
                 setShowAddModal(true);
               }}
               disabled={isAtMax}
-              className="flex items-center gap-2 px-4 py-2 bg-primary-500 hover:bg-primary-600 disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-medium rounded-lg transition-colors"
+              className="flex items-center gap-2 px-4 py-2 bg-primary-500 hover:bg-primary-600 disabled:opacity-60 disabled:cursor-not-allowed text-white text-sm font-medium rounded-lg transition-colors"
             >
               <Plus className="w-4 h-4" />
               Add Store

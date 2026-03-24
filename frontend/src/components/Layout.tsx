@@ -272,7 +272,7 @@ export default function Layout() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 flex items-center justify-between">
             <div className="flex items-center gap-2 text-sm">
               <Megaphone className="w-4 h-4 text-primary-400 flex-shrink-0" />
-              <span className="text-primary-300">{latestAnnouncement.title}</span>
+              <span className="text-primary-200">{latestAnnouncement.title}</span>
             </div>
             <button
               onClick={() => {

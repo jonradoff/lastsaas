@@ -93,7 +93,7 @@ export default function OnboardingPage() {
                   type="text"
                   value={displayName}
                   onChange={(e) => setDisplayName(e.target.value)}
-                  className="w-full px-4 py-2.5 bg-dark-800 border border-dark-700 rounded-lg text-white placeholder-dark-500 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-colors"
+                  className="w-full px-4 py-2.5 bg-dark-800 border border-dark-700 rounded-lg text-white placeholder-dark-400 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-colors"
                   placeholder="Your name"
                 />
               </div>
@@ -101,7 +101,7 @@ export default function OnboardingPage() {
               <button
                 onClick={handleProfileNext}
                 disabled={!displayName.trim()}
-                className="w-full py-2.5 px-4 bg-gradient-to-r from-primary-600 to-primary-500 text-white font-medium rounded-lg hover:from-primary-500 hover:to-primary-400 disabled:opacity-50 transition-all"
+                className="w-full py-2.5 px-4 bg-gradient-to-r from-primary-600 to-primary-500 text-white font-medium rounded-lg hover:from-primary-500 hover:to-primary-400 disabled:opacity-60 transition-all"
               >
                 Continue
               </button>
@@ -137,13 +137,13 @@ export default function OnboardingPage() {
                   value={inviteEmail}
                   onChange={(e) => setInviteEmail(e.target.value)}
                   onKeyDown={(e) => { if (e.key === 'Enter') handleInvite(); }}
-                  className="flex-1 px-4 py-2.5 bg-dark-800 border border-dark-700 rounded-lg text-white placeholder-dark-500 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-colors text-sm"
+                  className="flex-1 px-4 py-2.5 bg-dark-800 border border-dark-700 rounded-lg text-white placeholder-dark-400 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-colors text-sm"
                   placeholder="colleague@example.com"
                 />
                 <button
                   onClick={handleInvite}
                   disabled={!inviteEmail.trim()}
-                  className="px-4 py-2.5 bg-dark-800 border border-dark-700 text-white font-medium rounded-lg hover:bg-dark-700 disabled:opacity-50 transition-all text-sm"
+                  className="px-4 py-2.5 bg-dark-800 border border-dark-700 text-white font-medium rounded-lg hover:bg-dark-700 disabled:opacity-60 transition-all text-sm"
                 >
                   Invite
                 </button>
@@ -179,7 +179,7 @@ export default function OnboardingPage() {
             <button
               onClick={handleComplete}
               disabled={loading}
-              className="w-full py-2.5 px-4 bg-gradient-to-r from-primary-600 to-primary-500 text-white font-medium rounded-lg hover:from-primary-500 hover:to-primary-400 disabled:opacity-50 transition-all"
+              className="w-full py-2.5 px-4 bg-gradient-to-r from-primary-600 to-primary-500 text-white font-medium rounded-lg hover:from-primary-500 hover:to-primary-400 disabled:opacity-60 transition-all"
             >
               {loading ? 'Getting started...' : 'Go to Dashboard'}
             </button>

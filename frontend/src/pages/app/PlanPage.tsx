@@ -433,7 +433,7 @@ export default function PlanPage() {
                   className={`w-full py-2.5 text-sm font-medium rounded-lg transition-colors ${
                     isUpgrade
                       ? 'bg-primary-500 text-white hover:bg-primary-600 disabled:opacity-60'
-                      : 'bg-dark-800 text-dark-300 border border-dark-700 hover:border-dark-600 disabled:opacity-60'
+                      : 'bg-dark-800 text-dark-200 border border-dark-700 hover:border-dark-600 disabled:opacity-60 disabled:text-dark-400'
                   }`}
                 >
                   {checkoutLoading === plan.id ? (

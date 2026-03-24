@@ -299,12 +299,12 @@ function EmailGate({ domain, score, onUnlocked }: { domain: string; score: numbe
           value={email}
           onChange={e => setEmail(e.target.value)}
           placeholder="you@company.com"
-          className="flex-1 px-4 py-2.5 bg-white border border-slate-300 rounded-lg text-slate-900 text-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+          className="flex-1 px-4 py-2.5 bg-white border border-slate-300 rounded-lg text-slate-900 text-sm placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
         />
         <button
           type="submit"
           disabled={submitting || !email.trim()}
-          className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold rounded-lg transition-colors text-sm shrink-0"
+          className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold rounded-lg transition-colors text-sm shrink-0"
         >
           {submitting ? 'Unlocking...' : 'Unlock Fixes'}
         </button>
@@ -1041,12 +1041,12 @@ export default function ScanResultPage() {
                   value={newDomain}
                   onChange={e => setNewDomain(e.target.value)}
                   placeholder="Enter a Shopify store domain (e.g., allbirds.com)"
-                  className="flex-1 px-4 py-2.5 bg-white border border-slate-300 rounded-lg text-slate-900 text-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                  className="flex-1 px-4 py-2.5 bg-white border border-slate-300 rounded-lg text-slate-900 text-sm placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                 />
                 <button
                   type="submit"
                   disabled={!newDomain.trim()}
-                  className="px-5 py-2.5 bg-blue-500 hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold rounded-full transition-colors text-sm shrink-0"
+                  className="px-5 py-2.5 bg-blue-500 hover:bg-blue-600 disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold rounded-full transition-colors text-sm shrink-0"
                 >
                   Scan
                 </button>

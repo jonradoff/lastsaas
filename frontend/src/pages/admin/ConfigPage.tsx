@@ -117,7 +117,7 @@ export default function ConfigPage() {
           value={filter}
           onChange={(e) => setFilter(e.target.value)}
           placeholder="Filter by name or description..."
-          className="w-full pl-10 pr-4 py-2 bg-dark-800 border border-dark-700 rounded-lg text-sm text-white placeholder-dark-500 focus:outline-none focus:border-primary-500"
+          className="w-full pl-10 pr-4 py-2 bg-dark-800 border border-dark-700 rounded-lg text-sm text-white placeholder-dark-400 focus:outline-none focus:border-primary-500"
         />
       </div>
 
@@ -251,7 +251,7 @@ function DeleteConfirmModal({
           <button
             onClick={onConfirm}
             disabled={deleting}
-            className="px-4 py-2 bg-red-500 text-white text-sm font-medium rounded-lg hover:bg-red-600 disabled:opacity-50 transition-colors"
+            className="px-4 py-2 bg-red-500 text-white text-sm font-medium rounded-lg hover:bg-red-600 disabled:opacity-60 transition-colors"
           >
             {deleting ? 'Deleting...' : 'Delete Variable'}
           </button>
@@ -292,14 +292,14 @@ function EnumOptionsEditor({
               value={opt.label}
               onChange={(e) => updateOption(i, 'label', e.target.value)}
               placeholder="Label"
-              className="flex-1 px-3 py-1.5 bg-dark-800 border border-dark-700 rounded-lg text-sm text-white placeholder-dark-500 focus:outline-none focus:border-primary-500"
+              className="flex-1 px-3 py-1.5 bg-dark-800 border border-dark-700 rounded-lg text-sm text-white placeholder-dark-400 focus:outline-none focus:border-primary-500"
             />
             <input
               type="text"
               value={opt.value}
               onChange={(e) => updateOption(i, 'value', e.target.value)}
               placeholder="Value"
-              className="flex-1 px-3 py-1.5 bg-dark-800 border border-dark-700 rounded-lg text-sm text-white font-mono placeholder-dark-500 focus:outline-none focus:border-primary-500"
+              className="flex-1 px-3 py-1.5 bg-dark-800 border border-dark-700 rounded-lg text-sm text-white font-mono placeholder-dark-400 focus:outline-none focus:border-primary-500"
             />
             <button
               onClick={() => removeOption(i)}
@@ -386,7 +386,7 @@ function EditConfigModal({
               onChange={(e) => setEditDescription(e.target.value)}
               placeholder="What this variable controls"
               disabled={!canWrite}
-              className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-sm text-white placeholder-dark-500 focus:outline-none focus:border-primary-500 disabled:opacity-60 disabled:cursor-not-allowed"
+              className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-sm text-white placeholder-dark-400 focus:outline-none focus:border-primary-500 disabled:opacity-60 disabled:cursor-not-allowed"
             />
           </div>
         ) : configVar.description ? (
@@ -461,7 +461,7 @@ function EditConfigModal({
             <button
               onClick={handleSave}
               disabled={saving}
-              className="px-4 py-2 bg-primary-500 text-white text-sm font-medium rounded-lg hover:bg-primary-600 disabled:opacity-50 transition-colors"
+              className="px-4 py-2 bg-primary-500 text-white text-sm font-medium rounded-lg hover:bg-primary-600 disabled:opacity-60 transition-colors"
             >
               {saving ? 'Saving...' : 'Save'}
             </button>
@@ -534,7 +534,7 @@ function CreateConfigModal({ onClose, onCreated }: { onClose: () => void; onCrea
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g. feature.max_items"
-              className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-sm text-white placeholder-dark-500 focus:outline-none focus:border-primary-500"
+              className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-sm text-white placeholder-dark-400 focus:outline-none focus:border-primary-500"
             />
           </div>
 
@@ -545,7 +545,7 @@ function CreateConfigModal({ onClose, onCreated }: { onClose: () => void; onCrea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="What this variable controls"
-              className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-sm text-white placeholder-dark-500 focus:outline-none focus:border-primary-500"
+              className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-sm text-white placeholder-dark-400 focus:outline-none focus:border-primary-500"
             />
           </div>
 
@@ -587,7 +587,7 @@ function CreateConfigModal({ onClose, onCreated }: { onClose: () => void; onCrea
                 value={value}
                 onChange={(e) => setValue(e.target.value)}
                 rows={6}
-                className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-sm text-white font-mono placeholder-dark-500 focus:outline-none focus:border-primary-500 resize-y"
+                className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-sm text-white font-mono placeholder-dark-400 focus:outline-none focus:border-primary-500 resize-y"
               />
             ) : (
               <input
@@ -595,7 +595,7 @@ function CreateConfigModal({ onClose, onCreated }: { onClose: () => void; onCrea
                 value={value}
                 onChange={(e) => setValue(e.target.value)}
                 step={type === 'numeric' ? 'any' : undefined}
-                className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-sm text-white placeholder-dark-500 focus:outline-none focus:border-primary-500"
+                className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-sm text-white placeholder-dark-400 focus:outline-none focus:border-primary-500"
               />
             )}
           </div>
@@ -617,7 +617,7 @@ function CreateConfigModal({ onClose, onCreated }: { onClose: () => void; onCrea
           <button
             onClick={handleCreate}
             disabled={saving}
-            className="px-4 py-2 bg-primary-500 text-white text-sm font-medium rounded-lg hover:bg-primary-600 disabled:opacity-50 transition-colors"
+            className="px-4 py-2 bg-primary-500 text-white text-sm font-medium rounded-lg hover:bg-primary-600 disabled:opacity-60 transition-colors"
           >
             {saving ? 'Creating...' : 'Create'}
           </button>

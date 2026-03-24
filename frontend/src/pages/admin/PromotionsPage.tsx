@@ -396,7 +396,7 @@ function EditPromotionModal({ promo, productNames, onClose, onUpdated }: {
           <button
             onClick={handleSave}
             disabled={saving || !hasChanges}
-            className="px-4 py-2 bg-primary-500 text-white text-sm font-medium rounded-lg hover:bg-primary-600 disabled:opacity-50 transition-colors"
+            className="px-4 py-2 bg-primary-500 text-white text-sm font-medium rounded-lg hover:bg-primary-600 disabled:opacity-60 transition-colors"
           >
             {saving ? 'Saving...' : 'Save Changes'}
           </button>
@@ -660,7 +660,7 @@ function CreatePromotionModal({ onClose, onCreated }: { onClose: () => void; onC
           <button
             onClick={handleSave}
             disabled={saving || !code.trim()}
-            className="px-4 py-2 bg-primary-500 text-white text-sm font-medium rounded-lg hover:bg-primary-600 disabled:opacity-50 transition-colors"
+            className="px-4 py-2 bg-primary-500 text-white text-sm font-medium rounded-lg hover:bg-primary-600 disabled:opacity-60 transition-colors"
           >
             {saving ? 'Creating...' : 'Create'}
           </button>

@@ -57,7 +57,7 @@ export default function AdminFinancialPage() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search by description, invoice #, plan..."
-            className="w-full pl-10 pr-4 py-2.5 bg-dark-800 border border-dark-700 rounded-lg text-white placeholder-dark-500 focus:outline-none focus:border-primary-500 text-sm"
+            className="w-full pl-10 pr-4 py-2.5 bg-dark-800 border border-dark-700 rounded-lg text-white placeholder-dark-400 focus:outline-none focus:border-primary-500 text-sm"
           />
         </div>
       </form>

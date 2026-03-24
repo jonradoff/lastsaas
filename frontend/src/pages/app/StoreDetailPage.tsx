@@ -270,7 +270,7 @@ export default function StoreDetailPage() {
         <button
           onClick={handleScanNow}
           disabled={scanning}
-          className="flex items-center gap-2 px-4 py-2 bg-primary-500 hover:bg-primary-600 disabled:opacity-50 text-white text-sm font-medium rounded-lg transition-colors"
+          className="flex items-center gap-2 px-4 py-2 bg-primary-500 hover:bg-primary-600 disabled:opacity-60 text-white text-sm font-medium rounded-lg transition-colors"
         >
           <RefreshCw className={`w-4 h-4 ${scanning ? 'animate-spin' : ''}`} />
           {scanning ? 'Scanning…' : 'Scan Now'}

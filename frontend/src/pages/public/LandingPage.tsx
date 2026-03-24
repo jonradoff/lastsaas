@@ -191,13 +191,13 @@ export default function LandingPage() {
                     value={heroDomain}
                     onChange={(e) => setHeroDomain(e.target.value)}
                     placeholder="allbirds.com"
-                    className="flex-1 px-4 py-3 bg-white border border-slate-300 rounded-lg text-slate-900 text-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                    className="flex-1 px-4 py-3 bg-white border border-slate-300 rounded-lg text-slate-900 text-sm placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                     autoFocus
                   />
                   <button
                     type="submit"
                     disabled={!heroDomain.trim()}
-                    className="px-6 py-3 bg-blue-500 hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold rounded-full transition-colors whitespace-nowrap"
+                    className="px-6 py-3 bg-blue-500 hover:bg-blue-600 disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold rounded-full transition-colors whitespace-nowrap"
                   >
                     Scan Free &rarr;
                   </button>

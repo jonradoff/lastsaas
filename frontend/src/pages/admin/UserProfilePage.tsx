@@ -183,7 +183,7 @@ export default function UserProfilePage() {
               value={displayName}
               onChange={(e) => setDisplayName(e.target.value)}
               disabled={!canWrite}
-              className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-white focus:outline-none focus:border-primary-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-white focus:outline-none focus:border-primary-500 disabled:opacity-60 disabled:cursor-not-allowed"
             />
           </div>
           <div>
@@ -193,7 +193,7 @@ export default function UserProfilePage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               disabled={!canWrite}
-              className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-white focus:outline-none focus:border-primary-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-white focus:outline-none focus:border-primary-500 disabled:opacity-60 disabled:cursor-not-allowed"
             />
           </div>
         </div>
@@ -234,7 +234,7 @@ export default function UserProfilePage() {
           <button
             onClick={handleSave}
             disabled={saving}
-            className="flex items-center gap-2 px-4 py-2 bg-primary-500 text-white text-sm font-medium rounded-lg hover:bg-primary-600 disabled:opacity-50 transition-colors"
+            className="flex items-center gap-2 px-4 py-2 bg-primary-500 text-white text-sm font-medium rounded-lg hover:bg-primary-600 disabled:opacity-60 transition-colors"
           >
             <Save className="w-4 h-4" />
             {saving ? 'Saving...' : 'Save Changes'}
@@ -349,7 +349,7 @@ export default function UserProfilePage() {
             <button
               onClick={handleDeleteClick}
               disabled={preflightLoading}
-              className="flex items-center gap-2 px-4 py-2 bg-red-500/10 border border-red-500/30 text-red-400 text-sm font-medium rounded-lg hover:bg-red-500/20 disabled:opacity-50 transition-colors"
+              className="flex items-center gap-2 px-4 py-2 bg-red-500/10 border border-red-500/30 text-red-400 text-sm font-medium rounded-lg hover:bg-red-500/20 disabled:opacity-60 transition-colors"
             >
               <Trash2 className="w-4 h-4" />
               {preflightLoading ? 'Checking...' : 'Delete User'}
@@ -457,7 +457,7 @@ export default function UserProfilePage() {
                   <button
                     onClick={handleConfirmDelete}
                     disabled={!canSubmitDelete() || deleting}
-                    className="px-4 py-2 bg-red-500 text-white text-sm font-medium rounded-lg hover:bg-red-600 disabled:opacity-50 disabled:hover:bg-red-500 transition-colors"
+                    className="px-4 py-2 bg-red-500 text-white text-sm font-medium rounded-lg hover:bg-red-600 disabled:opacity-60 disabled:hover:bg-red-500 transition-colors"
                   >
                     {deleting ? 'Deleting...' : 'Permanently Delete User'}
                   </button>

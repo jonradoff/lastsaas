@@ -75,7 +75,7 @@ export default function ActivityPage() {
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
               placeholder="Search activity..."
-              className="w-full pl-10 pr-4 py-2 bg-dark-800 border border-dark-700 rounded-lg text-sm text-white placeholder-dark-500 focus:outline-none focus:border-primary-500"
+              className="w-full pl-10 pr-4 py-2 bg-dark-800 border border-dark-700 rounded-lg text-sm text-white placeholder-dark-400 focus:outline-none focus:border-primary-500"
             />
           </div>
           <button
@@ -99,7 +99,7 @@ export default function ActivityPage() {
           value={action}
           onChange={(e) => { setAction(e.target.value); setPage(1); }}
           placeholder="Filter by action..."
-          className="px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-sm text-white placeholder-dark-500 focus:outline-none focus:border-primary-500 w-48"
+          className="px-3 py-2 bg-dark-800 border border-dark-700 rounded-lg text-sm text-white placeholder-dark-400 focus:outline-none focus:border-primary-500 w-48"
         />
       </div>
 

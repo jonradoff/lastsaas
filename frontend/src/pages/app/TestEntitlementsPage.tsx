@@ -232,7 +232,7 @@ export default function TestEntitlementsPage() {
                               value={numericInputs[ent.key] || ''}
                               onChange={(e) => setNumericInputs(prev => ({ ...prev, [ent.key]: e.target.value }))}
                               onKeyDown={(e) => { if (e.key === 'Enter') handleTest(ent.key); }}
-                              className="w-20 px-2 py-1.5 text-xs bg-dark-800 border border-dark-700 rounded-lg text-white placeholder-dark-500 focus:outline-none focus:border-primary-500 transition-colors text-right"
+                              className="w-20 px-2 py-1.5 text-xs bg-dark-800 border border-dark-700 rounded-lg text-white placeholder-dark-400 focus:outline-none focus:border-primary-500 transition-colors text-right"
                             />
                           )}
                           <button
