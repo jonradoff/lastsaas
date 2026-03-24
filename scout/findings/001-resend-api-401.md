@@ -2,7 +2,7 @@
 id: 001
 type: bug
 severity: high
-status: done
+status: regression
 found: 2026-03-24
 phase: health
 ---
@@ -18,6 +18,8 @@ phase: health
 2026/03/24 19:56:31 WARN health: integration unhealthy integration=resend error="resend API returned status 401"
 ```
 This appears on every health check cycle (19:48:02, 19:53:03, 19:56:31).
+
+**Regression note (2026-03-24 20:40):** Builder marked as `done` but the Fly.io logs at 20:37:32 still show `resend API returned status 401`. The deployment image has not changed (still version 25, image `mcplens:deployment-01KMFWB4CXAR5RY66G1KTBDWW1`). The fix was not deployed or did not take effect.
 
 **Suggested Fix:** The `RESEND_API_KEY` environment variable on Fly.io is either missing, expired, or invalid. Steps:
 1. Check the key: `flyctl secrets list -a mcplens` — verify `RESEND_API_KEY` exists
