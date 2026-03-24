@@ -628,6 +628,12 @@ export interface ScanResult {
   agentSimulation?: AgentSimulation;
 }
 
+// --- My Scans (authenticated, tenant-scoped) ---
+export const myScansApi = {
+  list: (params?: { page?: number; limit?: number }) =>
+    api.get<{ scans: StoredScanEntry[]; total: number; page: number; limit: number }>('/scans', { params }).then(r => r.data),
+};
+
 // --- Scan Purchases ---
 export const scanPurchaseApi = {
   checkout: (domain: string, feature: 'assess' | 'simulate') =>

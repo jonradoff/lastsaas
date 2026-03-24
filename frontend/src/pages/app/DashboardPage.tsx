@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Plus, TrendingUp, TrendingDown, Minus, Zap, X, Trash2, Store } from 'lucide-react';
+import { useNavigate, Link } from 'react-router-dom';
+import { Plus, TrendingUp, TrendingDown, Minus, Zap, X, Trash2, Store, Search } from 'lucide-react';
 import { toast } from 'sonner';
 import DOMPurify from 'dompurify';
-import { trackedStoresApi } from '../../api/client';
-import type { TrackedStore } from '../../api/client';
+import { trackedStoresApi, myScansApi } from '../../api/client';
+import type { TrackedStore, StoredScanEntry } from '../../api/client';
 import { useBranding } from '../../contexts/BrandingContext';
 import { getErrorMessage } from '../../utils/errors';
 import LoadingSpinner from '../../components/LoadingSpinner';
@@ -143,24 +143,29 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
   const [showAddModal, setShowAddModal] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [recentScans, setRecentScans] = useState<StoredScanEntry[]>([]);
 
   const loadStores = () => {
-    trackedStoresApi.list()
-      .then(data => {
-        setStores(data.stores);
-        setMaxStores(data.maxStores);
-      })
-      .catch(err => {
-        // If 402 (payment required), treat as no entitlement
-        const status = (err as { response?: { status?: number } })?.response?.status;
+    Promise.allSettled([
+      trackedStoresApi.list(),
+      myScansApi.list({ limit: 10 }),
+    ]).then(([storesResult, scansResult]) => {
+      if (storesResult.status === 'fulfilled') {
+        setStores(storesResult.value.stores);
+        setMaxStores(storesResult.value.maxStores);
+      } else {
+        const status = (storesResult.reason as { response?: { status?: number } })?.response?.status;
         if (status === 400 || status === 402) {
           setMaxStores(0);
           setStores([]);
         } else {
-          toast.error(getErrorMessage(err));
+          toast.error(getErrorMessage(storesResult.reason));
         }
-      })
-      .finally(() => setLoading(false));
+      }
+      if (scansResult.status === 'fulfilled') {
+        setRecentScans(scansResult.value.scans);
+      }
+    }).finally(() => setLoading(false));
   };
 
   useEffect(() => { loadStores(); }, []);
@@ -335,6 +340,53 @@ export default function DashboardPage() {
             ))}
           </div>
         </>
+      )}
+
+      {/* Recent Scans — visible to all users including free */}
+      {recentScans.length > 0 && (
+        <div className="mt-8">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-semibold text-dark-100 flex items-center gap-2">
+              <Search className="w-5 h-5 text-primary-400" />
+              Recent Scans
+            </h2>
+            <Link to="/scan" className="text-sm text-primary-400 hover:text-primary-300 transition-colors">
+              Run a new scan &rarr;
+            </Link>
+          </div>
+          <div className="bg-dark-900/50 border border-dark-800 rounded-2xl overflow-hidden">
+            <div className="divide-y divide-dark-800/50">
+              {recentScans.map(scan => {
+                const scoreColor =
+                  scan.compositeScore >= 80 ? 'text-accent-emerald' :
+                  scan.compositeScore >= 60 ? 'text-yellow-400' :
+                  scan.compositeScore >= 40 ? 'text-orange-400' :
+                  'text-red-400';
+
+                return (
+                  <Link
+                    key={scan.id}
+                    to={`/scan/${scan.domain}`}
+                    className="flex items-center justify-between px-5 py-3.5 hover:bg-dark-800/30 transition-colors"
+                  >
+                    <div className="flex items-center gap-3">
+                      <span className={`text-lg font-bold ${scoreColor}`}>{scan.compositeScore}</span>
+                      <div>
+                        <p className="text-sm text-dark-100 font-medium">{scan.domain}</p>
+                        <p className="text-xs text-dark-500">
+                          {new Date(scan.createdAt).toLocaleDateString()} &middot; {scan.scenarioCount} scenarios
+                        </p>
+                      </div>
+                    </div>
+                    <span className="text-xs text-dark-500">
+                      {(scan.durationMs / 1000).toFixed(1)}s
+                    </span>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        </div>
       )}
 
       {showAddModal && (

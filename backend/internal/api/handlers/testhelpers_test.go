@@ -184,6 +184,7 @@ func setupTestServer(t *testing.T) *testEnv {
 	billingAPI.HandleFunc("/transactions", billingHandler.ListTransactions).Methods("GET")
 	billingAPI.HandleFunc("/cancel", billingHandler.CancelSubscription).Methods("POST")
 	billingAPI.HandleFunc("/config", billingHandler.GetConfig).Methods("GET")
+	billingAPI.HandleFunc("/scan-purchase", billingHandler.PurchaseScan).Methods("POST")
 
 	// Admin routes
 	adminAPI := guarded.PathPrefix("/admin").Subrouter()
