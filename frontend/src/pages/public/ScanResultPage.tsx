@@ -525,7 +525,7 @@ function TranscriptTimeline({ steps }: { steps: AgentStep[] }) {
               <span>{step.durationMs}ms</span>
             </div>
             {step.toolName && (
-              <div className="text-xs font-mono text-blue-600 mt-0.5">
+              <div className="text-xs font-mono text-blue-600 break-all mt-0.5">
                 {step.toolName}({step.toolArgs ? JSON.stringify(step.toolArgs).slice(0, 80) : ''})
               </div>
             )}

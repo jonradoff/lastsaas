@@ -61,7 +61,7 @@ function ScoreTimelineChart({ scans }: { scans: StoredScanEntry[] }) {
       <svg
         viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
         className="w-full"
-        style={{ minWidth: '320px', maxHeight: '180px' }}
+        style={{ minWidth: '280px', maxHeight: '180px' }}
       >
         {/* Grid lines */}
         {yLabels.map((label) => (
@@ -348,7 +348,7 @@ export default function StoreDetailPage() {
                     <ScoreBadge score={scan.compositeScore} />
                     <div>
                       <p className="text-sm text-dark-100">
-                        {new Date(scan.createdAt).toLocaleString()}
+                        {new Date(scan.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: '2-digit' })}
                       </p>
                       <p className="text-xs text-dark-500">
                         {scan.scenarioCount} scenarios &middot; {(scan.durationMs / 1000).toFixed(1)}s

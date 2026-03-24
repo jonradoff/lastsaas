@@ -458,7 +458,7 @@ export default function PlanPage() {
           <table className="w-full">
             <thead>
               <tr className="border-b border-dark-800">
-                <th className="text-left px-6 py-3 text-sm font-medium text-dark-400 min-w-[200px]">Feature</th>
+                <th className="text-left px-6 py-3 text-sm font-medium text-dark-400 min-w-[140px] sm:min-w-[200px]">Feature</th>
                 {sortedPlans.map(plan => (
                   <th key={plan.id} className={`text-center px-6 py-3 text-sm font-medium min-w-[140px] ${
                     plan.id === currentPlanId ? 'text-primary-400' : 'text-dark-400'

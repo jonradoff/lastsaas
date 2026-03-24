@@ -56,6 +56,7 @@ export default function LandingPage() {
   const navigate = useNavigate();
   const [heroDomain, setHeroDomain] = useState('');
   const [billingAnnual, setBillingAnnual] = useState(true);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     if (!loaded) return;
@@ -116,33 +117,58 @@ export default function LandingPage() {
       <header className="border-b border-slate-200 px-6 py-4 sticky top-0 z-50 bg-white/80 backdrop-blur-lg">
         <div className="max-w-5xl mx-auto flex items-center justify-between">
           <Logo size="small" />
-          <nav className="flex items-center gap-6">
-            <a href="#pricing" className="text-sm text-slate-500 hover:text-slate-900 transition-colors hidden sm:block">
-              Pricing
-            </a>
-            <a
-              href="https://github.com/reesthomas212/mcplens"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-sm text-slate-500 hover:text-slate-900 transition-colors hidden sm:block"
-            >
-              GitHub
-            </a>
-            <Link
-              to="/login"
-              className="text-sm text-slate-500 hover:text-slate-900 transition-colors hidden sm:block"
-            >
-              Sign in
-            </Link>
+          <div className="flex items-center gap-4">
+            <nav className="hidden sm:flex items-center gap-6">
+              <a href="#pricing" className="text-sm text-slate-500 hover:text-slate-900 transition-colors">
+                Pricing
+              </a>
+              <a
+                href="https://github.com/reesthomas212/mcplens"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm text-slate-500 hover:text-slate-900 transition-colors"
+              >
+                GitHub
+              </a>
+              <Link to="/login" className="text-sm text-slate-500 hover:text-slate-900 transition-colors">
+                Sign in
+              </Link>
+            </nav>
             <Link
               to="/signup"
               className="text-sm px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-full transition-colors"
             >
               Get Started
             </Link>
-          </nav>
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="sm:hidden text-slate-500 hover:text-slate-900 transition-colors"
+              aria-label="Toggle menu"
+            >
+              {mobileMenuOpen ? (
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+              ) : (
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" /></svg>
+              )}
+            </button>
+          </div>
         </div>
       </header>
+
+      {/* Mobile nav dropdown */}
+      {mobileMenuOpen && (
+        <div className="sm:hidden bg-white border-b border-slate-200 px-6 py-3 flex flex-col gap-2">
+          <a href="#pricing" onClick={() => setMobileMenuOpen(false)} className="text-sm text-slate-600 hover:text-slate-900 py-2 transition-colors">
+            Pricing
+          </a>
+          <a href="https://github.com/reesthomas212/mcplens" target="_blank" rel="noopener noreferrer" className="text-sm text-slate-600 hover:text-slate-900 py-2 transition-colors">
+            GitHub
+          </a>
+          <Link to="/login" onClick={() => setMobileMenuOpen(false)} className="text-sm text-slate-600 hover:text-slate-900 py-2 transition-colors">
+            Sign in
+          </Link>
+        </div>
+      )}
 
       <main className="flex-1">
         {/* ── Hero ── */}

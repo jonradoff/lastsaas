@@ -1,7 +1,7 @@
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, Users, Settings, LogOut, Shield, ChevronDown, Bell, CreditCard, Zap,
-  FileText, Image, Globe, Star, Heart, BookOpen, MessageCircle, HelpCircle, Megaphone,
+  FileText, Image, Globe, Star, Heart, BookOpen, MessageCircle, HelpCircle, Megaphone, Menu, X,
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useTenant } from '../contexts/TenantContext';
@@ -36,6 +36,7 @@ export default function Layout() {
     localStorage.getItem('dismissed_announcement') || ''
   );
   const menuRef = useRef<HTMLDivElement>(null);
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
 
   const isActive = (path: string) => location.pathname === path;
 
@@ -178,7 +179,15 @@ export default function Layout() {
 
             {/* Right side */}
             {isAuthenticated && (
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-3 sm:gap-4">
+                {/* Mobile hamburger */}
+                <button
+                  onClick={() => setShowMobileMenu(!showMobileMenu)}
+                  className="md:hidden text-dark-400 hover:text-dark-100 transition-colors"
+                  aria-label="Toggle menu"
+                >
+                  {showMobileMenu ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+                </button>
                 {/* Tenant Switcher */}
                 {memberships.length > 1 && (
                   <div className="relative" ref={menuRef}>
@@ -255,6 +264,43 @@ export default function Layout() {
           </div>
         </div>
       </header>
+
+      {/* Mobile nav drawer */}
+      {isAuthenticated && showMobileMenu && (
+        <div className="md:hidden bg-dark-900 border-b border-dark-800">
+          <nav className="max-w-7xl mx-auto px-4 py-3 flex flex-col gap-1">
+            {navItems.map((item) => (
+              <Link
+                key={item.path}
+                to={item.path}
+                onClick={() => setShowMobileMenu(false)}
+                className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors ${
+                  isActive(item.path)
+                    ? 'bg-primary-500/20 text-primary-400'
+                    : 'text-dark-300 hover:text-dark-100 hover:bg-dark-800/50'
+                }`}
+              >
+                <item.icon className="w-4 h-4" />
+                <span>{item.label}</span>
+              </Link>
+            ))}
+            {memberships.some(m => m.isRoot) && (
+              <Link
+                to="/last"
+                onClick={() => setShowMobileMenu(false)}
+                className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors ${
+                  location.pathname.startsWith('/last')
+                    ? 'bg-accent-purple/20 text-accent-purple'
+                    : 'text-dark-300 hover:text-dark-100 hover:bg-dark-800/50'
+                }`}
+              >
+                <Shield className="w-4 h-4" />
+                <span>Admin</span>
+              </Link>
+            )}
+          </nav>
+        </div>
+      )}
 
       {/* Announcement Banner */}
       {latestAnnouncement && latestAnnouncement.id !== dismissedAnnouncement && (
