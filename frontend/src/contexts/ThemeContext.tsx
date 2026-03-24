@@ -32,6 +32,14 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
   const getInitialTheme = (): ThemeMode => {
     if (user?.themePreference) return user.themePreference;
+    // One-time migration: force dark mode for users who had the broken 'light' default.
+    // Remove this migration after a few weeks (added 2026-03-24).
+    const MIGRATION_KEY = 'mcplens_theme_migrated_v1';
+    if (!localStorage.getItem(MIGRATION_KEY)) {
+      localStorage.setItem(MIGRATION_KEY, '1');
+      localStorage.setItem(THEME_KEY, 'dark');
+      return 'dark';
+    }
     const stored = localStorage.getItem(THEME_KEY) as ThemeMode | null;
     return stored || 'dark';
   };
