@@ -8,7 +8,7 @@ import { runTests } from "./runner.js";
 import { writeReport } from "./report/html-report.js";
 import { CliOptions } from "./types.js";
 import { redactHeaders } from "./redact.js";
-import { exec } from "child_process";
+import { execFile } from "child_process";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -139,19 +139,16 @@ program
         // 9. If --open and format is html, open in browser (platform-aware)
         if (opts.open && format === "html") {
           const platform = process.platform;
-          let openCmd: string;
+          const onErr = (err: Error | null) => {
+            if (err) process.stderr.write(`Warning: failed to open report in browser: ${err.message}\n`);
+          };
           if (platform === "win32") {
-            openCmd = `start "" "${outputPath}"`;
+            execFile("cmd", ["/c", "start", "", outputPath], onErr);
           } else if (platform === "darwin") {
-            openCmd = `open "${outputPath}"`;
+            execFile("open", [outputPath], onErr);
           } else {
-            openCmd = `xdg-open "${outputPath}"`;
+            execFile("xdg-open", [outputPath], onErr);
           }
-          exec(openCmd, (err) => {
-            if (err) {
-              process.stderr.write(`Warning: failed to open report in browser: ${err.message}\n`);
-            }
-          });
         }
 
         // 10. Close connection
@@ -255,10 +252,16 @@ program
 
           if (opts.open && format === "html") {
             const platform = process.platform;
-            const openCmd = platform === "win32" ? `start "" "${outputPath}"` : platform === "darwin" ? `open "${outputPath}"` : `xdg-open "${outputPath}"`;
-            exec(openCmd, (err) => {
+            const onErr = (err: Error | null) => {
               if (err) process.stderr.write(`Warning: failed to open report: ${err.message}\n`);
-            });
+            };
+            if (platform === "win32") {
+              execFile("cmd", ["/c", "start", "", outputPath], onErr);
+            } else if (platform === "darwin") {
+              execFile("open", [outputPath], onErr);
+            } else {
+              execFile("xdg-open", [outputPath], onErr);
+            }
           }
 
           await connection.close();
@@ -321,10 +324,16 @@ program
 
         if (opts.open) {
           const platform = process.platform;
-          const openCmd = platform === "win32" ? `start "" "${outputPath}"` : platform === "darwin" ? `open "${outputPath}"` : `xdg-open "${outputPath}"`;
-          exec(openCmd, (err) => {
+          const onErr = (err: Error | null) => {
             if (err) process.stderr.write(`Warning: failed to open report: ${err.message}\n`);
-          });
+          };
+          if (platform === "win32") {
+            execFile("cmd", ["/c", "start", "", outputPath], onErr);
+          } else if (platform === "darwin") {
+            execFile("open", [outputPath], onErr);
+          } else {
+            execFile("xdg-open", [outputPath], onErr);
+          }
         }
       }
 
